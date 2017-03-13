@@ -1,0 +1,1522 @@
+swagger: "2.0"
+info:
+  title: beego Test API
+  description: beego has a very cool tools to autogenerate documents for your API
+  version: 1.0.0
+  termsOfService: http://beego.me/
+  contact:
+    email: astaxie@gmail.com
+  license:
+    name: Url http://www.apache.org/licenses/LICENSE-2.0.html
+basePath: /v1
+paths:
+  /asignacion_espacio_fisico_dependencia/:
+    get:
+      tags:
+      - asignacion_espacio_fisico_dependencia
+      description: get AsignacionEspacioFisicoDependencia
+      operationId: AsignacionEspacioFisicoDependenciaController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+        "403": {}
+    post:
+      tags:
+      - asignacion_espacio_fisico_dependencia
+      description: create AsignacionEspacioFisicoDependencia
+      operationId: AsignacionEspacioFisicoDependenciaController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for AsignacionEspacioFisicoDependencia content
+        required: true
+        schema:
+          $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+      responses:
+        "201":
+          description: '{int} models.AsignacionEspacioFisicoDependencia'
+        "403":
+          description: body is empty
+  /asignacion_espacio_fisico_dependencia/{id}:
+    get:
+      tags:
+      - asignacion_espacio_fisico_dependencia
+      description: get AsignacionEspacioFisicoDependencia by id
+      operationId: AsignacionEspacioFisicoDependenciaController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - asignacion_espacio_fisico_dependencia
+      description: update the AsignacionEspacioFisicoDependencia
+      operationId: AsignacionEspacioFisicoDependenciaController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for AsignacionEspacioFisicoDependencia content
+        required: true
+        schema:
+          $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - asignacion_espacio_fisico_dependencia
+      description: delete the AsignacionEspacioFisicoDependencia
+      operationId: AsignacionEspacioFisicoDependenciaController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /campo/:
+    get:
+      tags:
+      - campo
+      description: get Campo
+      operationId: CampoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/Campo'
+        "403": {}
+    post:
+      tags:
+      - campo
+      description: create Campo
+      operationId: CampoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for Campo content
+        required: true
+        schema:
+          $ref: '#/definitions/Campo'
+      responses:
+        "201":
+          description: '{int} models.Campo'
+        "403":
+          description: body is empty
+  /campo/{id}:
+    get:
+      tags:
+      - campo
+      description: get Campo by id
+      operationId: CampoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/Campo'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - campo
+      description: update the Campo
+      operationId: CampoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for Campo content
+        required: true
+        schema:
+          $ref: '#/definitions/Campo'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/Campo'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - campo
+      description: delete the Campo
+      operationId: CampoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /dependencia/:
+    get:
+      tags:
+      - dependencia
+      description: get Dependencia
+      operationId: DependenciaController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/Dependencia'
+        "403": {}
+    post:
+      tags:
+      - dependencia
+      description: create Dependencia
+      operationId: DependenciaController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for Dependencia content
+        required: true
+        schema:
+          $ref: '#/definitions/Dependencia'
+      responses:
+        "201":
+          description: '{int} models.Dependencia'
+        "403":
+          description: body is empty
+  /dependencia/{id}:
+    get:
+      tags:
+      - dependencia
+      description: get Dependencia by id
+      operationId: DependenciaController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/Dependencia'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - dependencia
+      description: update the Dependencia
+      operationId: DependenciaController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for Dependencia content
+        required: true
+        schema:
+          $ref: '#/definitions/Dependencia'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/Dependencia'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - dependencia
+      description: delete the Dependencia
+      operationId: DependenciaController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /dependencia_padre/:
+    get:
+      tags:
+      - dependencia_padre
+      description: get DependenciaPadre
+      operationId: DependenciaPadreController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/DependenciaPadre'
+        "403": {}
+    post:
+      tags:
+      - dependencia_padre
+      description: create DependenciaPadre
+      operationId: DependenciaPadreController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for DependenciaPadre content
+        required: true
+        schema:
+          $ref: '#/definitions/DependenciaPadre'
+      responses:
+        "201":
+          description: '{int} models.DependenciaPadre'
+        "403":
+          description: body is empty
+  /dependencia_padre/{id}:
+    get:
+      tags:
+      - dependencia_padre
+      description: get DependenciaPadre by id
+      operationId: DependenciaPadreController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/DependenciaPadre'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - dependencia_padre
+      description: update the DependenciaPadre
+      operationId: DependenciaPadreController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for DependenciaPadre content
+        required: true
+        schema:
+          $ref: '#/definitions/DependenciaPadre'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/DependenciaPadre'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - dependencia_padre
+      description: delete the DependenciaPadre
+      operationId: DependenciaPadreController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /dependencia_tipo_dependencia/:
+    get:
+      tags:
+      - dependencia_tipo_dependencia
+      description: get DependenciaTipoDependencia
+      operationId: DependenciaTipoDependenciaController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/DependenciaTipoDependencia'
+        "403": {}
+    post:
+      tags:
+      - dependencia_tipo_dependencia
+      description: create DependenciaTipoDependencia
+      operationId: DependenciaTipoDependenciaController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for DependenciaTipoDependencia content
+        required: true
+        schema:
+          $ref: '#/definitions/DependenciaTipoDependencia'
+      responses:
+        "201":
+          description: '{int} models.DependenciaTipoDependencia'
+        "403":
+          description: body is empty
+  /dependencia_tipo_dependencia/{id}:
+    get:
+      tags:
+      - dependencia_tipo_dependencia
+      description: get DependenciaTipoDependencia by id
+      operationId: DependenciaTipoDependenciaController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/DependenciaTipoDependencia'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - dependencia_tipo_dependencia
+      description: update the DependenciaTipoDependencia
+      operationId: DependenciaTipoDependenciaController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for DependenciaTipoDependencia content
+        required: true
+        schema:
+          $ref: '#/definitions/DependenciaTipoDependencia'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/DependenciaTipoDependencia'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - dependencia_tipo_dependencia
+      description: delete the DependenciaTipoDependencia
+      operationId: DependenciaTipoDependenciaController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /espacio_fisico/:
+    get:
+      tags:
+      - espacio_fisico
+      description: get EspacioFisico
+      operationId: EspacioFisicoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisico'
+        "403": {}
+    post:
+      tags:
+      - espacio_fisico
+      description: create EspacioFisico
+      operationId: EspacioFisicoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for EspacioFisico content
+        required: true
+        schema:
+          $ref: '#/definitions/EspacioFisico'
+      responses:
+        "201":
+          description: '{int} models.EspacioFisico'
+        "403":
+          description: body is empty
+  /espacio_fisico/{id}:
+    get:
+      tags:
+      - espacio_fisico
+      description: get EspacioFisico by id
+      operationId: EspacioFisicoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisico'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - espacio_fisico
+      description: update the EspacioFisico
+      operationId: EspacioFisicoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for EspacioFisico content
+        required: true
+        schema:
+          $ref: '#/definitions/EspacioFisico'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisico'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - espacio_fisico
+      description: delete the EspacioFisico
+      operationId: EspacioFisicoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /espacio_fisico_campo/:
+    get:
+      tags:
+      - espacio_fisico_campo
+      description: get EspacioFisicoCampo
+      operationId: EspacioFisicoCampoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisicoCampo'
+        "403": {}
+    post:
+      tags:
+      - espacio_fisico_campo
+      description: create EspacioFisicoCampo
+      operationId: EspacioFisicoCampoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for EspacioFisicoCampo content
+        required: true
+        schema:
+          $ref: '#/definitions/EspacioFisicoCampo'
+      responses:
+        "201":
+          description: '{int} models.EspacioFisicoCampo'
+        "403":
+          description: body is empty
+  /espacio_fisico_campo/{id}:
+    get:
+      tags:
+      - espacio_fisico_campo
+      description: get EspacioFisicoCampo by id
+      operationId: EspacioFisicoCampoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisicoCampo'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - espacio_fisico_campo
+      description: update the EspacioFisicoCampo
+      operationId: EspacioFisicoCampoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for EspacioFisicoCampo content
+        required: true
+        schema:
+          $ref: '#/definitions/EspacioFisicoCampo'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisicoCampo'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - espacio_fisico_campo
+      description: delete the EspacioFisicoCampo
+      operationId: EspacioFisicoCampoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /espacio_fisico_padre/:
+    get:
+      tags:
+      - espacio_fisico_padre
+      description: get EspacioFisicoPadre
+      operationId: EspacioFisicoPadreController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisicoPadre'
+        "403": {}
+    post:
+      tags:
+      - espacio_fisico_padre
+      description: create EspacioFisicoPadre
+      operationId: EspacioFisicoPadreController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for EspacioFisicoPadre content
+        required: true
+        schema:
+          $ref: '#/definitions/EspacioFisicoPadre'
+      responses:
+        "201":
+          description: '{int} models.EspacioFisicoPadre'
+        "403":
+          description: body is empty
+  /espacio_fisico_padre/{id}:
+    get:
+      tags:
+      - espacio_fisico_padre
+      description: get EspacioFisicoPadre by id
+      operationId: EspacioFisicoPadreController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisicoPadre'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - espacio_fisico_padre
+      description: update the EspacioFisicoPadre
+      operationId: EspacioFisicoPadreController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for EspacioFisicoPadre content
+        required: true
+        schema:
+          $ref: '#/definitions/EspacioFisicoPadre'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/EspacioFisicoPadre'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - espacio_fisico_padre
+      description: delete the EspacioFisicoPadre
+      operationId: EspacioFisicoPadreController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /tipo_dependencia/:
+    get:
+      tags:
+      - tipo_dependencia
+      description: get TipoDependencia
+      operationId: TipoDependenciaController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoDependencia'
+        "403": {}
+    post:
+      tags:
+      - tipo_dependencia
+      description: create TipoDependencia
+      operationId: TipoDependenciaController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for TipoDependencia content
+        required: true
+        schema:
+          $ref: '#/definitions/TipoDependencia'
+      responses:
+        "201":
+          description: '{int} models.TipoDependencia'
+        "403":
+          description: body is empty
+  /tipo_dependencia/{id}:
+    get:
+      tags:
+      - tipo_dependencia
+      description: get TipoDependencia by id
+      operationId: TipoDependenciaController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoDependencia'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - tipo_dependencia
+      description: update the TipoDependencia
+      operationId: TipoDependenciaController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for TipoDependencia content
+        required: true
+        schema:
+          $ref: '#/definitions/TipoDependencia'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoDependencia'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - tipo_dependencia
+      description: delete the TipoDependencia
+      operationId: TipoDependenciaController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /tipo_espacio_fisico/:
+    get:
+      tags:
+      - tipo_espacio_fisico
+      description: get TipoEspacioFisico
+      operationId: TipoEspacioFisicoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoEspacioFisico'
+        "403": {}
+    post:
+      tags:
+      - tipo_espacio_fisico
+      description: create TipoEspacioFisico
+      operationId: TipoEspacioFisicoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for TipoEspacioFisico content
+        required: true
+        schema:
+          $ref: '#/definitions/TipoEspacioFisico'
+      responses:
+        "201":
+          description: '{int} models.TipoEspacioFisico'
+        "403":
+          description: body is empty
+  /tipo_espacio_fisico/{id}:
+    get:
+      tags:
+      - tipo_espacio_fisico
+      description: get TipoEspacioFisico by id
+      operationId: TipoEspacioFisicoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoEspacioFisico'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - tipo_espacio_fisico
+      description: update the TipoEspacioFisico
+      operationId: TipoEspacioFisicoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for TipoEspacioFisico content
+        required: true
+        schema:
+          $ref: '#/definitions/TipoEspacioFisico'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoEspacioFisico'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - tipo_espacio_fisico
+      description: delete the TipoEspacioFisico
+      operationId: TipoEspacioFisicoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /tipo_uso/:
+    get:
+      tags:
+      - tipo_uso
+      description: get TipoUso
+      operationId: TipoUsoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoUso'
+        "403": {}
+    post:
+      tags:
+      - tipo_uso
+      description: create TipoUso
+      operationId: TipoUsoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for TipoUso content
+        required: true
+        schema:
+          $ref: '#/definitions/TipoUso'
+      responses:
+        "201":
+          description: '{int} models.TipoUso'
+        "403":
+          description: body is empty
+  /tipo_uso/{id}:
+    get:
+      tags:
+      - tipo_uso
+      description: get TipoUso by id
+      operationId: TipoUsoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoUso'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - tipo_uso
+      description: update the TipoUso
+      operationId: TipoUsoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for TipoUso content
+        required: true
+        schema:
+          $ref: '#/definitions/TipoUso'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoUso'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - tipo_uso
+      description: delete the TipoUso
+      operationId: TipoUsoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+  /tipo_uso_espacio_fisico/:
+    get:
+      tags:
+      - tipo_uso_espacio_fisico
+      description: get TipoUsoEspacioFisico
+      operationId: TipoUsoEspacioFisicoController.Get All
+      parameters:
+      - in: query
+        name: query
+        description: Filter. e.g. col1:v1,col2:v2 ...
+        type: string
+      - in: query
+        name: fields
+        description: Fields returned. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: sortby
+        description: Sorted-by fields. e.g. col1,col2 ...
+        type: string
+      - in: query
+        name: order
+        description: Order corresponding to each sortby field, if single value, apply
+          to all sortby fields. e.g. desc,asc ...
+        type: string
+      - in: query
+        name: limit
+        description: Limit the size of result set. Must be an integer
+        type: string
+      - in: query
+        name: offset
+        description: Start position of result set. Must be an integer
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoUsoEspacioFisico'
+        "403": {}
+    post:
+      tags:
+      - tipo_uso_espacio_fisico
+      description: create TipoUsoEspacioFisico
+      operationId: TipoUsoEspacioFisicoController.Post
+      parameters:
+      - in: body
+        name: body
+        description: body for TipoUsoEspacioFisico content
+        required: true
+        schema:
+          $ref: '#/definitions/TipoUsoEspacioFisico'
+      responses:
+        "201":
+          description: '{int} models.TipoUsoEspacioFisico'
+        "403":
+          description: body is empty
+  /tipo_uso_espacio_fisico/{id}:
+    get:
+      tags:
+      - tipo_uso_espacio_fisico
+      description: get TipoUsoEspacioFisico by id
+      operationId: TipoUsoEspacioFisicoController.Get One
+      parameters:
+      - in: path
+        name: id
+        description: The key for staticblock
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoUsoEspacioFisico'
+        "403":
+          description: :id is empty
+    put:
+      tags:
+      - tipo_uso_espacio_fisico
+      description: update the TipoUsoEspacioFisico
+      operationId: TipoUsoEspacioFisicoController.Put
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to update
+        required: true
+        type: string
+      - in: body
+        name: body
+        description: body for TipoUsoEspacioFisico content
+        required: true
+        schema:
+          $ref: '#/definitions/TipoUsoEspacioFisico'
+      responses:
+        "200":
+          schema:
+            $ref: '#/definitions/TipoUsoEspacioFisico'
+        "403":
+          description: :id is not int
+    delete:
+      tags:
+      - tipo_uso_espacio_fisico
+      description: delete the TipoUsoEspacioFisico
+      operationId: TipoUsoEspacioFisicoController.Delete
+      parameters:
+      - in: path
+        name: id
+        description: The id you want to delete
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} delete success!'
+        "403":
+          description: id is empty
+definitions:
+  AsignacionEspacioFisicoDependencia:
+    title: AsignacionEspacioFisicoDependencia
+    type: object
+    properties:
+      DependenciaId:
+        $ref: '#/definitions/Dependencia'
+      DocumentoSoporte:
+        type: string
+      EspacioFisicoId:
+        $ref: '#/definitions/EspacioFisico'
+      Estado:
+        type: string
+      FechaFin:
+        $ref: '#/definitions/&{time Time}'
+      FechaInicio:
+        $ref: '#/definitions/&{time Time}'
+      Id:
+        type: integer
+        format: int64
+  Campo:
+    title: Campo
+    type: object
+    properties:
+      Descripcion:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+  Dependencia:
+    title: Dependencia
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      TelefonoDependencia:
+        type: string
+  DependenciaPadre:
+    title: DependenciaPadre
+    type: object
+    properties:
+      Hija:
+        $ref: '#/definitions/Dependencia'
+      Id:
+        type: integer
+        format: int64
+      Padre:
+        $ref: '#/definitions/Dependencia'
+  DependenciaTipoDependencia:
+    title: DependenciaTipoDependencia
+    type: object
+    properties:
+      DependenciaId:
+        $ref: '#/definitions/Dependencia'
+      Id:
+        type: integer
+        format: int64
+      TipoDependenciaId:
+        $ref: '#/definitions/TipoDependencia'
+  EspacioFisico:
+    title: EspacioFisico
+    type: object
+    properties:
+      Codigo:
+        type: string
+      Estado:
+        type: string
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      TipoEspacio:
+        $ref: '#/definitions/TipoEspacioFisico'
+  EspacioFisicoCampo:
+    title: EspacioFisicoCampo
+    type: object
+    properties:
+      Campo:
+        $ref: '#/definitions/Campo'
+      EspacioFisico:
+        $ref: '#/definitions/EspacioFisico'
+      Id:
+        type: integer
+        format: int64
+      Valor:
+        type: string
+  EspacioFisicoPadre:
+    title: EspacioFisicoPadre
+    type: object
+    properties:
+      Hijo:
+        $ref: '#/definitions/EspacioFisico'
+      Id:
+        type: integer
+        format: int64
+      Padre:
+        $ref: '#/definitions/EspacioFisico'
+  TipoDependencia:
+    title: TipoDependencia
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+  TipoEspacioFisico:
+    title: TipoEspacioFisico
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+  TipoUso:
+    title: TipoUso
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+  TipoUsoEspacioFisico:
+    title: TipoUsoEspacioFisico
+    type: object
+    properties:
+      EspacioFisicoId:
+        $ref: '#/definitions/EspacioFisico'
+      Id:
+        type: integer
+        format: int64
+      TipoUsoId:
+        $ref: '#/definitions/TipoUso'
+tags:
+- name: tipo_uso
+  description: |
+    TipoUsoController oprations for TipoUso
+- name: dependencia
+  description: |
+    DependenciaController oprations for Dependencia
+- name: espacio_fisico
+  description: |
+    EspacioFisicoController oprations for EspacioFisico
+- name: espacio_fisico_padre
+  description: |
+    EspacioFisicoPadreController oprations for EspacioFisicoPadre
+- name: tipo_uso_espacio_fisico
+  description: |
+    TipoUsoEspacioFisicoController oprations for TipoUsoEspacioFisico
+- name: dependencia_padre
+  description: |
+    DependenciaPadreController oprations for DependenciaPadre
+- name: tipo_espacio_fisico
+  description: |
+    TipoEspacioFisicoController oprations for TipoEspacioFisico
+- name: asignacion_espacio_fisico_dependencia
+  description: |
+    AsignacionEspacioFisicoDependenciaController oprations for AsignacionEspacioFisicoDependencia
+- name: campo
+  description: |
+    CampoController oprations for Campo
+- name: espacio_fisico_campo
+  description: |
+    EspacioFisicoCampoController oprations for EspacioFisicoCampo
+- name: dependencia_tipo_dependencia
+  description: |
+    DependenciaTipoDependenciaController oprations for DependenciaTipoDependencia
+- name: tipo_dependencia
+  description: |
+    TipoDependenciaController oprations for TipoDependencia
