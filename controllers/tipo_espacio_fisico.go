@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos/oikos_api/models"
+	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
 
