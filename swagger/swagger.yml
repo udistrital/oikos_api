@@ -7,7 +7,8 @@ info:
   contact:
     email: astaxie@gmail.com
   license:
-    name: Url http://www.apache.org/licenses/LICENSE-2.0.html
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
 basePath: /v1
 paths:
   /asignacion_espacio_fisico_dependencia/:
@@ -45,7 +46,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+            $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
         "403": {}
     post:
       tags:
@@ -58,7 +59,7 @@ paths:
         description: body for AsignacionEspacioFisicoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+          $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
       responses:
         "201":
           description: '{int} models.AsignacionEspacioFisicoDependencia'
@@ -79,7 +80,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+            $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
         "403":
           description: :id is empty
     put:
@@ -98,11 +99,11 @@ paths:
         description: body for AsignacionEspacioFisicoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+          $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/AsignacionEspacioFisicoDependencia'
+            $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
         "403":
           description: :id is not int
     delete:
@@ -156,7 +157,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/Campo'
+            $ref: '#/definitions/models.Campo'
         "403": {}
     post:
       tags:
@@ -169,7 +170,7 @@ paths:
         description: body for Campo content
         required: true
         schema:
-          $ref: '#/definitions/Campo'
+          $ref: '#/definitions/models.Campo'
       responses:
         "201":
           description: '{int} models.Campo'
@@ -190,7 +191,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/Campo'
+            $ref: '#/definitions/models.Campo'
         "403":
           description: :id is empty
     put:
@@ -209,11 +210,11 @@ paths:
         description: body for Campo content
         required: true
         schema:
-          $ref: '#/definitions/Campo'
+          $ref: '#/definitions/models.Campo'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/Campo'
+            $ref: '#/definitions/models.Campo'
         "403":
           description: :id is not int
     delete:
@@ -267,7 +268,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/Dependencia'
+            $ref: '#/definitions/models.Dependencia'
         "403": {}
     post:
       tags:
@@ -280,7 +281,7 @@ paths:
         description: body for Dependencia content
         required: true
         schema:
-          $ref: '#/definitions/Dependencia'
+          $ref: '#/definitions/models.Dependencia'
       responses:
         "201":
           description: '{int} models.Dependencia'
@@ -301,7 +302,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/Dependencia'
+            $ref: '#/definitions/models.Dependencia'
         "403":
           description: :id is empty
     put:
@@ -320,11 +321,11 @@ paths:
         description: body for Dependencia content
         required: true
         schema:
-          $ref: '#/definitions/Dependencia'
+          $ref: '#/definitions/models.Dependencia'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/Dependencia'
+            $ref: '#/definitions/models.Dependencia'
         "403":
           description: :id is not int
     delete:
@@ -378,7 +379,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/DependenciaPadre'
+            $ref: '#/definitions/models.DependenciaPadre'
         "403": {}
     post:
       tags:
@@ -391,7 +392,7 @@ paths:
         description: body for DependenciaPadre content
         required: true
         schema:
-          $ref: '#/definitions/DependenciaPadre'
+          $ref: '#/definitions/models.DependenciaPadre'
       responses:
         "201":
           description: '{int} models.DependenciaPadre'
@@ -412,7 +413,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/DependenciaPadre'
+            $ref: '#/definitions/models.DependenciaPadre'
         "403":
           description: :id is empty
     put:
@@ -431,11 +432,11 @@ paths:
         description: body for DependenciaPadre content
         required: true
         schema:
-          $ref: '#/definitions/DependenciaPadre'
+          $ref: '#/definitions/models.DependenciaPadre'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/DependenciaPadre'
+            $ref: '#/definitions/models.DependenciaPadre'
         "403":
           description: :id is not int
     delete:
@@ -489,7 +490,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/DependenciaTipoDependencia'
+            $ref: '#/definitions/models.DependenciaTipoDependencia'
         "403": {}
     post:
       tags:
@@ -502,7 +503,7 @@ paths:
         description: body for DependenciaTipoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/DependenciaTipoDependencia'
+          $ref: '#/definitions/models.DependenciaTipoDependencia'
       responses:
         "201":
           description: '{int} models.DependenciaTipoDependencia'
@@ -523,7 +524,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/DependenciaTipoDependencia'
+            $ref: '#/definitions/models.DependenciaTipoDependencia'
         "403":
           description: :id is empty
     put:
@@ -542,11 +543,11 @@ paths:
         description: body for DependenciaTipoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/DependenciaTipoDependencia'
+          $ref: '#/definitions/models.DependenciaTipoDependencia'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/DependenciaTipoDependencia'
+            $ref: '#/definitions/models.DependenciaTipoDependencia'
         "403":
           description: :id is not int
     delete:
@@ -600,7 +601,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisico'
+            $ref: '#/definitions/models.EspacioFisico'
         "403": {}
     post:
       tags:
@@ -613,7 +614,7 @@ paths:
         description: body for EspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/EspacioFisico'
+          $ref: '#/definitions/models.EspacioFisico'
       responses:
         "201":
           description: '{int} models.EspacioFisico'
@@ -634,7 +635,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisico'
+            $ref: '#/definitions/models.EspacioFisico'
         "403":
           description: :id is empty
     put:
@@ -653,11 +654,11 @@ paths:
         description: body for EspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/EspacioFisico'
+          $ref: '#/definitions/models.EspacioFisico'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisico'
+            $ref: '#/definitions/models.EspacioFisico'
         "403":
           description: :id is not int
     delete:
@@ -711,7 +712,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisicoCampo'
+            $ref: '#/definitions/models.EspacioFisicoCampo'
         "403": {}
     post:
       tags:
@@ -724,7 +725,7 @@ paths:
         description: body for EspacioFisicoCampo content
         required: true
         schema:
-          $ref: '#/definitions/EspacioFisicoCampo'
+          $ref: '#/definitions/models.EspacioFisicoCampo'
       responses:
         "201":
           description: '{int} models.EspacioFisicoCampo'
@@ -745,7 +746,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisicoCampo'
+            $ref: '#/definitions/models.EspacioFisicoCampo'
         "403":
           description: :id is empty
     put:
@@ -764,11 +765,11 @@ paths:
         description: body for EspacioFisicoCampo content
         required: true
         schema:
-          $ref: '#/definitions/EspacioFisicoCampo'
+          $ref: '#/definitions/models.EspacioFisicoCampo'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisicoCampo'
+            $ref: '#/definitions/models.EspacioFisicoCampo'
         "403":
           description: :id is not int
     delete:
@@ -822,7 +823,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisicoPadre'
+            $ref: '#/definitions/models.EspacioFisicoPadre'
         "403": {}
     post:
       tags:
@@ -835,7 +836,7 @@ paths:
         description: body for EspacioFisicoPadre content
         required: true
         schema:
-          $ref: '#/definitions/EspacioFisicoPadre'
+          $ref: '#/definitions/models.EspacioFisicoPadre'
       responses:
         "201":
           description: '{int} models.EspacioFisicoPadre'
@@ -856,7 +857,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisicoPadre'
+            $ref: '#/definitions/models.EspacioFisicoPadre'
         "403":
           description: :id is empty
     put:
@@ -875,11 +876,11 @@ paths:
         description: body for EspacioFisicoPadre content
         required: true
         schema:
-          $ref: '#/definitions/EspacioFisicoPadre'
+          $ref: '#/definitions/models.EspacioFisicoPadre'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/EspacioFisicoPadre'
+            $ref: '#/definitions/models.EspacioFisicoPadre'
         "403":
           description: :id is not int
     delete:
@@ -933,7 +934,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoDependencia'
+            $ref: '#/definitions/models.TipoDependencia'
         "403": {}
     post:
       tags:
@@ -946,7 +947,7 @@ paths:
         description: body for TipoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/TipoDependencia'
+          $ref: '#/definitions/models.TipoDependencia'
       responses:
         "201":
           description: '{int} models.TipoDependencia'
@@ -967,7 +968,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoDependencia'
+            $ref: '#/definitions/models.TipoDependencia'
         "403":
           description: :id is empty
     put:
@@ -986,11 +987,11 @@ paths:
         description: body for TipoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/TipoDependencia'
+          $ref: '#/definitions/models.TipoDependencia'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoDependencia'
+            $ref: '#/definitions/models.TipoDependencia'
         "403":
           description: :id is not int
     delete:
@@ -1044,7 +1045,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoEspacioFisico'
+            $ref: '#/definitions/models.TipoEspacioFisico'
         "403": {}
     post:
       tags:
@@ -1057,7 +1058,7 @@ paths:
         description: body for TipoEspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/TipoEspacioFisico'
+          $ref: '#/definitions/models.TipoEspacioFisico'
       responses:
         "201":
           description: '{int} models.TipoEspacioFisico'
@@ -1078,7 +1079,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoEspacioFisico'
+            $ref: '#/definitions/models.TipoEspacioFisico'
         "403":
           description: :id is empty
     put:
@@ -1097,11 +1098,11 @@ paths:
         description: body for TipoEspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/TipoEspacioFisico'
+          $ref: '#/definitions/models.TipoEspacioFisico'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoEspacioFisico'
+            $ref: '#/definitions/models.TipoEspacioFisico'
         "403":
           description: :id is not int
     delete:
@@ -1155,7 +1156,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoUso'
+            $ref: '#/definitions/models.TipoUso'
         "403": {}
     post:
       tags:
@@ -1168,7 +1169,7 @@ paths:
         description: body for TipoUso content
         required: true
         schema:
-          $ref: '#/definitions/TipoUso'
+          $ref: '#/definitions/models.TipoUso'
       responses:
         "201":
           description: '{int} models.TipoUso'
@@ -1189,7 +1190,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoUso'
+            $ref: '#/definitions/models.TipoUso'
         "403":
           description: :id is empty
     put:
@@ -1208,11 +1209,11 @@ paths:
         description: body for TipoUso content
         required: true
         schema:
-          $ref: '#/definitions/TipoUso'
+          $ref: '#/definitions/models.TipoUso'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoUso'
+            $ref: '#/definitions/models.TipoUso'
         "403":
           description: :id is not int
     delete:
@@ -1266,7 +1267,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoUsoEspacioFisico'
+            $ref: '#/definitions/models.TipoUsoEspacioFisico'
         "403": {}
     post:
       tags:
@@ -1279,7 +1280,7 @@ paths:
         description: body for TipoUsoEspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/TipoUsoEspacioFisico'
+          $ref: '#/definitions/models.TipoUsoEspacioFisico'
       responses:
         "201":
           description: '{int} models.TipoUsoEspacioFisico'
@@ -1300,7 +1301,7 @@ paths:
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoUsoEspacioFisico'
+            $ref: '#/definitions/models.TipoUsoEspacioFisico'
         "403":
           description: :id is empty
     put:
@@ -1319,11 +1320,11 @@ paths:
         description: body for TipoUsoEspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/TipoUsoEspacioFisico'
+          $ref: '#/definitions/models.TipoUsoEspacioFisico'
       responses:
         "200":
           schema:
-            $ref: '#/definitions/TipoUsoEspacioFisico'
+            $ref: '#/definitions/models.TipoUsoEspacioFisico'
         "403":
           description: :id is not int
     delete:
@@ -1343,26 +1344,28 @@ paths:
         "403":
           description: id is empty
 definitions:
-  AsignacionEspacioFisicoDependencia:
+  models.AsignacionEspacioFisicoDependencia:
     title: AsignacionEspacioFisicoDependencia
     type: object
     properties:
       DependenciaId:
-        $ref: '#/definitions/Dependencia'
+        $ref: '#/definitions/models.Dependencia'
       DocumentoSoporte:
         type: string
       EspacioFisicoId:
-        $ref: '#/definitions/EspacioFisico'
+        $ref: '#/definitions/models.EspacioFisico'
       Estado:
         type: string
       FechaFin:
-        $ref: '#/definitions/&{time Time}'
+        type: string
+        format: string
       FechaInicio:
-        $ref: '#/definitions/&{time Time}'
+        type: string
+        format: string
       Id:
         type: integer
         format: int64
-  Campo:
+  models.Campo:
     title: Campo
     type: object
     properties:
@@ -1373,7 +1376,7 @@ definitions:
         format: int64
       Nombre:
         type: string
-  Dependencia:
+  models.Dependencia:
     title: Dependencia
     type: object
     properties:
@@ -1384,29 +1387,29 @@ definitions:
         type: string
       TelefonoDependencia:
         type: string
-  DependenciaPadre:
+  models.DependenciaPadre:
     title: DependenciaPadre
     type: object
     properties:
       Hija:
-        $ref: '#/definitions/Dependencia'
+        $ref: '#/definitions/models.Dependencia'
       Id:
         type: integer
         format: int64
       Padre:
-        $ref: '#/definitions/Dependencia'
-  DependenciaTipoDependencia:
+        $ref: '#/definitions/models.Dependencia'
+  models.DependenciaTipoDependencia:
     title: DependenciaTipoDependencia
     type: object
     properties:
       DependenciaId:
-        $ref: '#/definitions/Dependencia'
+        $ref: '#/definitions/models.Dependencia'
       Id:
         type: integer
         format: int64
       TipoDependenciaId:
-        $ref: '#/definitions/TipoDependencia'
-  EspacioFisico:
+        $ref: '#/definitions/models.TipoDependencia'
+  models.EspacioFisico:
     title: EspacioFisico
     type: object
     properties:
@@ -1420,32 +1423,32 @@ definitions:
       Nombre:
         type: string
       TipoEspacio:
-        $ref: '#/definitions/TipoEspacioFisico'
-  EspacioFisicoCampo:
+        $ref: '#/definitions/models.TipoEspacioFisico'
+  models.EspacioFisicoCampo:
     title: EspacioFisicoCampo
     type: object
     properties:
       Campo:
-        $ref: '#/definitions/Campo'
+        $ref: '#/definitions/models.Campo'
       EspacioFisico:
-        $ref: '#/definitions/EspacioFisico'
+        $ref: '#/definitions/models.EspacioFisico'
       Id:
         type: integer
         format: int64
       Valor:
         type: string
-  EspacioFisicoPadre:
+  models.EspacioFisicoPadre:
     title: EspacioFisicoPadre
     type: object
     properties:
       Hijo:
-        $ref: '#/definitions/EspacioFisico'
+        $ref: '#/definitions/models.EspacioFisico'
       Id:
         type: integer
         format: int64
       Padre:
-        $ref: '#/definitions/EspacioFisico'
-  TipoDependencia:
+        $ref: '#/definitions/models.EspacioFisico'
+  models.TipoDependencia:
     title: TipoDependencia
     type: object
     properties:
@@ -1454,7 +1457,7 @@ definitions:
         format: int64
       Nombre:
         type: string
-  TipoEspacioFisico:
+  models.TipoEspacioFisico:
     title: TipoEspacioFisico
     type: object
     properties:
@@ -1463,7 +1466,7 @@ definitions:
         format: int64
       Nombre:
         type: string
-  TipoUso:
+  models.TipoUso:
     title: TipoUso
     type: object
     properties:
@@ -1472,17 +1475,17 @@ definitions:
         format: int64
       Nombre:
         type: string
-  TipoUsoEspacioFisico:
+  models.TipoUsoEspacioFisico:
     title: TipoUsoEspacioFisico
     type: object
     properties:
       EspacioFisicoId:
-        $ref: '#/definitions/EspacioFisico'
+        $ref: '#/definitions/models.EspacioFisico'
       Id:
         type: integer
         format: int64
       TipoUsoId:
-        $ref: '#/definitions/TipoUso'
+        $ref: '#/definitions/models.TipoUso'
 tags:
 - name: tipo_uso
   description: |

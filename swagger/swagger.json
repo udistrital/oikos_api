@@ -9,7 +9,8 @@
             "email": "astaxie@gmail.com"
         },
         "license": {
-            "name": "Url http://www.apache.org/licenses/LICENSE-2.0.html"
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
     "basePath": "/v1",
@@ -62,7 +63,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/AsignacionEspacioFisicoDependencia"
+                            "$ref": "#/definitions/models.AsignacionEspacioFisicoDependencia"
                         }
                     },
                     "403": {}
@@ -81,7 +82,7 @@
                         "description": "body for AsignacionEspacioFisicoDependencia content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/AsignacionEspacioFisicoDependencia"
+                            "$ref": "#/definitions/models.AsignacionEspacioFisicoDependencia"
                         }
                     }
                 ],
@@ -114,7 +115,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/AsignacionEspacioFisicoDependencia"
+                            "$ref": "#/definitions/models.AsignacionEspacioFisicoDependencia"
                         }
                     },
                     "403": {
@@ -142,14 +143,14 @@
                         "description": "body for AsignacionEspacioFisicoDependencia content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/AsignacionEspacioFisicoDependencia"
+                            "$ref": "#/definitions/models.AsignacionEspacioFisicoDependencia"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/AsignacionEspacioFisicoDependencia"
+                            "$ref": "#/definitions/models.AsignacionEspacioFisicoDependencia"
                         }
                     },
                     "403": {
@@ -230,7 +231,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/Campo"
+                            "$ref": "#/definitions/models.Campo"
                         }
                     },
                     "403": {}
@@ -249,7 +250,7 @@
                         "description": "body for Campo content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Campo"
+                            "$ref": "#/definitions/models.Campo"
                         }
                     }
                 ],
@@ -282,7 +283,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/Campo"
+                            "$ref": "#/definitions/models.Campo"
                         }
                     },
                     "403": {
@@ -310,14 +311,14 @@
                         "description": "body for Campo content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Campo"
+                            "$ref": "#/definitions/models.Campo"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/Campo"
+                            "$ref": "#/definitions/models.Campo"
                         }
                     },
                     "403": {
@@ -398,7 +399,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/Dependencia"
+                            "$ref": "#/definitions/models.Dependencia"
                         }
                     },
                     "403": {}
@@ -417,7 +418,7 @@
                         "description": "body for Dependencia content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Dependencia"
+                            "$ref": "#/definitions/models.Dependencia"
                         }
                     }
                 ],
@@ -450,7 +451,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/Dependencia"
+                            "$ref": "#/definitions/models.Dependencia"
                         }
                     },
                     "403": {
@@ -478,14 +479,14 @@
                         "description": "body for Dependencia content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/Dependencia"
+                            "$ref": "#/definitions/models.Dependencia"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/Dependencia"
+                            "$ref": "#/definitions/models.Dependencia"
                         }
                     },
                     "403": {
@@ -566,7 +567,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/DependenciaPadre"
+                            "$ref": "#/definitions/models.DependenciaPadre"
                         }
                     },
                     "403": {}
@@ -585,7 +586,7 @@
                         "description": "body for DependenciaPadre content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DependenciaPadre"
+                            "$ref": "#/definitions/models.DependenciaPadre"
                         }
                     }
                 ],
@@ -618,7 +619,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/DependenciaPadre"
+                            "$ref": "#/definitions/models.DependenciaPadre"
                         }
                     },
                     "403": {
@@ -646,14 +647,14 @@
                         "description": "body for DependenciaPadre content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DependenciaPadre"
+                            "$ref": "#/definitions/models.DependenciaPadre"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/DependenciaPadre"
+                            "$ref": "#/definitions/models.DependenciaPadre"
                         }
                     },
                     "403": {
@@ -734,7 +735,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/DependenciaTipoDependencia"
+                            "$ref": "#/definitions/models.DependenciaTipoDependencia"
                         }
                     },
                     "403": {}
@@ -753,7 +754,7 @@
                         "description": "body for DependenciaTipoDependencia content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DependenciaTipoDependencia"
+                            "$ref": "#/definitions/models.DependenciaTipoDependencia"
                         }
                     }
                 ],
@@ -786,7 +787,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/DependenciaTipoDependencia"
+                            "$ref": "#/definitions/models.DependenciaTipoDependencia"
                         }
                     },
                     "403": {
@@ -814,14 +815,14 @@
                         "description": "body for DependenciaTipoDependencia content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/DependenciaTipoDependencia"
+                            "$ref": "#/definitions/models.DependenciaTipoDependencia"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/DependenciaTipoDependencia"
+                            "$ref": "#/definitions/models.DependenciaTipoDependencia"
                         }
                     },
                     "403": {
@@ -902,7 +903,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisico"
+                            "$ref": "#/definitions/models.EspacioFisico"
                         }
                     },
                     "403": {}
@@ -921,7 +922,7 @@
                         "description": "body for EspacioFisico content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisico"
+                            "$ref": "#/definitions/models.EspacioFisico"
                         }
                     }
                 ],
@@ -954,7 +955,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisico"
+                            "$ref": "#/definitions/models.EspacioFisico"
                         }
                     },
                     "403": {
@@ -982,14 +983,14 @@
                         "description": "body for EspacioFisico content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisico"
+                            "$ref": "#/definitions/models.EspacioFisico"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisico"
+                            "$ref": "#/definitions/models.EspacioFisico"
                         }
                     },
                     "403": {
@@ -1070,7 +1071,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoCampo"
+                            "$ref": "#/definitions/models.EspacioFisicoCampo"
                         }
                     },
                     "403": {}
@@ -1089,7 +1090,7 @@
                         "description": "body for EspacioFisicoCampo content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoCampo"
+                            "$ref": "#/definitions/models.EspacioFisicoCampo"
                         }
                     }
                 ],
@@ -1122,7 +1123,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoCampo"
+                            "$ref": "#/definitions/models.EspacioFisicoCampo"
                         }
                     },
                     "403": {
@@ -1150,14 +1151,14 @@
                         "description": "body for EspacioFisicoCampo content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoCampo"
+                            "$ref": "#/definitions/models.EspacioFisicoCampo"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoCampo"
+                            "$ref": "#/definitions/models.EspacioFisicoCampo"
                         }
                     },
                     "403": {
@@ -1238,7 +1239,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoPadre"
+                            "$ref": "#/definitions/models.EspacioFisicoPadre"
                         }
                     },
                     "403": {}
@@ -1257,7 +1258,7 @@
                         "description": "body for EspacioFisicoPadre content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoPadre"
+                            "$ref": "#/definitions/models.EspacioFisicoPadre"
                         }
                     }
                 ],
@@ -1290,7 +1291,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoPadre"
+                            "$ref": "#/definitions/models.EspacioFisicoPadre"
                         }
                     },
                     "403": {
@@ -1318,14 +1319,14 @@
                         "description": "body for EspacioFisicoPadre content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoPadre"
+                            "$ref": "#/definitions/models.EspacioFisicoPadre"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/EspacioFisicoPadre"
+                            "$ref": "#/definitions/models.EspacioFisicoPadre"
                         }
                     },
                     "403": {
@@ -1406,7 +1407,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoDependencia"
+                            "$ref": "#/definitions/models.TipoDependencia"
                         }
                     },
                     "403": {}
@@ -1425,7 +1426,7 @@
                         "description": "body for TipoDependencia content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/TipoDependencia"
+                            "$ref": "#/definitions/models.TipoDependencia"
                         }
                     }
                 ],
@@ -1458,7 +1459,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoDependencia"
+                            "$ref": "#/definitions/models.TipoDependencia"
                         }
                     },
                     "403": {
@@ -1486,14 +1487,14 @@
                         "description": "body for TipoDependencia content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/TipoDependencia"
+                            "$ref": "#/definitions/models.TipoDependencia"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoDependencia"
+                            "$ref": "#/definitions/models.TipoDependencia"
                         }
                     },
                     "403": {
@@ -1574,7 +1575,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoEspacioFisico"
                         }
                     },
                     "403": {}
@@ -1593,7 +1594,7 @@
                         "description": "body for TipoEspacioFisico content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/TipoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoEspacioFisico"
                         }
                     }
                 ],
@@ -1626,7 +1627,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoEspacioFisico"
                         }
                     },
                     "403": {
@@ -1654,14 +1655,14 @@
                         "description": "body for TipoEspacioFisico content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/TipoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoEspacioFisico"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoEspacioFisico"
                         }
                     },
                     "403": {
@@ -1742,7 +1743,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoUso"
+                            "$ref": "#/definitions/models.TipoUso"
                         }
                     },
                     "403": {}
@@ -1761,7 +1762,7 @@
                         "description": "body for TipoUso content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/TipoUso"
+                            "$ref": "#/definitions/models.TipoUso"
                         }
                     }
                 ],
@@ -1794,7 +1795,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoUso"
+                            "$ref": "#/definitions/models.TipoUso"
                         }
                     },
                     "403": {
@@ -1822,14 +1823,14 @@
                         "description": "body for TipoUso content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/TipoUso"
+                            "$ref": "#/definitions/models.TipoUso"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoUso"
+                            "$ref": "#/definitions/models.TipoUso"
                         }
                     },
                     "403": {
@@ -1910,7 +1911,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoUsoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoUsoEspacioFisico"
                         }
                     },
                     "403": {}
@@ -1929,7 +1930,7 @@
                         "description": "body for TipoUsoEspacioFisico content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/TipoUsoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoUsoEspacioFisico"
                         }
                     }
                 ],
@@ -1962,7 +1963,7 @@
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoUsoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoUsoEspacioFisico"
                         }
                     },
                     "403": {
@@ -1990,14 +1991,14 @@
                         "description": "body for TipoUsoEspacioFisico content",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/TipoUsoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoUsoEspacioFisico"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
                         "schema": {
-                            "$ref": "#/definitions/TipoUsoEspacioFisico"
+                            "$ref": "#/definitions/models.TipoUsoEspacioFisico"
                         }
                     },
                     "403": {
@@ -2032,27 +2033,29 @@
         }
     },
     "definitions": {
-        "AsignacionEspacioFisicoDependencia": {
+        "models.AsignacionEspacioFisicoDependencia": {
             "title": "AsignacionEspacioFisicoDependencia",
             "type": "object",
             "properties": {
                 "DependenciaId": {
-                    "$ref": "#/definitions/Dependencia"
+                    "$ref": "#/definitions/models.Dependencia"
                 },
                 "DocumentoSoporte": {
                     "type": "string"
                 },
                 "EspacioFisicoId": {
-                    "$ref": "#/definitions/EspacioFisico"
+                    "$ref": "#/definitions/models.EspacioFisico"
                 },
                 "Estado": {
                     "type": "string"
                 },
                 "FechaFin": {
-                    "$ref": "#/definitions/\u0026{time Time}"
+                    "type": "string",
+                    "format": "string"
                 },
                 "FechaInicio": {
-                    "$ref": "#/definitions/\u0026{time Time}"
+                    "type": "string",
+                    "format": "string"
                 },
                 "Id": {
                     "type": "integer",
@@ -2060,7 +2063,7 @@
                 }
             }
         },
-        "Campo": {
+        "models.Campo": {
             "title": "Campo",
             "type": "object",
             "properties": {
@@ -2076,7 +2079,7 @@
                 }
             }
         },
-        "Dependencia": {
+        "models.Dependencia": {
             "title": "Dependencia",
             "type": "object",
             "properties": {
@@ -2092,39 +2095,39 @@
                 }
             }
         },
-        "DependenciaPadre": {
+        "models.DependenciaPadre": {
             "title": "DependenciaPadre",
             "type": "object",
             "properties": {
                 "Hija": {
-                    "$ref": "#/definitions/Dependencia"
+                    "$ref": "#/definitions/models.Dependencia"
                 },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
                 },
                 "Padre": {
-                    "$ref": "#/definitions/Dependencia"
+                    "$ref": "#/definitions/models.Dependencia"
                 }
             }
         },
-        "DependenciaTipoDependencia": {
+        "models.DependenciaTipoDependencia": {
             "title": "DependenciaTipoDependencia",
             "type": "object",
             "properties": {
                 "DependenciaId": {
-                    "$ref": "#/definitions/Dependencia"
+                    "$ref": "#/definitions/models.Dependencia"
                 },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
                 },
                 "TipoDependenciaId": {
-                    "$ref": "#/definitions/TipoDependencia"
+                    "$ref": "#/definitions/models.TipoDependencia"
                 }
             }
         },
-        "EspacioFisico": {
+        "models.EspacioFisico": {
             "title": "EspacioFisico",
             "type": "object",
             "properties": {
@@ -2142,19 +2145,19 @@
                     "type": "string"
                 },
                 "TipoEspacio": {
-                    "$ref": "#/definitions/TipoEspacioFisico"
+                    "$ref": "#/definitions/models.TipoEspacioFisico"
                 }
             }
         },
-        "EspacioFisicoCampo": {
+        "models.EspacioFisicoCampo": {
             "title": "EspacioFisicoCampo",
             "type": "object",
             "properties": {
                 "Campo": {
-                    "$ref": "#/definitions/Campo"
+                    "$ref": "#/definitions/models.Campo"
                 },
                 "EspacioFisico": {
-                    "$ref": "#/definitions/EspacioFisico"
+                    "$ref": "#/definitions/models.EspacioFisico"
                 },
                 "Id": {
                     "type": "integer",
@@ -2165,23 +2168,23 @@
                 }
             }
         },
-        "EspacioFisicoPadre": {
+        "models.EspacioFisicoPadre": {
             "title": "EspacioFisicoPadre",
             "type": "object",
             "properties": {
                 "Hijo": {
-                    "$ref": "#/definitions/EspacioFisico"
+                    "$ref": "#/definitions/models.EspacioFisico"
                 },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
                 },
                 "Padre": {
-                    "$ref": "#/definitions/EspacioFisico"
+                    "$ref": "#/definitions/models.EspacioFisico"
                 }
             }
         },
-        "TipoDependencia": {
+        "models.TipoDependencia": {
             "title": "TipoDependencia",
             "type": "object",
             "properties": {
@@ -2194,7 +2197,7 @@
                 }
             }
         },
-        "TipoEspacioFisico": {
+        "models.TipoEspacioFisico": {
             "title": "TipoEspacioFisico",
             "type": "object",
             "properties": {
@@ -2207,7 +2210,7 @@
                 }
             }
         },
-        "TipoUso": {
+        "models.TipoUso": {
             "title": "TipoUso",
             "type": "object",
             "properties": {
@@ -2220,19 +2223,19 @@
                 }
             }
         },
-        "TipoUsoEspacioFisico": {
+        "models.TipoUsoEspacioFisico": {
             "title": "TipoUsoEspacioFisico",
             "type": "object",
             "properties": {
                 "EspacioFisicoId": {
-                    "$ref": "#/definitions/EspacioFisico"
+                    "$ref": "#/definitions/models.EspacioFisico"
                 },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
                 },
                 "TipoUsoId": {
-                    "$ref": "#/definitions/TipoUso"
+                    "$ref": "#/definitions/models.TipoUso"
                 }
             }
         }
