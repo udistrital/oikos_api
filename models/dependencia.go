@@ -13,6 +13,7 @@ type Dependencia struct {
 	Id                  int    `orm:"column(id);pk"`
 	Nombre              string `orm:"column(nombre)"`
 	TelefonoDependencia string `orm:"column(telefono_dependencia)"`
+	CorreoElectronico   string `orm:"column(correo_electronico)"`
 }
 
 func (t *Dependencia) TableName() string {
