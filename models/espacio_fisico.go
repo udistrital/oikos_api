@@ -147,3 +147,23 @@ func DeleteEspacioFisico(id int) (err error) {
 	}
 	return
 }
+
+//Función que construye los menús
+func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
+	o := orm.NewOrm()
+	//Conversión de entero a string
+	//tipo_espacio_fisico := strconv.Itoa(tipo_espacio)
+	fmt.Print(tipo_espacio)
+	//Arreglo vacio que se llenará con los espacios físicos huerfanos
+	var espaciosHuerfanos []EspacioFisico
+	//Consulta SQL que busca los espacios físicos huerfanos
+	num, err := o.Raw(`SELECT es.id, es.nombre AS nombre, es.codigo AS codigo, es.tipo_espacio AS tipo
+										 FROM oikos.espacio_fisico es WHERE es.tipo_espacio = ? AND es.id
+										 NOT IN (SELECT DISTINCT padre FROM oikos.espacio_fisico_padre) AND es.id NOT IN
+										 (SELECT DISTINCT hijo FROM oikos.espacio_fisico_padre)`, tipo_espacio).QueryRows(&espaciosHuerfanos)
+
+	if err == nil {
+		fmt.Println("Espacio físicos huerfanos encontrados: ", num)
+	}
+	return espaciosHuerfanos
+}

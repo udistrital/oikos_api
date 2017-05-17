@@ -3,9 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos_api/models"
+	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 )
@@ -22,6 +24,7 @@ func (c *EspacioFisicoController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("EspaciosHuerfanos", c.EspaciosHuerfanos)
 }
 
 // Post ...
@@ -167,5 +170,23 @@ func (c *EspacioFisicoController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
+}
+
+//Función para cargar los espacios físicos huerfanos
+func (c *EspacioFisicoController) EspaciosHuerfanos() {
+	fmt.Println("tipo ", c.Ctx.Input.Param(":id"))
+	tipo := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(tipo)
+	//perfiles := ("Admin_Arka")
+	//perfilesR := strings.NewReplacer(",", "','")
+
+	//Construcción Json Menús Huerfanos
+	l := models.EspacioFisicosHuerfanos(id)
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }
