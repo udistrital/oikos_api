@@ -3,9 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos_api/models"
+	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 )
@@ -22,6 +24,7 @@ func (c *DependenciaPadreController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("ArbolDependencias", c.ArbolDependencias)
 }
 
 // Post ...
@@ -167,5 +170,17 @@ func (c *DependenciaPadreController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
+}
+
+//Función para armar los árboles de las dependencias
+func (c *DependenciaPadreController) ArbolDependencias() {
+	//Construcción Json menus
+	l := models.ConstruirDependenciasPadre()
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }
