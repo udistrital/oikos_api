@@ -49,7 +49,7 @@ func GetEspacioFisicoById(id int) (v *EspacioFisico, err error) {
 func GetAllEspacioFisico(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(EspacioFisico))
+	qs := o.QueryTable(new(EspacioFisico)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -158,8 +158,7 @@ func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
 	var espaciosHuerfanos []EspacioFisico
 	//Consulta SQL que busca los espacios físicos huerfanos
 	num, err := o.Raw(`SELECT es.id, es.nombre AS nombre, es.codigo AS codigo, es.tipo_espacio AS tipo
-										 FROM oikos.espacio_fisico es WHERE es.tipo_espacio = ? AND es.id
-										 NOT IN (SELECT DISTINCT padre FROM oikos.espacio_fisico_padre) AND es.id NOT IN
+										 FROM oikos.espacio_fisico es WHERE es.tipo_espacio = ? AND es.id NOT IN
 										 (SELECT DISTINCT hijo FROM oikos.espacio_fisico_padre)`, tipo_espacio).QueryRows(&espaciosHuerfanos)
 
 	if err == nil {
