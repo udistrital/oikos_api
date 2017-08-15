@@ -10,7 +10,7 @@ import (
 )
 
 type TipoUsoEspacioFisico struct {
-	Id              int            `orm:"column(id);pk"`
+	Id              int            `orm:"column(id);pk;auto"`
 	TipoUsoId       *TipoUso       `orm:"column(tipo_uso_id);rel(fk)"`
 	EspacioFisicoId *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
 }

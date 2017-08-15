@@ -10,7 +10,7 @@ import (
 )
 
 type EspacioFisicoCampo struct {
-	Id            int            `orm:"column(id);pk"`
+	Id            int            `orm:"column(id);pk;auto"`
 	Valor         string         `orm:"column(valor)"`
 	EspacioFisico *EspacioFisico `orm:"column(espacio_fisico);rel(fk)"`
 	Campo         *Campo         `orm:"column(campo);rel(fk)"`

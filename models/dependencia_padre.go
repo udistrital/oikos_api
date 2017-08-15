@@ -11,7 +11,7 @@ import (
 )
 
 type DependenciaPadre struct {
-	Id    int          `orm:"column(id);pk"`
+	Id    int          `orm:"column(id);pk;auto"`
 	Padre *Dependencia `orm:"column(padre);rel(fk)"`
 	Hija  *Dependencia `orm:"column(hija);rel(fk)"`
 }

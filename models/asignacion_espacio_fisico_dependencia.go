@@ -11,7 +11,7 @@ import (
 )
 
 type AsignacionEspacioFisicoDependencia struct {
-	Id               int            `orm:"column(id);pk"`
+	Id               int            `orm:"column(id);pk;auto"`
 	Estado           string         `orm:"column(estado)"`
 	FechaInicio      time.Time      `orm:"column(fecha_inicio);type(date)"`
 	FechaFin         time.Time      `orm:"column(fecha_fin);type(date);null"`

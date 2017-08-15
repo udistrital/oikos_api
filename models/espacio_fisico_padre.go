@@ -10,7 +10,7 @@ import (
 )
 
 type EspacioFisicoPadre struct {
-	Id    int            `orm:"column(id);pk"`
+	Id    int            `orm:"column(id);pk;auto"`
 	Padre *EspacioFisico `orm:"column(padre);rel(fk)"`
 	Hijo  *EspacioFisico `orm:"column(hijo);rel(fk)"`
 }
