@@ -157,7 +157,7 @@ func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
 	//Arreglo vacio que se llenará con los espacios físicos huerfanos
 	var espaciosHuerfanos []EspacioFisico
 	//Consulta SQL que busca los espacios físicos huerfanos
-	num, err := o.Raw(`SELECT es.id, es.nombre AS nombre, es.codigo AS codigo, es.tipo_espacio AS tipo
+	num, err := o.Raw(`SELECT es.id, es.nombre AS nombre, es.codigo AS codigo, es.tipo_espacio AS tipo, es.estado AS estado
 										 FROM oikos.espacio_fisico es WHERE es.tipo_espacio = ? AND es.id NOT IN
 										 (SELECT DISTINCT hijo FROM oikos.espacio_fisico_padre)`, tipo_espacio).QueryRows(&espaciosHuerfanos)
 
