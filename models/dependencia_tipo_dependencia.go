@@ -11,8 +11,8 @@ import (
 
 type DependenciaTipoDependencia struct {
 	Id                int              `orm:"column(id);pk;auto"`
-	TipoDependenciaId *TipoDependencia `orm:"column(tipo_dependencia_id);rel(fk)"`
-	DependenciaId     *Dependencia     `orm:"column(dependencia_id);rel(fk)"`
+	TipoDependenciaId *TipoDependencia `orm:"column(tipo_dependencia);rel(fk)"`
+	DependenciaId     *Dependencia     `orm:"column(dependencia);rel(fk)"`
 }
 
 func (t *DependenciaTipoDependencia) TableName() string {
