@@ -45,9 +45,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - asignacion_espacio_fisico_dependencia
@@ -79,6 +81,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
         "403":
@@ -102,6 +105,7 @@ paths:
           $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
         "403":
@@ -156,9 +160,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.Campo'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - campo
@@ -190,6 +196,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.Campo'
         "403":
@@ -213,6 +220,7 @@ paths:
           $ref: '#/definitions/models.Campo'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.Campo'
         "403":
@@ -267,9 +275,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.Dependencia'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - dependencia
@@ -301,6 +311,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.Dependencia'
         "403":
@@ -324,6 +335,7 @@ paths:
           $ref: '#/definitions/models.Dependencia'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.Dependencia'
         "403":
@@ -378,9 +390,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.DependenciaPadre'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - dependencia_padre
@@ -412,6 +426,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.DependenciaPadre'
         "403":
@@ -435,6 +450,7 @@ paths:
           $ref: '#/definitions/models.DependenciaPadre'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.DependenciaPadre'
         "403":
@@ -489,9 +505,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.DependenciaTipoDependencia'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - dependencia_tipo_dependencia
@@ -523,6 +541,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.DependenciaTipoDependencia'
         "403":
@@ -546,6 +565,7 @@ paths:
           $ref: '#/definitions/models.DependenciaTipoDependencia'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.DependenciaTipoDependencia'
         "403":
@@ -600,9 +620,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisico'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - espacio_fisico
@@ -634,6 +656,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisico'
         "403":
@@ -657,6 +680,7 @@ paths:
           $ref: '#/definitions/models.EspacioFisico'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisico'
         "403":
@@ -711,9 +735,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisicoCampo'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - espacio_fisico_campo
@@ -745,6 +771,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisicoCampo'
         "403":
@@ -768,6 +795,7 @@ paths:
           $ref: '#/definitions/models.EspacioFisicoCampo'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisicoCampo'
         "403":
@@ -822,9 +850,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisicoPadre'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - espacio_fisico_padre
@@ -856,6 +886,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisicoPadre'
         "403":
@@ -879,6 +910,7 @@ paths:
           $ref: '#/definitions/models.EspacioFisicoPadre'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.EspacioFisicoPadre'
         "403":
@@ -933,9 +965,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoDependencia'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - tipo_dependencia
@@ -967,6 +1001,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoDependencia'
         "403":
@@ -990,6 +1025,7 @@ paths:
           $ref: '#/definitions/models.TipoDependencia'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoDependencia'
         "403":
@@ -1044,9 +1080,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoEspacioFisico'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - tipo_espacio_fisico
@@ -1078,6 +1116,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoEspacioFisico'
         "403":
@@ -1101,6 +1140,7 @@ paths:
           $ref: '#/definitions/models.TipoEspacioFisico'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoEspacioFisico'
         "403":
@@ -1155,9 +1195,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoUso'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - tipo_uso
@@ -1189,6 +1231,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoUso'
         "403":
@@ -1212,6 +1255,7 @@ paths:
           $ref: '#/definitions/models.TipoUso'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoUso'
         "403":
@@ -1266,9 +1310,11 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoUsoEspacioFisico'
-        "403": {}
+        "403":
+          description: ""
     post:
       tags:
       - tipo_uso_espacio_fisico
@@ -1300,6 +1346,7 @@ paths:
         type: string
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoUsoEspacioFisico'
         "403":
@@ -1323,6 +1370,7 @@ paths:
           $ref: '#/definitions/models.TipoUsoEspacioFisico'
       responses:
         "200":
+          description: ""
           schema:
             $ref: '#/definitions/models.TipoUsoEspacioFisico'
         "403":
@@ -1380,6 +1428,12 @@ definitions:
     title: Dependencia
     type: object
     properties:
+      CorreoElectronico:
+        type: string
+      DependenciaTipoDependencia:
+        type: array
+        items:
+          $ref: '#/definitions/models.DependenciaTipoDependencia'
       Id:
         type: integer
         format: int64

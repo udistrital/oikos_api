@@ -10,10 +10,11 @@ import (
 )
 
 type Dependencia struct {
-	Id                  int    `orm:"column(id);pk;auto"`
-	Nombre              string `orm:"column(nombre)"`
-	TelefonoDependencia string `orm:"column(telefono_dependencia)"`
-	CorreoElectronico   string `orm:"column(correo_electronico)"`
+	Id                         int                           `orm:"column(id);pk;auto"`
+	Nombre                     string                        `orm:"column(nombre)"`
+	TelefonoDependencia        string                        `orm:"column(telefono_dependencia)"`
+	CorreoElectronico          string                        `orm:"column(correo_electronico)"`
+	DependenciaTipoDependencia []*DependenciaTipoDependencia `orm:"reverse(many)"`
 }
 
 func (t *Dependencia) TableName() string {
@@ -99,6 +100,7 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
 			for _, v := range l {
+				o.LoadRelated(&v, "DependenciaTipoDependencia", 5)
 				ml = append(ml, v)
 			}
 		} else {
