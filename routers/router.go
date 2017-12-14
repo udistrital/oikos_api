@@ -9,10 +9,12 @@ package routers
 
 import (
 	"github.com/astaxie/beego/plugins/cors"
+	"github.com/ojardila/beego_middleware"
+
 	"github.com/udistrital/oikos_api/controllers"
 
 	"github.com/astaxie/beego"
-	"github.com/ojardila/beego_middleware" //Libreria de middleware
+	//Libreria de middleware
 )
 
 func init() {

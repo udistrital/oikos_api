@@ -20,4 +20,11 @@ func init() {
 			AllowHTTPMethods: []string{"get"},
 			Params:           nil})
 
+	beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaController"],
+		beego.ControllerComments{
+			Method:           "ProyectosPorFacultad",
+			Router:           `ProyectosPorFacultad/:facultad`,
+			AllowHTTPMethods: []string{"get"},
+			Params:           nil})
+
 }

@@ -3,9 +3,11 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos_api/models"
+	"fmt"
 	"strconv"
 	"strings"
+
+	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 )
@@ -22,6 +24,7 @@ func (c *DependenciaController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("ProyectosPorFacultad", c.ProyectosPorFacultad)
 }
 
 // Post ...
@@ -167,5 +170,21 @@ func (c *DependenciaController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
+	c.ServeJSON()
+}
+
+//Función para obtener los proyectos curriculares de una facultad
+func (c *DependenciaController) ProyectosPorFacultad() {
+
+	fmt.Println(c.Ctx.Input.Param(":facultad"))
+	facultad := c.Ctx.Input.Param(":facultad")
+	//facultad := ("FACULTAD DE INGENIERIA")
+	//Construcción Json menus
+	l := models.ProyectosPorFacultad(facultad)
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }

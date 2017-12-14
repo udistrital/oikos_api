@@ -17,6 +17,12 @@ type Dependencia struct {
 	DependenciaTipoDependencia []*DependenciaTipoDependencia `orm:"reverse(many)"`
 }
 
+//Estructura para traer el ID y el nombre de cada proyecto curriculares
+type ProyectosCurriculares struct {
+	Id     int
+	Nombre string
+}
+
 func (t *Dependencia) TableName() string {
 	return "dependencia"
 }
@@ -147,4 +153,24 @@ func DeleteDependencia(id int) (err error) {
 		}
 	}
 	return
+}
+
+//Función que obtiene los proyectos curriculares de acuerdo a la facultad
+func ProyectosPorFacultad(facultad string) (dependencia []ProyectosCurriculares) {
+
+	o := orm.NewOrm()
+	//Arreglo
+	var proyectosCurriculares []ProyectosCurriculares
+	num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+										 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
+										 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+										 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+										 WHERE d.nombre = '` + facultad + `' AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
+
+	if err == nil {
+		fmt.Println("Proyectos curriculares encontrados: ", num)
+	} else {
+		fmt.Println("Este es el error ", err)
+	}
+	return proyectosCurriculares
 }
