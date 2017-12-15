@@ -175,12 +175,12 @@ func (c *DependenciaController) Delete() {
 
 //Función para obtener los proyectos curriculares de una facultad
 func (c *DependenciaController) ProyectosPorFacultad() {
-
-	fmt.Println(c.Ctx.Input.Param(":facultad"))
-	facultad := c.Ctx.Input.Param(":facultad")
-	//facultad := ("FACULTAD DE INGENIERIA")
+	//Se crea variable que contiene el id con tipo de dato string
+	idStr := c.Ctx.Input.Param(":id_facultad")
+	//Se nombra la variable id, en la cual se hizo la conversión de string a int
+	id_facultad, _ := strconv.Atoi(idStr)
 	//Construcción Json menus
-	l := models.ProyectosPorFacultad(facultad)
+	l := models.ProyectosPorFacultad(id_facultad)
 	fmt.Println("Este es el resultado de la consulta")
 	fmt.Println(l)
 

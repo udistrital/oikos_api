@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 
 	"github.com/astaxie/beego/orm"
@@ -156,8 +157,11 @@ func DeleteDependencia(id int) (err error) {
 }
 
 //Función que obtiene los proyectos curriculares de acuerdo a la facultad
-func ProyectosPorFacultad(facultad string) (dependencia []ProyectosCurriculares) {
+func ProyectosPorFacultad(facultad int) (dependencia []ProyectosCurriculares) {
 
+	//Conversión de entero a string
+	id_facultad := strconv.Itoa(facultad)
+	fmt.Println(id_facultad)
 	o := orm.NewOrm()
 	//Arreglo
 	var proyectosCurriculares []ProyectosCurriculares
@@ -165,7 +169,7 @@ func ProyectosPorFacultad(facultad string) (dependencia []ProyectosCurriculares)
 										 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
 										 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
 										 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-										 WHERE d.nombre = '` + facultad + `' AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
+										 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
 
 	if err == nil {
 		fmt.Println("Proyectos curriculares encontrados: ", num)
