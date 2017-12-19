@@ -156,25 +156,57 @@ func DeleteDependencia(id int) (err error) {
 	return
 }
 
-//Función que obtiene los proyectos curriculares de acuerdo a la facultad
-func ProyectosPorFacultad(facultad int) (dependencia []ProyectosCurriculares) {
+//Se realiza sobrecarga de la función ProyectosPorFacultad que recibe como parámetros el id de la facultad y el nivel académico
+func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []ProyectosCurriculares) {
 
 	//Conversión de entero a string
 	id_facultad := strconv.Itoa(facultad)
 	fmt.Println(id_facultad)
+	fmt.Println(nivel_academico)
+
 	o := orm.NewOrm()
 	//Arreglo
 	var proyectosCurriculares []ProyectosCurriculares
-	num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-										 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-										 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
-										 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-										 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
 
-	if err == nil {
-		fmt.Println("Proyectos curriculares encontrados: ", num)
-	} else {
-		fmt.Println("Este es el error ", err)
+	if nivel_academico == "PREGRADO" {
+
+		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
+											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 14`).QueryRows(&proyectosCurriculares)
+
+		if err == nil {
+			fmt.Println("Proyectos curriculares encontrados: ", num)
+		} else {
+			fmt.Println("Este es el error ", err)
+		}
+
+	} else if nivel_academico == "POSGRADO" {
+		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
+											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 15`).QueryRows(&proyectosCurriculares)
+
+		if err == nil {
+			fmt.Println("Proyectos curriculares encontrados: ", num)
+		} else {
+			fmt.Println("Este es el error ", err)
+		}
+	} else if nivel_academico == "undefined" {
+		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
+											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
+
+		if err == nil {
+			fmt.Println("Proyectos curriculares encontrados: ", num)
+		} else {
+			fmt.Println("Este es el error ", err)
+		}
 	}
+
 	return proyectosCurriculares
 }

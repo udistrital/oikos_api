@@ -173,6 +173,13 @@ func (c *EspacioFisicoController) Delete() {
 	c.ServeJSON()
 }
 
+// EspaciosHuerfanos ...
+// @Title EspaciosHuerfanos
+// @Description Función para cargar los espacios físicos huerfanos
+// @Param	id		path 	string	true		"Id del espacio físico"
+// @Success 200 {object} models.EspacioFisico
+// @Failure 403 id is empty
+// @router /EspaciosHuerfanos/:id [get]
 //Función para cargar los espacios físicos huerfanos
 func (c *EspacioFisicoController) EspaciosHuerfanos() {
 	fmt.Println("tipo ", c.Ctx.Input.Param(":id"))

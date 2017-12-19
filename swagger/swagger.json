@@ -445,6 +445,73 @@
                 }
             }
         },
+        "/dependencia/proyectosPorFacultad/{id_facultad}": {
+            "get": {
+                "tags": [
+                    "dependencia"
+                ],
+                "description": "Get curricular projects by faculty and academic level",
+                "operationId": "DependenciaController.ProyectosPorFacultadNivelAcademico",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id_facultad",
+                        "description": "El id de la facultad a consultar sus proyectos curriculares",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Dependencia"
+                        }
+                    },
+                    "403": {
+                        "description": ":id_facultad is empty"
+                    }
+                }
+            }
+        },
+        "/dependencia/proyectosPorFacultad/{id_facultad}/{nivel_academico}": {
+            "get": {
+                "tags": [
+                    "dependencia"
+                ],
+                "description": "Get curricular projects by faculty",
+                "operationId": "DependenciaController.ProyectosPorFacultad",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id_facultad",
+                        "description": "El id de la facultad a consultar sus proyectos curriculares",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64"
+                    },
+                    {
+                        "in": "path",
+                        "name": "nivel_academico",
+                        "description": "El nivel académico a consultar de acuerdo a la facultad",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Dependencia"
+                        }
+                    },
+                    "403": {
+                        "description": ":id_facultad is empty"
+                    }
+                }
+            }
+        },
         "/dependencia/{id}": {
             "get": {
                 "tags": [
@@ -614,6 +681,26 @@
                     },
                     "403": {
                         "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/dependencia_padre/ArbolDependencias": {
+            "get": {
+                "tags": [
+                    "dependencia_padre"
+                ],
+                "description": "Construye el arbol de dependencias",
+                "operationId": "DependenciaPadreController.ArbolDependencias",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.DependenciaPadre"
+                        }
+                    },
+                    "403": {
+                        "description": ""
                     }
                 }
             }
@@ -960,6 +1047,35 @@
                     },
                     "403": {
                         "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/espacio_fisico/EspaciosHuerfanos/{id}": {
+            "get": {
+                "tags": [
+                    "espacio_fisico"
+                ],
+                "description": "Función para cargar los espacios físicos huerfanos",
+                "operationId": "EspacioFisicoController.EspaciosHuerfanos",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "Id del espacio físico",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.EspacioFisico"
+                        }
+                    },
+                    "403": {
+                        "description": "id is empty"
                     }
                 }
             }

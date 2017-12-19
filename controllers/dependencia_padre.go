@@ -173,6 +173,12 @@ func (c *DependenciaPadreController) Delete() {
 	c.ServeJSON()
 }
 
+// ArbolDependencias ...
+// @Title ArbolDependencias
+// @Description Construye el arbol de dependencias
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 403
+// @router /ArbolDependencias [get]
 //Función para armar los árboles de las dependencias
 func (c *DependenciaPadreController) ArbolDependencias() {
 	//Construcción Json menus
