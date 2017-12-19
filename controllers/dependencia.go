@@ -173,14 +173,46 @@ func (c *DependenciaController) Delete() {
 	c.ServeJSON()
 }
 
-//Función para obtener los proyectos curriculares de una facultad
+// ProyectosPorFacultad ...
+// @Title ProyectosPorFacultad
+// @Description Get curricular projects by faculty
+// @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
+// @Param	nivel_academico		path 	string	true		"El nivel académico a consultar de acuerdo a la facultad"
+// @Success 200 {object} models.Dependencia
+// @Failure 403 :id_facultad is empty
+// @router /proyectosPorFacultad/:id_facultad/:nivel_academico [get]
 func (c *DependenciaController) ProyectosPorFacultad() {
+	//Se crea variable que contiene el id con tipo de dato string
+	idStr := c.Ctx.Input.Param(":id_facultad")
+	nivel_academico := c.Ctx.Input.Param(":nivel_academico")
+	//Se nombra la variable id, en la cual se hizo la conversión de string a int
+	id_facultad, _ := strconv.Atoi(idStr)
+
+	//Construcción Json menus
+	l := models.ProyectosPorFacultad(id_facultad, nivel_academico)
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// ProyectosPorFacultadNivelAcademico ...
+// @Title ProyectosPorFacultadNivelAcademico
+// @Description Get curricular projects by faculty and academic level
+// @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
+// @Success 200 {object} models.Dependencia
+// @Failure 403 :id_facultad is empty
+// @router /proyectosPorFacultad/:id_facultad [get]
+func (c *DependenciaController) ProyectosPorFacultadNivelAcademico() {
 	//Se crea variable que contiene el id con tipo de dato string
 	idStr := c.Ctx.Input.Param(":id_facultad")
 	//Se nombra la variable id, en la cual se hizo la conversión de string a int
 	id_facultad, _ := strconv.Atoi(idStr)
+
 	//Construcción Json menus
-	l := models.ProyectosPorFacultad(id_facultad)
+	l := models.ProyectosPorFacultad(id_facultad, "undefined")
 	fmt.Println("Este es el resultado de la consulta")
 	fmt.Println(l)
 
