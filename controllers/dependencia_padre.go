@@ -25,6 +25,7 @@ func (c *DependenciaPadreController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("ArbolDependencias", c.ArbolDependencias)
+	c.Mapping("FacultadesConProyectos", c.FacultadesConProyectos)
 }
 
 // Post ...
@@ -183,6 +184,23 @@ func (c *DependenciaPadreController) Delete() {
 func (c *DependenciaPadreController) ArbolDependencias() {
 	//Construcción Json menus
 	l := models.ConstruirDependenciasPadre()
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// FacultadesConProyectos ...
+// @Title FacultadesConProyectos
+// @Description Lista las facultades con sus respectivos proyectos curriculares
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 403
+// @router /FacultadesConProyectos [get]
+func (c *DependenciaPadreController) FacultadesConProyectos() {
+	//Construcción Json menus
+	l := models.Facultades()
 	fmt.Println("Este es el resultado de la consulta")
 	fmt.Println(l)
 

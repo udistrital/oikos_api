@@ -206,3 +206,62 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 	}
 	return dependenciaHijas
 }
+
+//Función que busca las dependencias de tipo facultad
+func Facultades() (facultad []TreeDependencia) {
+
+	//Declaración objeto ORM
+	o := orm.NewOrm()
+
+	//Arreglo que tendra las facultades encontradas
+	var facultades []TreeDependencia
+
+	num, err := o.Raw(`SELECT dh.id AS id, dh.nombre AS nombre
+										 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
+                     INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+										 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+										 WHERE dtd.tipo_dependencia_id = 2`).QueryRows(&facultades)
+
+	if err == nil {
+		fmt.Println("Facultades encontradas: ", num)
+		//For para que recorra los Ids en busca de hijos
+		for i := 0; i < len(facultades); i++ {
+			//Me verifica que los Id tengan hijos
+			ProyectosCurricularesPorFacultad(&facultades[i])
+		}
+	}
+	return facultades
+}
+
+//Función que busca las dependencias de tipo facultad
+func ProyectosCurricularesPorFacultad(Facultad *TreeDependencia) (proyectos []TreeDependencia) {
+
+	//Declaración objeto ORM
+	o := orm.NewOrm()
+
+	//Conversión de entero a string
+	padre := strconv.Itoa(Facultad.Id)
+
+	//Arreglo que tendra las facultades encontradas
+	var proyectos_curriculares []TreeDependencia
+
+	num, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre, dep.hija
+										 FROM oikos.dependencia AS de
+										 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija
+										 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dep.hija = dtd.dependencia_id
+										 WHERE dep.padre =` + padre + ` AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`).QueryRows(&proyectos_curriculares)
+
+	if err == nil {
+		fmt.Println("Proyectos curriculares encontradas: ", num)
+
+		//Llena el elemento Opciones en la estructura del menú padre
+		Facultad.Opciones = &proyectos_curriculares
+
+		/*//For para que recorra los Ids en busca de hijos
+		for i := 0; i < len(proyectos_curriculares); i++ {
+			//Me verifica que los Id tengan hijos
+			ProyectosCurricularesPorFacultad(&proyectos_curriculares[i])
+		}*/
+	}
+	return proyectos_curriculares
+}
