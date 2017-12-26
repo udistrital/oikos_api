@@ -256,12 +256,6 @@ func ProyectosCurricularesPorFacultad(Facultad *TreeDependencia) (proyectos []Tr
 
 		//Llena el elemento Opciones en la estructura del menú padre
 		Facultad.Opciones = &proyectos_curriculares
-
-		/*//For para que recorra los Ids en busca de hijos
-		for i := 0; i < len(proyectos_curriculares); i++ {
-			//Me verifica que los Id tengan hijos
-			ProyectosCurricularesPorFacultad(&proyectos_curriculares[i])
-		}*/
 	}
 	return proyectos_curriculares
 }
