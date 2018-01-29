@@ -8,29 +8,17 @@
 package routers
 
 import (
-	"github.com/astaxie/beego/plugins/cors"
-	//"github.com/ojardila/beego_middleware"
-
 	"github.com/udistrital/oikos_api/controllers"
 
 	"github.com/astaxie/beego"
 	//Libreria de middleware
+	"github.com/jsreyes/auditoria"
 )
 
 func init() {
 
 	//Iniciar middleware
-	//beego_middleware.InitMiddleware()
-
-	//Incluyendo el CORS
-	beego.Debug("Filters init...")
-	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowAllOrigins:  true,
-		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Authorization", "Access-Control-Allow-Origin", "Content-Type"},
-		ExposeHeaders:    []string{"Content-Length", "Access-Control-Allow-Origin"},
-		AllowCredentials: true,
-	}))
+	auditoria.InitMiddleware()
 
 	ns := beego.NewNamespace("/v1",
 
