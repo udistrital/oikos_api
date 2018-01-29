@@ -12,7 +12,7 @@ import (
 
 	"github.com/astaxie/beego"
 	//Libreria de middleware
-	"github.com/jsreyes/auditoria"
+	"github.com/udistrital/auditoria"
 )
 
 func init() {
