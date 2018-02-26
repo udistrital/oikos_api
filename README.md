@@ -1,3 +1,3 @@
 # oikos_api
 
-#CON CI para la nube
+#CON CI para la nube AWS
