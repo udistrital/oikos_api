@@ -8,6 +8,7 @@ build:
     image: golang:1.9
     commands:
      - go get -t
+     - go get github.com/smartystreets/goconvey/convey #Esto es solo para oikos_api
      - GOOS=linux GOARCH=amd64 go build -o main
      - go test ./... -cover
     when:
