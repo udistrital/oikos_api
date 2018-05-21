@@ -12,13 +12,13 @@ import (
 
 	"github.com/astaxie/beego"
 	//Libreria de middleware
-	"github.com/udistrital/auditoria"
+	//"github.com/udistrital/auditoria"
 )
 
 func init() {
 
 	//Iniciar middleware
-	auditoria.InitMiddleware()
+	//auditoria.InitMiddleware()
 
 	ns := beego.NewNamespace("/v1",
 
