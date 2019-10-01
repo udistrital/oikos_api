@@ -10,6 +10,7 @@ import (
 	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
+
 )
 
 // DependenciaController oprations for Dependencia
@@ -25,7 +26,7 @@ func (c *DependenciaController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("ProyectosPorFacultad", c.ProyectosPorFacultad)
-	c.Mapping("GetArbolDependenciasById", c.GetArbolDependenciasById)
+	c.Mapping("GetDependenciasHijasById", c.GetDependenciasHijasById)
 }
 
 // Post ...
@@ -223,19 +224,57 @@ func (c *DependenciaController) ProyectosPorFacultadNivelAcademico() {
 }
 
 
-// GetArbolDependenciasById ...
-// @Title GetArbolDependenciasById
+// GetDependenciasHijasById ...
+// @Title GetDependenciasHijasById
 // @Description A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.
-// @Param	dependencia_padre	path 	string	true		"Id de la dependencia"
+// @Param	dependencia	path 	string	true		"Id de la dependencia"
 // @Success 200 {object} models.DependenciaPadre
 // @Failure 403 :dependencia_padre is empty
-// @router /get_arbol_dependencias_by_id/:dependencia_padre [get]
-func (c *DependenciaController) GetArbolDependenciasById() {
+// @router /get_dependencias_hijas_by_id/:dependencia [get]
+func (c *DependenciaController) GetDependenciasHijasById() {
 	//Se crea variable que contiene el id con tipo de dato string
-	dependenciaPadre := c.Ctx.Input.Param(":dependencia_padre")
-	fmt.Println("dependencia padre:",dependenciaPadre)
-	l := models.GetArbolDependenciasById(dependenciaPadre)
-	c.Data["json"] = l
+	dependenciaPadre := c.Ctx.Input.Param(":dependencia")
+	
+	l,err := models.GetDependenciasHijasById(dependenciaPadre)
+	if err != nil {
+		beego.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
+		
+	}else{
+		
+		c.Data["json"] = map[string]interface{}{"Body": l, "Type": "success"}
+	}
+	
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+
+// GetDependenciasPadresById ...
+// @Title GetDependenciasPadresById
+// @Description A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.
+// @Param	dependencia	path 	string	true		"Id de la dependencia"
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 404 :dependencia is empty
+// @router /get_dependencias_padres_by_id/:dependencia [get]
+func (c *DependenciaController) GetDependenciasPadresById() {
+	//Se crea variable que contiene el id con tipo de dato string
+	dependenciaPadre := c.Ctx.Input.Param(":dependencia")
+	
+	l,err := models.GetDependenciasPadresById(dependenciaPadre)
+	if err != nil {
+		beego.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
+		
+	}else{
+		
+		c.Data["json"] = map[string]interface{}{"Body": l, "Type": "success"}
+	}
+	
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }

@@ -144,8 +144,17 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaController"],
         beego.ControllerComments{
-            Method: "GetArbolDependenciasById",
-            Router: `/get_arbol_dependencias_by_id/:dependencia_padre`,
+            Method: "GetDependenciasHijasById",
+            Router: `/get_dependencias_hijas_by_id/:dependencia`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaController"],
+        beego.ControllerComments{
+            Method: "GetDependenciasPadresById",
+            Router: `/get_dependencias_padres_by_id/:dependencia`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
