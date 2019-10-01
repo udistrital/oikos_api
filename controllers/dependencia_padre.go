@@ -183,11 +183,16 @@ func (c *DependenciaPadreController) Delete() {
 //Función para armar los árboles de las dependencias
 func (c *DependenciaPadreController) ArbolDependencias() {
 	//Construcción Json menus
-	l := models.ConstruirDependenciasPadre()
+	l,err := models.ConstruirDependenciasPadre()
 	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
+	fmt.Println(l,err)
+	if err != nil {
+		c.Data["json"] = err.Error()
+	}else{
+		c.Data["json"] = l
+	}
 
-	c.Data["json"] = l
+	
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }

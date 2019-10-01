@@ -25,6 +25,7 @@ func (c *DependenciaController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("ProyectosPorFacultad", c.ProyectosPorFacultad)
+	c.Mapping("GetArbolDependenciasById", c.GetArbolDependenciasById)
 }
 
 // Post ...
@@ -216,6 +217,24 @@ func (c *DependenciaController) ProyectosPorFacultadNivelAcademico() {
 	fmt.Println("Este es el resultado de la consulta")
 	fmt.Println(l)
 
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+
+// GetArbolDependenciasById ...
+// @Title GetArbolDependenciasById
+// @Description A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.
+// @Param	dependencia_padre	path 	string	true		"Id de la dependencia"
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 403 :dependencia_padre is empty
+// @router /get_arbol_dependencias_by_id/:dependencia_padre [get]
+func (c *DependenciaController) GetArbolDependenciasById() {
+	//Se crea variable que contiene el id con tipo de dato string
+	dependenciaPadre := c.Ctx.Input.Param(":dependencia_padre")
+	fmt.Println("dependencia padre:",dependenciaPadre)
+	l := models.GetArbolDependenciasById(dependenciaPadre)
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()

@@ -210,3 +210,26 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 
 	return proyectosCurriculares
 }
+
+
+func GetArbolDependenciasById(dependenciaPadre string)(dependencias []TreeDependencia){
+
+	o := orm.NewOrm()
+	//Arreglo
+
+	var dependenciaPadres []TreeDependencia
+	num, err := o.Raw(`SELECT de.id, de.nombre, dep.padre, dep.hija
+											 FROM oikos.dependencia AS de
+											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija
+											 WHERE dep.padre = ` + dependenciaPadre + ` ORDER BY de.id`).QueryRows(&dependenciaPadres)
+	fmt.Println("dependencias padre:",dependenciaPadres)
+	if err == nil {
+		fmt.Println("Dependencias padre encontradas: ", num)
+		//For para que recorra los Ids en busca de hijos
+		for i := 0; i < len(dependenciaPadres); i++ {
+			//Me verifica que los Id tengan hijos
+			ConstruirDependenciasHijas(&dependenciaPadres[i])
+		}
+	}
+	return dependenciaPadres
+}

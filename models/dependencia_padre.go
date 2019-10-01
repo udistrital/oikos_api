@@ -155,45 +155,60 @@ func DeleteDependenciaPadre(id int) (err error) {
 }
 
 //Función que busca las dependencias que no tengan asignadas padre
-func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
-	o := orm.NewOrm()
-	//Arreglo
-	var dependenciaPadres []TreeDependencia
-	num, err := o.Raw(`SELECT de.id AS id, de.nombre AS nombre, dep.padre AS padre
-										 FROM oikos.dependencia
-										 AS de left join oikos.dependencia_padre
-										 AS dep ON de.id = dep.hija
-										 WHERE padre IS NULL ORDER BY de.id`).QueryRows(&dependenciaPadres)
+func ConstruirDependenciasPadre() (dependencias []TreeDependencia, err error) {
 
+	var dependenciaPadres []TreeDependencia
+	qb, _ := orm.NewQueryBuilder("mysql")
+	qb.Select("de.id AS id",
+		"de.nombre AS nombre",
+		"dep.padre AS padre").
+		From("oikos.dependencia as de").
+		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
+		Where("padre IS NULL").
+		OrderBy("de.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_, error := o.Raw(sql).QueryRows(&dependenciaPadres)
+	
 	if err == nil {
-		fmt.Println("Dependencias padre encontradas: ", num)
+		fmt.Println("Dependencias padre encontradas: ")
 		//For para que recorra los Ids en busca de hijos
 		for i := 0; i < len(dependenciaPadres); i++ {
 			//Me verifica que los Id tengan hijos
 			ConstruirDependenciasHijas(&dependenciaPadres[i])
 		}
 	}
-	return dependenciaPadres
+	return dependenciaPadres,error
 }
 
 //Función que busca los hijos de los padres encontrados en la función anterior
 func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDependencia) {
-	o := orm.NewOrm()
+
 	//Conversión de entero a string
 	padre := strconv.Itoa(Padre.Id)
-
 	//Arreglo
 	var dependenciaHijas []TreeDependencia
 
-	num, err := o.Raw(`SELECT de.id, de.nombre, dep.padre, dep.hija
-											 FROM oikos.dependencia AS de
-											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija
-											 WHERE dep.padre = ` + padre + ` ORDER BY de.id`).QueryRows(&dependenciaHijas)
+	qb, _ := orm.NewQueryBuilder("mysql")
+	qb.Select("de.id",
+		"de.nombre",
+		"dep.padre",
+		"dep.hija").
+		From("oikos.dependencia as de").
+		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
+		Where("dep.padre = ? ").
+		OrderBy("de.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_, err := o.Raw(sql,padre).QueryRows(&dependenciaHijas)
 
 	//Condicional si el error es nulo
 	if err == nil {
-		fmt.Println("Dependencias Hijas encontradas: ", num)
-
+	
 		//Llena el elemento Opciones en la estructura del menú padre
 		Padre.Opciones = &dependenciaHijas
 
