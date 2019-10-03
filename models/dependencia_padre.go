@@ -166,7 +166,7 @@ func ConstruirDependenciasPadre() (dependencias []Tree, err error) {
 
 	o := orm.NewOrm()
 	_, error := o.Raw(sql).QueryRows(&dependenciaPadres)
-	
+	fmt.Println(dependenciaPadres)
 	if err == nil {
 		fmt.Println("Dependencias padre encontradas: ")
 		//For para que recorra los Ids en busca de hijos

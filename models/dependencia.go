@@ -10,6 +10,8 @@ import (
 	"github.com/astaxie/beego/orm"
 )
 
+var elementMap = make(map[int]TreeDos)
+
 type Dependencia struct {
 	Id                         int                           `orm:"column(id);pk;auto"`
 	Nombre                     string                        `orm:"column(nombre)"`
@@ -31,6 +33,8 @@ func (t *Dependencia) TableName() string {
 func init() {
 	orm.RegisterModel(new(Dependencia))
 }
+
+
 
 // AddDependencia insert a new Dependencia into database and returns
 // last inserted Id on success.
@@ -212,9 +216,63 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 }
 
 
-func GetDependenciasHijasById(dependenciaPadre string)(dependencias []Tree, e error){
+func ejercicio(Padre *TreeDos,padre int){ 
+	
+	for _,element := range elementMap{
+		//fmt.Println("index",index)
+		if(padre == element.Padre){
+			var x = new(TreeDos)
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			// x = &TreeDos{Id: element.Id,Nombre: element.Nombre,Padre: element.Nombre}
+			pointer := &Padre.Opciones
+			fmt.Println(*pointer)
+			(pointer)[0]
+			ejercicio(x,element.Id)
+		}
+       
+	}
+	//fmt.Println("Father:",Padre)
+}
+
+func GetDependenciasHijasById(dependenciaPadre string)(dependencias *TreeDos, e error){
 
 	
+	var dependenciaHijas []TreeDos
+	qb, _ := orm.NewQueryBuilder("mysql")
+	//buscar todos
+	qb.Select("de.id",
+		"de.nombre",
+		"dep.padre",
+		"dep.hija").
+		From("oikos.dependencia as de").
+		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
+		OrderBy("de.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_,err:=o.Raw(sql).QueryRows(&dependenciaHijas)
+
+	//TO MAP
+	for _, s := range dependenciaHijas {  
+		elementMap[s.Id] = s 
+	}
+
+	
+	 cosa,_ := strconv.Atoi(dependenciaPadre)
+	 Cabeza := new(TreeDos)
+	 Cabeza.Id = 1;
+	 
+
+	 fmt.Println("Father1:")
+	 pointer := &Cabeza.Opciones
+	 fmt.Printf("%p\n", pointer)	
+	 ejercicio(Cabeza,cosa)
+	 //fmt.Println("Cabeza:",Cabeza[0])
+	
+	/*
 	var dependenciaPadres []Tree
 
 	qb, _ := orm.NewQueryBuilder("mysql")
@@ -240,7 +298,9 @@ func GetDependenciasHijasById(dependenciaPadre string)(dependencias []Tree, e er
 			ConstruirDependenciasHijas(&dependenciaPadres[i])
 		}
 	}
-	return dependenciaPadres, err
+
+	*/
+	return Cabeza, err
 }
 
 
