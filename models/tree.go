@@ -18,10 +18,7 @@ type TreeDos struct {
 	Nombre   string
 	Padre    int
 	Hijo     int
-	Opciones *[]TreeDos
+	Opciones []TreeDos
 	
 }
 
-type Key struct {
-    X, Y int
-}

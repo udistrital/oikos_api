@@ -216,27 +216,28 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 }
 
 
-func ejercicio(Padre *TreeDos,padre int){ 
+func ejercicio(Padre *TreeDos,padre int)(dep []TreeDos){ 
 	
 	for _,element := range elementMap{
-		//fmt.Println("index",index)
+				
 		if(padre == element.Padre){
-			var x = new(TreeDos)
+			var x TreeDos
 			x.Id = element.Id
 			x.Nombre = element.Nombre
 			x.Padre = element.Padre
-			// x = &TreeDos{Id: element.Id,Nombre: element.Nombre,Padre: element.Nombre}
-			pointer := &Padre.Opciones
-			fmt.Println(*pointer)
-			(pointer)[0]
-			ejercicio(x,element.Id)
+			j := &x
+			x.Opciones = ejercicio(j,element.Id)
+			Padre.Opciones = append(Padre.Opciones,x)
+	
 		}
        
 	}
-	//fmt.Println("Father:",Padre)
+
+	return Padre.Opciones
+
 }
 
-func GetDependenciasHijasById(dependenciaPadre string)(dependencias *TreeDos, e error){
+func GetDependenciasHijasById(dependenciaPadre int)(dependencias *TreeDos, e error){
 
 	
 	var dependenciaHijas []TreeDos
@@ -261,45 +262,11 @@ func GetDependenciasHijasById(dependenciaPadre string)(dependencias *TreeDos, e 
 	}
 
 	
-	 cosa,_ := strconv.Atoi(dependenciaPadre)
 	 Cabeza := new(TreeDos)
-	 Cabeza.Id = 1;
+	 Cabeza.Id = dependenciaPadre;
 	 
-
-	 fmt.Println("Father1:")
-	 pointer := &Cabeza.Opciones
-	 fmt.Printf("%p\n", pointer)	
-	 ejercicio(Cabeza,cosa)
-	 //fmt.Println("Cabeza:",Cabeza[0])
-	
-	/*
-	var dependenciaPadres []Tree
-
-	qb, _ := orm.NewQueryBuilder("mysql")
-	qb.Select("de.id",
-		"de.nombre",
-		"dep.padre",
-		"dep.hija").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-		Where("dep.padre = ? ").
-		OrderBy("de.id")
-
-	sql := qb.String()
-
-	o := orm.NewOrm()
-	_, err := o.Raw(sql,dependenciaPadre).QueryRows(&dependenciaPadres)
-	
-	
-	if err == nil {
-		//For para que recorra los Ids en busca de hijos
-		for i := 0; i < len(dependenciaPadres); i++ {
-			//Me verifica que los Id tengan hijos
-			ConstruirDependenciasHijas(&dependenciaPadres[i])
-		}
-	}
-
-	*/
+	 ejercicio(Cabeza,dependenciaPadre)
+	 
 	return Cabeza, err
 }
 

@@ -227,15 +227,15 @@ func (c *DependenciaController) ProyectosPorFacultadNivelAcademico() {
 // GetDependenciasHijasById ...
 // @Title GetDependenciasHijasById
 // @Description A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.
-// @Param	dependencia	path 	string	true		"Id de la dependencia"
+// @Param	dependencia	path 	int	true		"Id de la dependencia"
 // @Success 200 {object} models.DependenciaPadre
 // @Failure 403 :dependencia_padre is empty
 // @router /get_dependencias_hijas_by_id/:dependencia [get]
 func (c *DependenciaController) GetDependenciasHijasById() {
 	//Se crea variable que contiene el id con tipo de dato string
 	dependenciaPadre := c.Ctx.Input.Param(":dependencia")
-	
-	l,err := models.GetDependenciasHijasById(dependenciaPadre)
+	depPadreint,_:= strconv.Atoi(dependenciaPadre)
+	l,err := models.GetDependenciasHijasById(depPadreint)
 	if err != nil {
 		beego.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
