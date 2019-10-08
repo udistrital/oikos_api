@@ -24,7 +24,6 @@ func (c *DependenciaPadreController) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-	c.Mapping("ArbolDependencias", c.ArbolDependencias)
 	c.Mapping("FacultadesConProyectos", c.FacultadesConProyectos)
 }
 
@@ -171,29 +170,6 @@ func (c *DependenciaPadreController) Delete() {
 	} else {
 		c.Data["json"] = err.Error()
 	}
-	c.ServeJSON()
-}
-
-// ArbolDependencias ...
-// @Title ArbolDependencias
-// @Description Construye el arbol de dependencias
-// @Success 200 {object} models.DependenciaPadre
-// @Failure 403
-// @router /ArbolDependencias [get]
-//Función para armar los árboles de las dependencias
-func (c *DependenciaPadreController) ArbolDependencias() {
-	//Construcción Json menus
-	l,err := models.ConstruirDependenciasPadre()
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l,err)
-	if err != nil {
-		c.Data["json"] = err.Error()
-	}else{
-		c.Data["json"] = l
-	}
-
-	
-	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }
 

@@ -6,29 +6,10 @@ type Tree struct {
 	Opciones *[]Tree
 }
 
-type TreePadre struct {
-	Id       int
-	Nombre   string
-	Padre    int
-	Opciones *[]TreePadre
-}
-
-type TreeTres struct {
+type DependenciaPadreHijo struct {
 	Id       int
 	Nombre   string
 	Padre    int
 	Hija     int
-	Opciones *TreeTres
-	
+	Opciones []DependenciaPadreHijo
 }
-
-
-type TreeDos struct {
-	Id       int
-	Nombre   string
-	Padre    int
-	Hijo     int
-	Opciones []TreeDos
-	
-}
-

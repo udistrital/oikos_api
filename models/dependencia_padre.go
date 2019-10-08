@@ -18,6 +18,7 @@ type DependenciaPadre struct {
 
 
 
+
 func (t *DependenciaPadre) TableName() string {
 	return "dependencia_padre"
 }
@@ -148,114 +149,6 @@ func DeleteDependenciaPadre(id int) (err error) {
 	}
 	return
 }
-
-//Función que busca las dependencias que no tengan asignadas padre
-func ConstruirDependenciasPadre() (dependencias []Tree, err error) {
-
-	var dependenciaPadres []Tree
-	qb, _ := orm.NewQueryBuilder("mysql")
-	qb.Select("de.id AS id",
-		"de.nombre AS nombre",
-		"dep.padre AS padre").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-		Where("padre IS NULL").
-		OrderBy("de.id")
-
-	sql := qb.String()
-
-	o := orm.NewOrm()
-	_, error := o.Raw(sql).QueryRows(&dependenciaPadres)
-	fmt.Println(dependenciaPadres)
-	if err == nil {
-		fmt.Println("Dependencias padre encontradas: ")
-		//For para que recorra los Ids en busca de hijos
-		for i := 0; i < len(dependenciaPadres); i++ {
-			//Me verifica que los Id tengan hijos
-			ConstruirDependenciasHijas(&dependenciaPadres[i])
-		}
-	}
-	return dependenciaPadres,error
-}
-
-//Función que busca los hijos de los padres encontrados en la función anterior
-func ConstruirDependenciasHijas(Padre *Tree) (dependencias []Tree) {
-
-	//Conversión de entero a string
-	padre := strconv.Itoa(Padre.Id)
-	//Arreglo
-	var dependenciaHijas []Tree
-
-	qb, _ := orm.NewQueryBuilder("mysql")
-	qb.Select("de.id",
-		"de.nombre",
-		"dep.padre",
-		"dep.hija").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-		Where("dep.padre = ? ").
-		OrderBy("de.id")
-
-	sql := qb.String()
-
-	o := orm.NewOrm()
-	_, err := o.Raw(sql,padre).QueryRows(&dependenciaHijas)
-
-	//Condicional si el error es nulo
-	if err == nil {
-	
-		//Llena el elemento Opciones en la estructura del menú padre
-		Padre.Opciones = &dependenciaHijas
-
-		//For que recorre el subMenu en busca de hijos (Recursiva)
-		for i := 0; i < len(dependenciaHijas); i++ {
-
-			//Me verifica que los Id tengan hijos
-			ConstruirDependenciasHijas(&dependenciaHijas[i])
-		}
-	}
-	return dependenciaHijas
-}
-
-//Función que busca los hijos de los padres encontrados en la función anterior
-func ConstruirDependenciasPadres(Padre *TreePadre) (dependencias []TreePadre) {
-	
-		//Conversión de entero a string
-		padre := strconv.Itoa(Padre.Padre)
-		fmt.Println("padre:",padre)
-		//Arreglo
-		var dependenciaHijas []TreePadre
-	
-		qb, _ := orm.NewQueryBuilder("mysql")
-		qb.Select("de.id",
-			"de.nombre",
-			"dep.padre",
-			"dep.hija").
-			From("oikos.dependencia as de").
-			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-			Where("de.id = ? ").
-			OrderBy("de.id")
-	
-		sql := qb.String()
-	
-		o := orm.NewOrm()
-		_, err := o.Raw(sql,padre).QueryRows(&dependenciaHijas)
-		fmt.Println("hijas:",dependenciaHijas)
-		//Condicional si el error es nulo
-		if err == nil {
-		
-			//Llena el elemento Opciones en la estructura del menú padre
-			Padre.Opciones = &dependenciaHijas
-	
-			//For que recorre el subMenu en busca de hijos (Recursiva)
-			for i := 0; i < len(dependenciaHijas); i++ {
-	
-				//Me verifica que los Id tengan hijos
-				ConstruirDependenciasPadres(&dependenciaHijas[i])
-			}
-		}
-		return dependenciaHijas
-	}
 
 //Función que busca las dependencias de tipo facultad
 func Facultades() (facultad []Tree) {
