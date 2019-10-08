@@ -13,6 +13,16 @@ type TreePadre struct {
 	Opciones *[]TreePadre
 }
 
+type TreeTres struct {
+	Id       int
+	Nombre   string
+	Padre    int
+	Hija     int
+	Opciones *TreeTres
+	
+}
+
+
 type TreeDos struct {
 	Id       int
 	Nombre   string

@@ -11,6 +11,7 @@ import (
 )
 
 var elementMap = make(map[int]TreeDos)
+var elementMap2 = make(map[int]TreeTres)
 
 type Dependencia struct {
 	Id                         int                           `orm:"column(id);pk;auto"`
@@ -215,8 +216,8 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 	return proyectosCurriculares
 }
 
-
-func ejercicio(Padre *TreeDos,padre int)(dep []TreeDos){ 
+//Funcion recursiva que busca las dependencias hijas a partir de un id de la dependencia padre
+func getDependenciasHijas(Padre *TreeDos,padre int)(dep []TreeDos){ 
 	
 	for _,element := range elementMap{
 				
@@ -226,7 +227,7 @@ func ejercicio(Padre *TreeDos,padre int)(dep []TreeDos){
 			x.Nombre = element.Nombre
 			x.Padre = element.Padre
 			j := &x
-			x.Opciones = ejercicio(j,element.Id)
+			x.Opciones = getDependenciasHijas(j,element.Id)
 			Padre.Opciones = append(Padre.Opciones,x)
 	
 		}
@@ -234,6 +235,40 @@ func ejercicio(Padre *TreeDos,padre int)(dep []TreeDos){
 	}
 
 	return Padre.Opciones
+
+}
+
+
+//Funcion recursiva que busca las dependencias padre a partir de un id de la dependencia hija (hoja)
+func getDependenciasPadres(Hija *TreeTres)(dep *TreeTres){ 
+	
+	x := new(TreeTres)
+	temp := new(TreeTres)
+	for _,element := range elementMap2{
+
+		if(Hija.Padre == element.Hija){
+				
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			x.Hija = element.Hija
+
+		
+			temp = getDependenciasPadres(x)
+			//x.Opciones = getDependenciasPadres(x)
+			fmt.Println("temp:",temp)
+			fmt.Println("equis:",x)
+			fmt.Println("///////")
+			temp.Opciones = x
+			fmt.Println("temp2:",temp)
+			//x.Opciones = x
+			//fmt.Println(x.Opciones)
+		}
+       
+	}
+	fmt.Println("equis2:",x)
+	fmt.Println("------")
+	return x
 
 }
 
@@ -261,43 +296,44 @@ func GetDependenciasHijasById(dependenciaPadre int)(dependencias *TreeDos, e err
 		elementMap[s.Id] = s 
 	}
 
-	
-	 Cabeza := new(TreeDos)
-	 Cabeza.Id = dependenciaPadre;
-	 
-	 ejercicio(Cabeza,dependenciaPadre)
+		
+	Cabeza := new(TreeDos)
+	Cabeza.Id = dependenciaPadre;
+    getDependenciasHijas(Cabeza,dependenciaPadre)
 	 
 	return Cabeza, err
 }
 
 
-func GetDependenciasPadresById(dependenciaPadre string)(dependencias []TreePadre, e error){
+func GetDependenciasPadresById(dependenciaHija int)(dependencias *TreeTres, e error){
 	
-		
-		var dependenciaPadres []TreePadre
-	
+		var dependenciaPadres []TreeTres
 		qb, _ := orm.NewQueryBuilder("mysql")
+		//buscar todos
 		qb.Select("de.id",
 			"de.nombre",
 			"dep.padre",
 			"dep.hija").
 			From("oikos.dependencia as de").
 			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-			Where("de.id = ? ").
 			OrderBy("de.id")
 	
 		sql := qb.String()
 	
 		o := orm.NewOrm()
-		_, err := o.Raw(sql,dependenciaPadre).QueryRows(&dependenciaPadres)
-		
-		
-		if err == nil {
-			//For para que recorra los Ids en busca de hijos
-			for i := 0; i < len(dependenciaPadres); i++ {
-				//Me verifica que los Id tengan hijos
-				ConstruirDependenciasPadres(&dependenciaPadres[i])
-			}
+		_,err:=o.Raw(sql).QueryRows(&dependenciaPadres)
+	
+	
+		//TO MAP
+		for _, s := range dependenciaPadres {  
+			elementMap2[s.Id] = s 
 		}
-		return dependenciaPadres, err
+	
+		 
+		 Cola := new(TreeTres)
+		 Cola.Padre = 8;
+		 Cola.Hija = 66;
+		 Cola.Opciones = getDependenciasPadres(Cola)
+		 
+		return Cola, err
 	}

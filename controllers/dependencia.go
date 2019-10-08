@@ -261,9 +261,9 @@ func (c *DependenciaController) GetDependenciasHijasById() {
 // @router /get_dependencias_padres_by_id/:dependencia [get]
 func (c *DependenciaController) GetDependenciasPadresById() {
 	//Se crea variable que contiene el id con tipo de dato string
-	dependenciaPadre := c.Ctx.Input.Param(":dependencia")
-	
-	l,err := models.GetDependenciasPadresById(dependenciaPadre)
+	dependenciaHija := c.Ctx.Input.Param(":dependencia")
+	depHijaint,_:= strconv.Atoi(dependenciaHija)
+	l,err := models.GetDependenciasPadresById(depHijaint)
 	if err != nil {
 		beego.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
