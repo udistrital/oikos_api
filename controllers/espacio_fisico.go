@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
 	"github.com/udistrital/oikos_api/models"
-
 	"github.com/astaxie/beego"
 )
 
