@@ -12,16 +12,12 @@ import (
 
 type AsignacionEspacioFisicoDependencia struct {
 	Id               int            `orm:"column(id);pk;auto"`
-	EspacioFisicoId  *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
-	DependenciaId    *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
-	Activo           bool           `orm:"column(activo)"`
+	Estado           string         `orm:"column(estado)"`
 	FechaInicio      time.Time      `orm:"column(fecha_inicio);type(date)"`
 	FechaFin         time.Time      `orm:"column(fecha_fin);type(date);null"`
-	DocumentoSoporte int            `orm:"column(documento_soporte)"`   //Se cambió tipo a int
-	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-	//Se mantienen mientras se hace transición
-	Estado           string         `orm:"column(estado)"` //Se debe usar el campo 'activo'
+	DocumentoSoporte string         `orm:"column(documento_soporte)"`
+	EspacioFisicoId  *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
+	DependenciaId    *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
 }
 
 func (t *AsignacionEspacioFisicoDependencia) TableName() string {

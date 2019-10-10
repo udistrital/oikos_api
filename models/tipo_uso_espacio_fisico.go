@@ -5,17 +5,13 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"time"
 	"github.com/astaxie/beego/orm"
 )
 
 type TipoUsoEspacioFisico struct {
-	Id                int            `orm:"column(id);pk;auto"`
-	TipoUsoId         *TipoUso       `orm:"column(tipo_uso_id);rel(fk)"`
-	EspacioFisicoId   *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
-	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id              int            `orm:"column(id);pk;auto"`
+	TipoUsoId       *TipoUso       `orm:"column(tipo_uso_id);rel(fk)"`
+	EspacioFisicoId *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
 }
 
 func (t *TipoUsoEspacioFisico) TableName() string {

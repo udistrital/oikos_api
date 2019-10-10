@@ -5,24 +5,15 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"time"
 	"github.com/astaxie/beego/orm"
 )
 
 type EspacioFisico struct {
-
-	Estado            string             `orm:"column(estado)"`   //Se conserva todavía para hacer transición
-	Codigo            string             `orm:"column(codigo)"`   //Se conserva todavía para hacer transición
-	Id                int    			 `orm:"column(id);pk;auto"`
-	Nombre            string             `orm:"column(nombre)"`
-	Descripcion       string             `orm:"column(descripcion);null"`
-	Area              float64            `orm:"column(area)"`
-	Capacidad         int                `orm:"column(capacidad)"`
-	CodigoAbreviacion string             `orm:"column(codigo_abreviacion);null"`
-	Activo            bool               `orm:"column(activo)"`
-	FechaCreacion     time.Time          `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time          `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-	TipoEspacio *TipoEspacioFisico       `orm:"column(tipo_espacio_fisico_id);rel(fk)"`
+	Id          int                `orm:"column(id);pk;auto"`
+	Estado      string             `orm:"column(estado)"`
+	TipoEspacio *TipoEspacioFisico `orm:"column(tipo_espacio);rel(fk)"`
+	Nombre      string             `orm:"column(nombre)"`
+	Codigo      string             `orm:"column(codigo)"`
 }
 
 func (t *EspacioFisico) TableName() string {

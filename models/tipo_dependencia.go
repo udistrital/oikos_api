@@ -5,18 +5,12 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"time"
 	"github.com/astaxie/beego/orm"
 )
 
 type TipoDependencia struct {
-	Id     			  int    `orm:"column(id);pk;auto"`
-	Nombre            string `orm:"column(nombre)"`
-	Descripcion       string    `orm:"column(descripcion);null"`
-	CodigoAbreviacion string    `orm:"column(codigo_abreviacion);null"`
-	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id     int    `orm:"column(id);pk;auto"`
+	Nombre string `orm:"column(nombre)"`
 }
 
 func (t *TipoDependencia) TableName() string {
