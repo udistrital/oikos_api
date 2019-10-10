@@ -168,207 +168,204 @@ func DeleteDependencia(id int) (err error) {
 
 //Se realiza sobrecarga de la función ProyectosPorFacultad que recibe como parámetros el id de la facultad y el nivel académico
 func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []ProyectosCurriculares) {
-
-	//Conversión de entero a string
-	id_facultad := strconv.Itoa(facultad)
-	fmt.Println(id_facultad)
-	fmt.Println(nivel_academico)
-
-	o := orm.NewOrm()
-	//Arreglo
-	var proyectosCurriculares []ProyectosCurriculares
-
-	if nivel_academico == "PREGRADO" {
-
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 14`).QueryRows(&proyectosCurriculares)
-
-		if err == nil {
-			fmt.Println("Proyectos curriculares encontrados: ", num)
-		} else {
-			fmt.Println("Este es el error ", err)
-		}
-
-	} else if nivel_academico == "POSGRADO" {
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 15`).QueryRows(&proyectosCurriculares)
-
-		if err == nil {
-			fmt.Println("Proyectos curriculares encontrados: ", num)
-		} else {
-			fmt.Println("Este es el error ", err)
-		}
-	} else if nivel_academico == "undefined" {
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
-
-		if err == nil {
-			fmt.Println("Proyectos curriculares encontrados: ", num)
-		} else {
-			fmt.Println("Este es el error ", err)
-		}
-	}
-
-	return proyectosCurriculares
-}
-
-//Funcion recursiva que busca las dependencias hijas a partir de un id de la dependencia padre
-func getDependenciasHijas(Padre *DependenciaPadreHijo,padre int)(dep []DependenciaPadreHijo){ 
 	
-	for _,element := range elementMap{
-				
-		if(padre == element.Padre){
-			var x DependenciaPadreHijo
-			x.Id = element.Id
-			x.Nombre = element.Nombre
-			x.Padre = element.Padre
-			j := &x
-			x.Opciones = getDependenciasHijas(j,element.Id)
-			Padre.Opciones = append(Padre.Opciones,x)
+		//Conversión de entero a string
+		id_facultad := strconv.Itoa(facultad)
+		fmt.Println(id_facultad)
+		fmt.Println(nivel_academico)
 	
+		o := orm.NewOrm()
+		//Arreglo
+		var proyectosCurriculares []ProyectosCurriculares
+	
+		if nivel_academico == "PREGRADO" {
+	
+			num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
+												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 14`).QueryRows(&proyectosCurriculares)
+	
+			if err == nil {
+				fmt.Println("Proyectos curriculares encontrados: ", num)
+			} else {
+				fmt.Println("Este es el error ", err)
+			}
+	
+		} else if nivel_academico == "POSGRADO" {
+			num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
+												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 15`).QueryRows(&proyectosCurriculares)
+	
+			if err == nil {
+				fmt.Println("Proyectos curriculares encontrados: ", num)
+			} else {
+				fmt.Println("Este es el error ", err)
+			}
+		} else if nivel_academico == "undefined" {
+			num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
+												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
+	
+			if err == nil {
+				fmt.Println("Proyectos curriculares encontrados: ", num)
+			} else {
+				fmt.Println("Este es el error ", err)
+			}
 		}
-       
-	}
-
-	return Padre.Opciones
-
-}
-
-
-//Funcion recursiva que busca las dependencias padre a partir de un id de la dependencia hija (hoja)
-func getDependenciasPadres(Hija DependenciaPadreHijo)(dep DependenciaPadreHijo){ 
-
-
-	var x DependenciaPadreHijo
-	for _,element := range elementMap{
-
-		if(Hija.Padre == element.Hija){
-			x.Id = element.Id
-			x.Nombre = element.Nombre
-			x.Padre = element.Padre
-			x.Hija = element.Hija
-
-			l.PushFront(x)
-			getDependenciasPadres(x)
-		}
+	
+		return proyectosCurriculares
 	}
 	
-	return x
-	
-}
-
-func buscarDep(dep int)(padre DependenciaPadreHijo){
-
-	var x DependenciaPadreHijo
-	for _,element := range elementMap{
-
-		if(dep == element.Id){
-			x.Id = element.Id
-			x.Nombre = element.Nombre
-			x.Padre = element.Padre
-			x.Hija = element.Hija
+	//Funcion recursiva que busca las dependencias hijas a partir de un id de la dependencia padre
+	func getDependenciasHijas(Padre *DependenciaPadreHijo,padre int)(dep []DependenciaPadreHijo){ 
 		
+		for _,element := range elementMap{
+					
+			if(padre == element.Padre){
+				var x DependenciaPadreHijo
+				x.Id = element.Id
+				x.Nombre = element.Nombre
+				x.Padre = element.Padre
+				j := &x
+				x.Opciones = getDependenciasHijas(j,element.Id)
+				Padre.Opciones = append(Padre.Opciones,x)
+		
+			}
+		   
 		}
+	
+		return Padre.Opciones
+	
 	}
-
-	return x
-}
-
-func GetDependenciasPadresById(dependenciaHija int)(dependencias []DependenciaPadreHijo, e error){
 	
-	var dependenciaPadres []DependenciaPadreHijo
-	var listaDependencias []DependenciaPadreHijo
-	l.Init()
-
-	qb, _ := orm.NewQueryBuilder("mysql")
-	//buscar todos
-	qb.Select("de.id",
-		"de.nombre",
-		"dep.padre",
-		"dep.hija").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-		OrderBy("de.id")
-
-	sql := qb.String()
-
-	o := orm.NewOrm()
-	_,err:=o.Raw(sql).QueryRows(&dependenciaPadres)
-
-
-	//TO MAP
-	for _, s := range dependenciaPadres {  
-		elementMap[s.Id] = s 
+	
+	//Funcion recursiva que busca las dependencias padre a partir de un id de la dependencia hija (hoja)
+	func getDependenciasPadres(Hija DependenciaPadreHijo)(dep DependenciaPadreHijo){ 
+	
+	
+		var x DependenciaPadreHijo
+		for _,element := range elementMap{
+	
+			if(Hija.Padre == element.Hija){
+				x.Id = element.Id
+				x.Nombre = element.Nombre
+				x.Padre = element.Padre
+				x.Hija = element.Hija
+	
+				l.PushFront(x)
+				getDependenciasPadres(x)
+			}
+		}
+		
+		return x
+		
 	}
-
-   
-	 //Obtener informacion sobre dependencia que se busca
-	 var Cola DependenciaPadreHijo
-	 Cola.Id = elementMap[dependenciaHija].Id;
-	 Cola.Nombre = elementMap[dependenciaHija].Nombre
-	 Cola.Padre = elementMap[dependenciaHija].Padre;
-	 Cola.Hija = elementMap[dependenciaHija].Hija;
 	
-	 if (Cola.Hija != 0){
-		getDependenciasPadres(Cola)
-		l.PushBack(Cola)
-   
-		//Buscar cabeza de la lista
-		p := buscarDep(l.Front().Value.(DependenciaPadreHijo).Padre)
-		l.PushFront(p)
-   
-		for temp := l.Front(); temp != nil; temp = temp.Next() {
-		   listaDependencias = append(listaDependencias,temp.Value.(DependenciaPadreHijo))
-	   }
-	 }
+	func buscarDep(dep int)(padre DependenciaPadreHijo){
 	
-
+		var x DependenciaPadreHijo
+		for _,element := range elementMap{
 	
-
-	return listaDependencias, err
-}
-
-func GetDependenciasHijasById(dependenciaPadre int)(dependencias *DependenciaPadreHijo, e error){
-
+			if(dep == element.Id){
+				x.Id = element.Id
+				x.Nombre = element.Nombre
+				x.Padre = element.Padre
+				x.Hija = element.Hija
+			
+			}
+		}
 	
-	var dependenciaHijas []DependenciaPadreHijo
-
-	qb, _ := orm.NewQueryBuilder("mysql")
-	//buscar todos
-	qb.Select("de.id",
-		"de.nombre",
-		"dep.padre",
-		"dep.hija").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-		OrderBy("de.id")
-
-	sql := qb.String()
-
-	o := orm.NewOrm()
-	_,err:=o.Raw(sql).QueryRows(&dependenciaHijas)
-
-	//TO MAP
-	for _, s := range dependenciaHijas {  
-		elementMap[s.Id] = s 
+		return x
 	}
-
-	c:= buscarDep(dependenciaPadre)
-	Cabeza := &c
-    getDependenciasHijas(Cabeza,dependenciaPadre)
-	 
-
-	return Cabeza, err
-}
-
-
-
+	
+	func GetDependenciasPadresById(dependenciaHija int)(dependencias []DependenciaPadreHijo, e error){
+		
+		var dependenciaPadres []DependenciaPadreHijo
+		var listaDependencias []DependenciaPadreHijo
+		l.Init()
+	
+		qb, _ := orm.NewQueryBuilder("mysql")
+		//buscar todos
+		qb.Select("de.id",
+			"de.nombre",
+			"dep.padre",
+			"dep.hija").
+			From("oikos.dependencia as de").
+			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
+			OrderBy("de.id")
+	
+		sql := qb.String()
+	
+		o := orm.NewOrm()
+		_,err:=o.Raw(sql).QueryRows(&dependenciaPadres)
+	
+	
+		//TO MAP
+		for _, s := range dependenciaPadres {  
+			elementMap[s.Id] = s 
+		}
+	
+	   
+		 //Obtener informacion sobre dependencia que se busca
+		 var Cola DependenciaPadreHijo
+		 Cola.Id = elementMap[dependenciaHija].Id;
+		 Cola.Nombre = elementMap[dependenciaHija].Nombre
+		 Cola.Padre = elementMap[dependenciaHija].Padre;
+		 Cola.Hija = elementMap[dependenciaHija].Hija;
+		
+		 if (Cola.Hija != 0){
+			getDependenciasPadres(Cola)
+			l.PushBack(Cola)
+	   
+			//Buscar cabeza de la lista
+			p := buscarDep(l.Front().Value.(DependenciaPadreHijo).Padre)
+			l.PushFront(p)
+	   
+			for temp := l.Front(); temp != nil; temp = temp.Next() {
+			   listaDependencias = append(listaDependencias,temp.Value.(DependenciaPadreHijo))
+		   }
+		 }
+		
+	
+		
+	
+		return listaDependencias, err
+	}
+	
+	func GetDependenciasHijasById(dependenciaPadre int)(dependencias *DependenciaPadreHijo, e error){
+	
+		
+		var dependenciaHijas []DependenciaPadreHijo
+	
+		qb, _ := orm.NewQueryBuilder("mysql")
+		//buscar todos
+		qb.Select("de.id",
+			"de.nombre",
+			"dep.padre",
+			"dep.hija").
+			From("oikos.dependencia as de").
+			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
+			OrderBy("de.id")
+	
+		sql := qb.String()
+	
+		o := orm.NewOrm()
+		_,err:=o.Raw(sql).QueryRows(&dependenciaHijas)
+	
+		//TO MAP
+		for _, s := range dependenciaHijas {  
+			elementMap[s.Id] = s 
+		}
+	
+		c:= buscarDep(dependenciaPadre)
+		Cabeza := &c
+		getDependenciasHijas(Cabeza,dependenciaPadre)
+		 
+	
+		return Cabeza, err
+	}
