@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
+	"fmt"
 	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
@@ -25,6 +25,7 @@ func (c *DependenciaPadreController) URLMapping() {
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("FacultadesConProyectos", c.FacultadesConProyectos)
+	c.Mapping("ArbolDependencias", c.ArbolDependencias)
 }
 
 // Post ...
@@ -206,6 +207,23 @@ func (c *DependenciaPadreController) Delete() {
 func (c *DependenciaPadreController) FacultadesConProyectos() {
 	//Construcción Json menus
 	l := models.Facultades()
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// ArbolDependencias ...
+// @Title ArbolDependencias
+// @Description ArbolDependencias
+// @Success 200 {object} models.Tree
+// @Failure 403
+// @router /ArbolDependencias [get]
+func (c *DependenciaPadreController) ArbolDependencias() {
+	//Construcción Json menus
+	l := models.ConstruirDependenciasPadre()
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()

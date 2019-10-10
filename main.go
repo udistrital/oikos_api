@@ -37,6 +37,9 @@ func init() {
 func main() {
 	//Prueba CI
 	orm.RegisterDataBase("default", "postgres", "postgres://"+beego.AppConfig.String("PGuser")+":"+beego.AppConfig.String("PGpass")+"@"+beego.AppConfig.String("PGurls")+"/"+beego.AppConfig.String("PGdb")+"?sslmode=disable&search_path="+beego.AppConfig.String("PGschemas")+"")
+	//orm.RegisterDataBase("prueba", "postgres", "postgres://postgres:postgres@localhost/udistrital_core?sslmode=disable&search_path=oikos")
+	//o1 := orm.NewOrm()
+	//o1.Using("db1")
 	apistatus.Init()  
 	beego.ErrorController(&customerror.CustomErrorController{})
 	beego.Run()
