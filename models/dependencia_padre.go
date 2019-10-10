@@ -12,15 +12,9 @@ import (
 
 type DependenciaPadre struct {
 	Id    int          `orm:"column(id);pk;auto"`
-	Padre *Dependencia `orm:"column(padre);rel(fk)"` //Se dejan mientras se hace transición
-	Hija  *Dependencia `orm:"column(hija);rel(fk)"`  //Se dejan mientras se hace transición
-	PadreId *Dependencia `orm:"column(padre_id);rel(fk)"` 
-	HijaId  *Dependencia `orm:"column(hija_id);rel(fk)"`
-	Activo           		   bool      `orm:"column(activo)"` //Se dejan mientras se hace transición
-	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Padre *Dependencia `orm:"column(padre);rel(fk)"`
+	Hija  *Dependencia `orm:"column(hija);rel(fk)"`
 }
-
 
 
 

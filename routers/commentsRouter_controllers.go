@@ -333,7 +333,16 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:ProyectoCurricularController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:ProyectoCurricularController"],
         beego.ControllerComments{
-            Method: "GetFacultadesYProyectos",
+            Method: "GetAllProyectosByFacultadId",
+            Router: `/get_all_proyectos_by_facultad_id/:id_facultad`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:ProyectoCurricularController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:ProyectoCurricularController"],
+        beego.ControllerComments{
+            Method: "GetAllProyectosByFacultades",
             Router: `/get_all_proyectos_by_facultades`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),

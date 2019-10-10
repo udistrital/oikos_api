@@ -3,6 +3,7 @@ package models
 
 import (
 	"github.com/astaxie/beego/orm"
+
 )
 
 var proyectosCurricularesMap = make(map[int]DependenciaPadreHijo)
@@ -30,8 +31,8 @@ func getProyectosPorFacultad(Padre *DependenciaPadreHijo,padre int)(dep []Depend
 
 }
 
-//Se realiza sobrecarga de la función ProyectosPorFacultad que recibe como parámetros el id de la facultad y el nivel académico
-func GetFacultadesYProyectos() (facultad []DependenciaPadreHijo, e error) {
+
+func GetAllProyectosByFacultades() (facultad []DependenciaPadreHijo, e error) {
 		//Declaración objeto ORM
 		o := orm.NewOrm()
 	
@@ -88,3 +89,63 @@ func GetFacultadesYProyectos() (facultad []DependenciaPadreHijo, e error) {
 		return facultades,err
 				
 	}
+
+
+func GetAllProyectosByFacultadId(idFacultad int) (facultad []DependenciaPadreHijo, e error) {
+	//Declaración objeto ORM
+	o := orm.NewOrm()
+
+	var facultades []DependenciaPadreHijo
+
+	//Se buscan todas las facultades de la Universidad.
+	qb, _ := orm.NewQueryBuilder("mysql")
+	qb.Select("d.id AS id",
+			 "d.nombre AS nombre").				
+			 From("oikos.dependencia d").
+										 InnerJoin("oikos.dependencia_tipo_dependencia dp").On(" d.id = dp.dependencia_id").
+										 Where("dp.tipo_dependencia_id = 2").
+										 And("d.id = ?")												 	
+	
+	sql := qb.String()
+	_,err:=o.Raw(sql,idFacultad).QueryRows(&facultades)
+
+	if err == nil {
+
+		var pc []DependenciaPadreHijo
+		qb, _ := orm.NewQueryBuilder("mysql")
+
+	   //buscar todos los proyectos curriculares
+		qb.Select("de.id",
+			"de.nombre",
+			"dep.padre",
+			"dep.hija").
+			From("oikos.dependencia as de").
+			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
+			InnerJoin("oikos.dependencia_tipo_dependencia dtd").On("dep.hija = dtd.dependencia_id").
+			Where("dtd.tipo_dependencia_id IN (1,14,15)").
+			OrderBy("de.id")
+	
+		sql := qb.String()
+	
+		o := orm.NewOrm()
+		_,err:=o.Raw(sql).QueryRows(&pc)
+	
+		if err == nil {
+			//TO MAP
+			for _, s := range pc {  
+				proyectosCurricularesMap[s.Id] = s 
+			}
+
+			//Se busca por cada facultad sus proyectos curriculares
+			for i := 0; i < len(facultades); i++ {
+				getProyectosPorFacultad(&facultades[i],facultades[i].Id)
+			}
+
+		}
+		
+	}
+		
+	
+	return facultades,err
+			
+}
