@@ -164,14 +164,14 @@ func Facultades() (facultad []Tree) {
 		//Arreglo que tendra las facultades encontradas
 		var facultades []Tree
 	
-		num, err := o.Raw(`SELECT dh.id AS id, dh.nombre AS nombre
+		_, err := o.Raw(`SELECT dh.id AS id, dh.nombre AS nombre
 											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
 						 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
 											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 											 WHERE dtd.tipo_dependencia_id = 2`).QueryRows(&facultades)
 	
 		if err == nil {
-			fmt.Println("Facultades encontradas: ", num)
+		
 			//For para que recorra los Ids en busca de hijos
 			for i := 0; i < len(facultades); i++ {
 				//Me verifica que los Id tengan hijos
@@ -193,15 +193,14 @@ func Facultades() (facultad []Tree) {
 		//Arreglo que tendra las facultades encontradas
 		var proyectos_curriculares []Tree
 	
-		num, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre, dep.hija
+		_, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre, dep.hija
 											 FROM oikos.dependencia AS de
 											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija
 											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dep.hija = dtd.dependencia_id
 											 WHERE dep.padre =` + padre + ` AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`).QueryRows(&proyectos_curriculares)
 	
 		if err == nil {
-			fmt.Println("Proyectos curriculares encontradas: ", num)
-	
+				
 			//Llena el elemento Opciones en la estructura del menú padre
 			Facultad.Opciones = &proyectos_curriculares
 		}

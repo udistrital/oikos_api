@@ -81,6 +81,12 @@ func init() {
 				&controllers.TipoDependenciaController{},
 			),
 		),
+
+		beego.NSNamespace("/facultad",
+			beego.NSInclude(
+				&controllers.FacultadController{},
+			),
+		),
 	)
 	beego.AddNamespace(ns)
 }

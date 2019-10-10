@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -207,9 +206,6 @@ func (c *DependenciaPadreController) Delete() {
 func (c *DependenciaPadreController) FacultadesConProyectos() {
 	//Construcción Json menus
 	l := models.Facultades()
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
