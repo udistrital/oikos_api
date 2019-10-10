@@ -57,7 +57,7 @@ CREATE TABLE oikos.espacio_fisico
   
 );
 
-COMMENT ON TABLE oikos.espacio_fisico  IS 'Tabla de Rompimiento que reune los atributos de un espacio fisico';
+COMMENT ON TABLE oikos.espacio_fisico IS 'Tabla de Rompimiento que reune los atributos de un espacio fisico';
 COMMENT ON COLUMN oikos.espacio_fisico.id    IS 'Identificador del espacio fisico especifico de la Universidad Distrital.';
 COMMENT ON COLUMN oikos.espacio_fisico.nombre    IS 'Nombre perteneciente al espacio físico';
 COMMENT ON COLUMN oikos.espacio_fisico.descripcion IS 'Campo en el que se puede registrar una descripcion de la informacion de espacio_fisico.';
@@ -157,14 +157,14 @@ CREATE TABLE oikos.espacio_fisico_padre
  
 );
 
-COMMENT ON TABLE oikos.espacio_fisico_padre    IS 'Contiene las relaciones de los espacios fisicos.';
-COMMENT ON COLUMN oikos.espacio_fisico_padre.id    IS 'Identificador de la tabla.';
-COMMENT ON COLUMN oikos.espacio_fisico_padre.padre_id    IS 'Identificador del espacio fisico padre.';
-COMMENT ON COLUMN oikos.espacio_fisico_padre.hijo_id    IS 'Identificador del espacio fisico hijo.';
-COMMENT ON COLUMN oikos.tipo_uso_espacio_fisico.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
-COMMENT ON COLUMN oikos.tipo_uso_espacio_fisico.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
-COMMENT ON CONSTRAINT "uq_hijo_id_espacio_fisico_padre" ON oikos.espacio_fisico_padre    IS 'Restringe que el arbol no se vuelva un grafo.';
-COMMENT ON CONSTRAINT "uq_hijo_id_padre_id_espacio_fisico_padre" ON oikos.espacio_fisico_padre    IS 'Restriccion para que solo pueda existir una unica relacion entre un padre y un hijo.';
+COMMENT ON TABLE oikos.espacio_fisico_padre IS 'Contiene las relaciones de los espacios fisicos.';
+COMMENT ON COLUMN oikos.espacio_fisico_padre.id IS 'Identificador de la tabla.';
+COMMENT ON COLUMN oikos.espacio_fisico_padre.padre_id IS 'Identificador del espacio fisico padre.';
+COMMENT ON COLUMN oikos.espacio_fisico_padre.hijo_id IS 'Identificador del espacio fisico hijo.';
+COMMENT ON COLUMN oikos.espacio_fisico_padre.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
+COMMENT ON COLUMN oikos.espacio_fisico_padre.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
+COMMENT ON CONSTRAINT uq_hijo_id_espacio_fisico_padre ON oikos.espacio_fisico_padre IS 'Restringe que el arbol no se vuelva un grafo.';
+COMMENT ON CONSTRAINT uq_hijo_id_padre_id_espacio_fisico_padre ON oikos.espacio_fisico_padre    IS 'Restriccion para que solo pueda existir una unica relacion entre un padre y un hijo.';
 
 
 CREATE SEQUENCE oikos.tipo_dependencia_id_seq
@@ -222,10 +222,10 @@ CREATE TABLE oikos.dependencia
 );
 
 COMMENT ON TABLE oikos.dependencia  IS 'Tabla que contiene las dependencias de la Universidad Distrital.';
-COMMENT ON COLUMN oikos.dependencia.id    IS 'Identificador de la dependencia.';
-COMMENT ON COLUMN oikos.dependencia.nombre    IS 'Nombre de la dependencia perteneciente a la Universidad Distrital.';
-COMMENT ON COLUMN oikos.dependencia.telefono_dependencia     IS 'Indica el numero de telefono de la dependencia.';
-COMMENT ON COLUMN oikos.dependencia.correo_electronico     IS 'Correo electrónico asociado a la dependencia.';
+COMMENT ON COLUMN oikos.dependencia.id IS 'Identificador de la dependencia.';
+COMMENT ON COLUMN oikos.dependencia.nombre IS 'Nombre de la dependencia perteneciente a la Universidad Distrital.';
+COMMENT ON COLUMN oikos.dependencia.telefono_dependencia IS 'Indica el numero de telefono de la dependencia.';
+COMMENT ON COLUMN oikos.dependencia.correo_electronico IS 'Correo electrónico asociado a la dependencia.';
 COMMENT ON COLUMN oikos.dependencia.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';
 COMMENT ON COLUMN oikos.dependencia.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
 COMMENT ON COLUMN oikos.dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
@@ -242,7 +242,7 @@ CREATE SEQUENCE oikos.dependencia_tipo_dependencia_id_seq
 
 CREATE TABLE oikos.dependencia_tipo_dependencia
 (
-    id integer NOT NULL,
+    id integer NOT NULL DEFAULT nextval('oikos.dependencia_tipo_dependencia_id_seq'::regclass),
     tipo_dependencia_id integer NOT NULL,
     dependencia_id integer NOT NULL,
     activo boolean NOT NULL,
@@ -253,13 +253,13 @@ CREATE TABLE oikos.dependencia_tipo_dependencia
     CONSTRAINT fk_dependencia_dependencia_tipo_dependencia FOREIGN KEY (dependencia_id) REFERENCES oikos.dependencia(id)
 );
 
-COMMENT ON TABLE oikos.dependencia_tipo_dependencia    IS 'Tabla de rompimiento entre tipo_dependencia y dependencia.';
-COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.id    IS 'Identificador de la tabla.';
-COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.tipo_dependencia_id    IS 'Campo que contiene el identificador del tipo dependencia.';
-COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.dependencia_id    IS 'Campo para el id de la dependencia.';
-COMMENT ON COLUMN oikos.dependencia.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';
-COMMENT ON COLUMN oikos.dependencia.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
-COMMENT ON COLUMN oikos.dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
+COMMENT ON TABLE oikos.dependencia_tipo_dependencia IS 'Tabla de rompimiento entre tipo_dependencia y dependencia.';
+COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.id IS 'Identificador de la tabla.';
+COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.tipo_dependencia_id IS 'Campo que contiene el identificador del tipo dependencia.';
+COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.dependencia_id IS 'Campo para el id de la dependencia.';
+COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';
+COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
+COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 
 CREATE SEQUENCE oikos.dependencia_padre_id_seq
 	INCREMENT BY 1
@@ -285,10 +285,10 @@ CREATE TABLE oikos.dependencia_padre
     CONSTRAINT fk_dependencia_dependencia_hija FOREIGN KEY (hija_id) REFERENCES oikos.dependencia(id)
 );
 
-COMMENT ON TABLE oikos.dependencia_padre   IS 'Tabla que contiene las dependencias de la Universidad Distrital';
-COMMENT ON COLUMN oikos.dependencia_padre.id     IS 'Identificador de la dependencia.';
-COMMENT ON COLUMN oikos.dependencia_padre.padre_id     IS 'Id dependencia padre';
-COMMENT ON COLUMN oikos.dependencia_padre.hija_id     IS 'Identificador dependencia hija (si la hay)';
+COMMENT ON TABLE oikos.dependencia_padre IS 'Tabla que contiene las dependencias de la Universidad Distrital';
+COMMENT ON COLUMN oikos.dependencia_padre.id IS 'Identificador de la dependencia.';
+COMMENT ON COLUMN oikos.dependencia_padre.padre_id IS 'Id dependencia padre';
+COMMENT ON COLUMN oikos.dependencia_padre.hija_id IS 'Identificador dependencia hija (si la hay)';
 COMMENT ON COLUMN oikos.dependencia_padre.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';
 COMMENT ON COLUMN oikos.dependencia_padre.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
 COMMENT ON COLUMN oikos.dependencia_padre.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
@@ -304,7 +304,7 @@ CREATE SEQUENCE oikos.asignacion_espacio_fisico_dependencia_id_seq
 
 CREATE TABLE oikos.asignacion_espacio_fisico_dependencia
 (
-    id integer NOT NULL DEFAULT nextval('oikos.dependencia_padre_id_seq'::regclass),
+    id integer NOT NULL DEFAULT nextval('oikos.asignacion_espacio_fisico_dependencia_id_seq'::regclass),
     espacio_fisico_id integer NOT NULL,
     dependencia_id integer NOT NULL,
     activo boolean NOT NULL,
@@ -319,14 +319,12 @@ CREATE TABLE oikos.asignacion_espacio_fisico_dependencia
 );
 
 COMMENT ON TABLE oikos.asignacion_espacio_fisico_dependencia IS 'Tabla de rompimiento que reune los atributos necesarios para la asignacion de un espacio fisico.';
-COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.id  IS 'Identificador de la asignacion del espacio fisico';
-COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.espacio_fisico_id     IS 'Campo que contiene el id, de la llave foranea';
-COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.dependencia_id     IS 'Identificador que contiene el id de dependencia';
+COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.id IS 'Identificador de la asignacion del espacio fisico';
+COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.espacio_fisico_id IS 'Campo que contiene el id, de la llave foranea';
+COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.dependencia_id IS 'Identificador que contiene el id de dependencia';
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_inicio IS 'Fecha de inicio de la asignacion.';
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_fin IS 'Fecha en la que finaliza la asignacion.';
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.documento_soporte IS 'Documento que soporta la asignacion del espacio fisico.';
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
-
-
