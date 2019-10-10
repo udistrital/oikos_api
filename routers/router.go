@@ -70,18 +70,6 @@ func init() {
 			),
 		),
 
-		beego.NSNamespace("/campo",
-			beego.NSInclude(
-				&controllers.CampoController{},
-			),
-		),
-
-		beego.NSNamespace("/espacio_fisico_campo",
-			beego.NSInclude(
-				&controllers.EspacioFisicoCampoController{},
-			),
-		),
-
 		beego.NSNamespace("/dependencia_tipo_dependencia",
 			beego.NSInclude(
 				&controllers.DependenciaTipoDependenciaController{},
