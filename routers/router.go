@@ -82,9 +82,9 @@ func init() {
 			),
 		),
 
-		beego.NSNamespace("/facultad",
+		beego.NSNamespace("/proyecto_curricular",
 			beego.NSInclude(
-				&controllers.FacultadController{},
+				&controllers.ProyectoCurricularController{},
 			),
 		),
 	)

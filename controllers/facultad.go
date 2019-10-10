@@ -11,13 +11,13 @@ import (
 	//"github.com/astaxie/beego/logs"
 )
 
-// FacultadController oprations for Facultad
-type FacultadController struct {
+// ProyectoCurricularController oprations for Facultad
+type ProyectoCurricularController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *FacultadController) URLMapping() {
+func (c *ProyectoCurricularController) URLMapping() {
 	c.Mapping("GetFacultadesYProyectos", c.GetFacultadesYProyectos)
 }
 
@@ -26,8 +26,8 @@ func (c *FacultadController) URLMapping() {
 // @Description Obtener una lista de todas las facultades y sus respectivos proyectos curriculares
 // @Success 200 {object} models.Dependencia
 // @Failure 403 
-// @router /get_facultades_y_proyectos [get]
-func (c *FacultadController) GetFacultadesYProyectos() {
+// @router /get_all_proyectos_by_facultades [get]
+func (c *ProyectoCurricularController) GetFacultadesYProyectos() {
 	l, err := models.GetFacultadesYProyectos()
 	if err != nil {
 		beego.Error(err)

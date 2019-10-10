@@ -331,10 +331,10 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:FacultadController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:FacultadController"],
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:ProyectoCurricularController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:ProyectoCurricularController"],
         beego.ControllerComments{
             Method: "GetFacultadesYProyectos",
-            Router: `/get_facultades_y_proyectos`,
+            Router: `/get_all_proyectos_by_facultades`,
             AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
