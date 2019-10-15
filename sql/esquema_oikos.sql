@@ -211,7 +211,7 @@ CREATE SEQUENCE oikos.dependencia_id_seq
 CREATE TABLE oikos.dependencia
 (
     id integer NOT NULL DEFAULT nextval('oikos.dependencia_id_seq'::regclass),
-    nombre character varying(100) NOT NULL,
+    nombre character varying(130) NOT NULL,
     telefono_dependencia character varying(500) NOT NULL,
     correo_electronico character varying(100),
     activo boolean NOT NULL,

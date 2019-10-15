@@ -20,7 +20,7 @@ func init() {
 // Run the migrations
 func (m *CrearTablaDependencia_20191010_111610) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
-	m.SQL("CREATE TABLE IF NOT EXISTS oikos.dependencia ( id serial NOT NULL, nombre character varying(100) NOT NULL, telefono_dependencia character varying(500) NOT NULL, correo_electronico character varying(100), activo boolean NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_dependencia PRIMARY KEY (id) );")
+	m.SQL("CREATE TABLE IF NOT EXISTS oikos.dependencia ( id serial NOT NULL, nombre character varying(130) NOT NULL, telefono_dependencia character varying(500) NOT NULL, correo_electronico character varying(100), activo boolean NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_dependencia PRIMARY KEY (id) );")
 	m.SQL("ALTER TABLE oikos.dependencia OWNER TO desarrollooas;")
 	m.SQL("COMMENT ON TABLE oikos.dependencia  IS 'Tabla que contiene las dependencias de la Universidad Distrital.';")
 	m.SQL("COMMENT ON COLUMN oikos.dependencia.id IS 'Identificador de la dependencia.';")
