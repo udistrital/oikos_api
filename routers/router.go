@@ -86,66 +86,6 @@ func init() {
 
 	ns2 := beego.NewNamespace("/v2",
 
-		beego.NSNamespace("/tipo_uso",
-			beego.NSInclude(
-				&controllers.TipoUsoController{},
-			),
-		),
-
-		beego.NSNamespace("/dependencia",
-			beego.NSInclude(
-				&controllers.DependenciaController{},
-			),
-		),
-
-		beego.NSNamespace("/espacio_fisico",
-			beego.NSInclude(
-				&controllers.EspacioFisicoController{},
-			),
-		),
-
-		beego.NSNamespace("/espacio_fisico_padre",
-			beego.NSInclude(
-				&controllers.EspacioFisicoPadreController{},
-			),
-		),
-
-		beego.NSNamespace("/tipo_uso_espacio_fisico",
-			beego.NSInclude(
-				&controllers.TipoUsoEspacioFisicoController{},
-			),
-		),
-
-		beego.NSNamespace("/dependencia_padre",
-			beego.NSInclude(
-				&controllers.DependenciaPadreController{},
-			),
-		),
-
-		beego.NSNamespace("/tipo_espacio_fisico",
-			beego.NSInclude(
-				&controllers.TipoEspacioFisicoController{},
-			),
-		),
-
-		beego.NSNamespace("/asignacion_espacio_fisico_dependencia",
-			beego.NSInclude(
-				&controllers.AsignacionEspacioFisicoDependenciaController{},
-			),
-		),
-
-		beego.NSNamespace("/dependencia_tipo_dependencia",
-			beego.NSInclude(
-				&controllers.DependenciaTipoDependenciaController{},
-			),
-		),
-
-		beego.NSNamespace("/tipo_dependencia",
-			beego.NSInclude(
-				&controllers.TipoDependenciaController{},
-			),
-		),
-
 		beego.NSNamespace("/proyecto_curricular",
 			beego.NSInclude(
 				&controllers.ProyectoCurricularController{},
