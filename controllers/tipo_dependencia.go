@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
+	"time"
 	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
@@ -36,7 +36,20 @@ func (c *TipoDependenciaController) URLMapping() {
 func (c *TipoDependenciaController) Post() {
 	var v models.TipoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddTipoDependencia(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		temp := models.TipoDependenciaV2 {
+			Id: v.Id,
+			Nombre: v.Nombre,      		  
+			Descripcion: "Descripción",
+			CodigoAbreviacion: "TU_"+v.Nombre,
+			Activo : true,
+			FechaCreacion  : time.Now(),
+			FechaModificacion  : time.Now(),
+			
+		}
+		//-------------- Temporal: Cambio por transición ------- //
+		if _, err := models.AddTipoDependencia(&temp); err == nil {
+		//if _, err := models.AddTipoDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -71,7 +84,20 @@ func (c *TipoDependenciaController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+	//-------------- Temporal: Cambio por transición ------- //
+	
+		temp := models.TipoDependencia {
+			Id: v.Id,
+			Nombre: v.Nombre, 
+			Descripcion: v.Descripcion,
+			CodigoAbreviacion: v.CodigoAbreviacion,
+			Activo: v.Activo,
+			FechaCreacion: v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,	     		  
+		}
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -140,7 +166,26 @@ func (c *TipoDependenciaController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 		}
-		c.Data["json"] = l
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.TipoDependencia
+		for _, i := range l {
+			field, _ := i.(models.TipoDependenciaV2)
+			x := models.TipoDependencia {
+				Id: field.Id,
+				Nombre: field.Nombre,      
+				Descripcion: field.Descripcion,
+				CodigoAbreviacion: field.CodigoAbreviacion,
+				Activo: field.Activo,
+				FechaCreacion: field.FechaCreacion,
+				FechaModificacion: field.FechaModificacion,		  
+			}
+
+			temp = append(temp,x)
+		}
+				
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -156,7 +201,15 @@ func (c *TipoDependenciaController) GetAll() {
 func (c *TipoDependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.TipoDependencia{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetTipoDependenciaById(id)
+	v := models.TipoDependenciaV2{
+			Id: id,
+			Activo : true,
+			FechaCreacion : infoDep.FechaCreacion,
+			FechaModificacion  : time.Now(),
+	}
+	//v := models.TipoDependencia{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateTipoDependenciaById(&v); err == nil {
 			c.Data["json"] = v
