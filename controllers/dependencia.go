@@ -9,7 +9,7 @@ import (
 	"github.com/udistrital/oikos_api/models"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	//"reflect"
+	"time"
 )
 
 // DependenciaController oprations for Dependencia
@@ -38,7 +38,22 @@ func (c *DependenciaController) URLMapping() {
 func (c *DependenciaController) Post() {
 	var v models.Dependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddDependencia(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		
+		temp := models.DependenciaV2 {
+			Id: v.Id,
+			Nombre: v.Nombre,      		  
+			TelefonoDependencia: v.TelefonoDependencia, 
+			CorreoElectronico: v.CorreoElectronico,
+			Activo : true,
+			FechaCreacion  : time.Now(),
+			FechaModificacion  : time.Now(),
+			
+		}
+	
+		if _, err := models.AddDependencia(&temp); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //	
+		//if _, err := models.AddDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -190,8 +205,18 @@ func (c *DependenciaController) GetAll() {
 func (c *DependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.Dependencia{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetDependenciaById(id)
+	v := models.DependenciaV2{
+		Id: id,
+		Activo : true,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+	//v := models.Dependencia{Id: id} 
+	//-------------- Temporal: Cambio por transición ------- //
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+
 		if err := models.UpdateDependenciaById(&v); err == nil {
 			c.Data["json"] = v
 		} else {

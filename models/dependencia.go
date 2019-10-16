@@ -55,7 +55,7 @@ func init() {
 
 // AddDependencia insert a new Dependencia into database and returns
 // last inserted Id on success.
-func AddDependencia(m *Dependencia) (id int64, err error) {
+func AddDependencia(m *DependenciaV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -150,9 +150,9 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 
 // UpdateDependencia updates Dependencia by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateDependenciaById(m *Dependencia) (err error) {
+func UpdateDependenciaById(m *DependenciaV2) (err error) {
 	o := orm.NewOrm()
-	v := Dependencia{Id: m.Id}
+	v := DependenciaV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -167,11 +167,12 @@ func UpdateDependenciaById(m *Dependencia) (err error) {
 // the record to be deleted doesn't exist
 func DeleteDependencia(id int) (err error) {
 	o := orm.NewOrm()
-	v := Dependencia{Id: id}
+	v := DependenciaV2{Id: id}
+	
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Dependencia{Id: id}); err == nil {
+		if num, err = o.Delete(&DependenciaV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
