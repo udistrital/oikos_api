@@ -85,11 +85,16 @@ func (c *TipoUsoController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-				//-------------- Temporal: Cambio por transición ------- //
+		//-------------- Temporal: Cambio por transición ------- //
 	
 		temp := models.TipoUso {
 			Id: v.Id,
-			Nombre: v.Nombre,      		  
+			Nombre: v.Nombre, 
+			Descripcion: v.Descripcion,
+			CodigoAbreviacion: v.CodigoAbreviacion,
+			Activo: v.Activo,
+			FechaCreacion: v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,	     		  
 		}
 		c.Data["json"] = temp
 		//-------------- Temporal: Cambio por transición ------- //
@@ -162,7 +167,7 @@ func (c *TipoUsoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 		}
-				//-------------- Temporal: Cambio por transición ------- //
+		//-------------- Temporal: Cambio por transición ------- //
 		var temp []models.TipoUso
 		for _, i := range l {
 			field, _ := i.(models.TipoUsoV2)
@@ -170,11 +175,12 @@ func (c *TipoUsoController) GetAll() {
 				Id: field.Id,
 				Nombre: field.Nombre,      
 				Descripcion: field.Descripcion,
-				CodigoAbreviacion: field.Descripcion,
+				CodigoAbreviacion: field.CodigoAbreviacion,
 				Activo: field.Activo,
 				FechaCreacion: field.FechaCreacion,
 				FechaModificacion: field.FechaModificacion,		  
 			}
+
 			temp = append(temp,x)
 		}
 				
