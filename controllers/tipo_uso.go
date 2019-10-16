@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
+	"time"
 	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
@@ -36,7 +36,21 @@ func (c *TipoUsoController) URLMapping() {
 func (c *TipoUsoController) Post() {
 	var v models.TipoUso
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddTipoUso(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		
+		temp := models.TipoUsoV2 {
+			Id: v.Id,
+			Nombre: v.Nombre,      		  
+			Descripcion: "Descripción",
+			CodigoAbreviacion: "TU_"+v.Nombre,
+			Activo : true,
+			FechaCreacion  : time.Now(),
+			FechaModificacion  : time.Now(),
+			
+		}
+		//-------------- Temporal: Cambio por transición ------- //
+		if _, err := models.AddTipoUso(&temp); err == nil {
+		//if _, err := models.AddTipoUso(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -71,7 +85,15 @@ func (c *TipoUsoController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+				//-------------- Temporal: Cambio por transición ------- //
+	
+		temp := models.TipoUso {
+			Id: v.Id,
+			Nombre: v.Nombre,      		  
+		}
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -140,7 +162,26 @@ func (c *TipoUsoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 		}
-		c.Data["json"] = l
+				//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.TipoUso
+		for _, i := range l {
+			field, _ := i.(models.TipoUsoV2)
+			x := models.TipoUso {
+				Id: field.Id,
+				Nombre: field.Nombre,      
+				Descripcion: field.Descripcion,
+				CodigoAbreviacion: field.Descripcion,
+				Activo: field.Activo,
+				FechaCreacion: field.FechaCreacion,
+				FechaModificacion: field.FechaModificacion,		  
+			}
+			temp = append(temp,x)
+		}
+				
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+		
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -156,7 +197,15 @@ func (c *TipoUsoController) GetAll() {
 func (c *TipoUsoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.TipoUso{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetTipoUsoById(id)
+	v := models.TipoUsoV2{
+		Id: id,
+		Activo : true,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+	//v := models.TipoUso{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateTipoUsoById(&v); err == nil {
 			c.Data["json"] = v
