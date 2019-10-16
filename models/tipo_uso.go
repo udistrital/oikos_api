@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -13,12 +14,22 @@ type TipoUso struct {
 	Nombre string `orm:"column(nombre)"`
 }
 
-func (t *TipoUso) TableName() string {
+type TipoUsoV2 struct {
+	Id     			  int    `orm:"column(id);pk;auto"`
+	Nombre 			  string `orm:"column(nombre)"`
+	Descripcion       string    `orm:"column(descripcion);null"`
+	CodigoAbreviacion string    `orm:"column(codigo_abreviacion);null"`
+	Activo            bool      `orm:"column(activo)"`
+	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
+func (t *TipoUsoV2) TableName() string {
 	return "tipo_uso"
 }
 
 func init() {
-	orm.RegisterModel(new(TipoUso))
+	orm.RegisterModel(new(TipoUsoV2))
 }
 
 // AddTipoUso insert a new TipoUso into database and returns

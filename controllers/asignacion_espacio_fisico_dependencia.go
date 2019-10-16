@@ -5,11 +5,10 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
 	"github.com/udistrital/oikos_api/models"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	"time"
 )
 
 // AsignacionEspacioFisicoDependenciaController oprations for AsignacionEspacioFisicoDependencia
@@ -36,7 +35,32 @@ func (c *AsignacionEspacioFisicoDependenciaController) URLMapping() {
 func (c *AsignacionEspacioFisicoDependenciaController) Post() {
 	var v models.AsignacionEspacioFisicoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddAsignacionEspacioFisicoDependencia(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		dc,_ := strconv.Atoi(v.DocumentoSoporte)
+		ef := &models.EspacioFisicoV2 {
+			Id: v.EspacioFisicoId.Id,
+		}
+		d := &models.DependenciaV2 {
+			Id: v.DependenciaId.Id,
+		}
+
+		temp := models.AsignacionEspacioFisicoDependenciaV2 {
+					
+					Id: v.Id,
+					EspacioFisicoId: ef,
+					DependenciaId: d,
+					FechaInicio:  v.FechaInicio,
+					FechaFin: v.FechaFin,
+					DocumentoSoporte: dc, 
+	  /*GetEstado*/ Activo : true ,
+					FechaCreacion  : time.Now(),
+					FechaModificacion  : time.Now(),
+					
+		}
+			
+		if _, err := models.AddAsignacionEspacioFisicoDependencia(&temp); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //	
+		//	if _, err := models.AddAsignacionEspacioFisicoDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -71,7 +95,29 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+		dc := strconv.Itoa(v.DocumentoSoporte)
+		ef := &models.EspacioFisico {
+			Id: v.EspacioFisicoId.Id,
+		}
+		d := &models.Dependencia {
+			Id: v.DependenciaId.Id,
+		}
+
+		temp := models.AsignacionEspacioFisicoDependencia {
+					
+			  Id: v.Id,
+/*GetEstado*/ Estado: "ACTIVO",
+			  FechaInicio:  v.FechaInicio,
+			  FechaFin: v.FechaFin,
+			  DocumentoSoporte: dc, 
+			  EspacioFisicoId: ef,
+			  DependenciaId: d,
+
+		}
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -140,7 +186,34 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 		}
-		c.Data["json"] = l
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.AsignacionEspacioFisicoDependencia
+		for _, i := range l {
+			field, _ := i.(models.AsignacionEspacioFisicoDependenciaV2)
+			dc := strconv.Itoa(field.DocumentoSoporte)
+			ef := &models.EspacioFisico {
+				Id: field.EspacioFisicoId.Id,
+			}
+			d := &models.Dependencia {
+				Id: field.DependenciaId.Id,
+			}
+			x := models.AsignacionEspacioFisicoDependencia {
+				Id: field.Id,
+				Estado: "TRUE",
+				FechaInicio:  field.FechaInicio,
+				FechaFin: field.FechaFin,
+				EspacioFisicoId: ef,
+				DependenciaId: d,
+				DocumentoSoporte: dc, 
+			
+			}
+
+			temp = append(temp,x)
+		}
+		
+		c.Data["json"] = temp
+
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -156,7 +229,17 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 func (c *AsignacionEspacioFisicoDependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.AsignacionEspacioFisicoDependencia{Id: id}
+
+	//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetAsignacionEspacioFisicoDependenciaById(id)
+	v := models.AsignacionEspacioFisicoDependenciaV2{
+		Id: id,
+		Activo : true ,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+	//-------------- Temporal: Cambio por transición ------- //
+	//v := models.AsignacionEspacioFisicoDependencia{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateAsignacionEspacioFisicoDependenciaById(&v); err == nil {
 			c.Data["json"] = v

@@ -6,7 +6,6 @@ import (
 	"reflect"
 	"strings"
 	"time"
-
 	"github.com/astaxie/beego/orm"
 )
 
@@ -17,20 +16,32 @@ type AsignacionEspacioFisicoDependencia struct {
 	FechaFin         time.Time      `orm:"column(fecha_fin);type(date);null"`
 	DocumentoSoporte string         `orm:"column(documento_soporte)"`
 	EspacioFisicoId  *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
-//	DependenciaId    *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
+	DependenciaId    *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
 }
 
-func (t *AsignacionEspacioFisicoDependencia) TableName() string {
+type AsignacionEspacioFisicoDependenciaV2 struct {
+	Id               int                 `orm:"column(id);pk;auto"`
+	EspacioFisicoId  *EspacioFisicoV2    `orm:"column(espacio_fisico_id);rel(fk)"`
+	DependenciaId    *DependenciaV2      `orm:"column(dependencia_id);rel(fk)"`
+	Activo           bool                `orm:"column(activo)"`
+	FechaInicio      time.Time           `orm:"column(fecha_inicio);type(date)"`
+	FechaFin         time.Time           `orm:"column(fecha_fin);type(date);null"`
+	DocumentoSoporte           int       `orm:"column(documento_soporte)"`   
+	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
+func (t *AsignacionEspacioFisicoDependenciaV2) TableName() string {
 	return "asignacion_espacio_fisico_dependencia"
 }
 
 func init() {
-	orm.RegisterModel(new(AsignacionEspacioFisicoDependencia))
+	orm.RegisterModel(new(AsignacionEspacioFisicoDependenciaV2))
 }
 
 // AddAsignacionEspacioFisicoDependencia insert a new AsignacionEspacioFisicoDependencia into database and returns
 // last inserted Id on success.
-func AddAsignacionEspacioFisicoDependencia(m *AsignacionEspacioFisicoDependencia) (id int64, err error) {
+func AddAsignacionEspacioFisicoDependencia(m *AsignacionEspacioFisicoDependenciaV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -38,9 +49,9 @@ func AddAsignacionEspacioFisicoDependencia(m *AsignacionEspacioFisicoDependencia
 
 // GetAsignacionEspacioFisicoDependenciaById retrieves AsignacionEspacioFisicoDependencia by Id. Returns error if
 // Id doesn't exist
-func GetAsignacionEspacioFisicoDependenciaById(id int) (v *AsignacionEspacioFisicoDependencia, err error) {
+func GetAsignacionEspacioFisicoDependenciaById(id int) (v *AsignacionEspacioFisicoDependenciaV2, err error) {
 	o := orm.NewOrm()
-	v = &AsignacionEspacioFisicoDependencia{Id: id}
+	v = &AsignacionEspacioFisicoDependenciaV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -52,7 +63,7 @@ func GetAsignacionEspacioFisicoDependenciaById(id int) (v *AsignacionEspacioFisi
 func GetAllAsignacionEspacioFisicoDependencia(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(AsignacionEspacioFisicoDependencia)).RelatedSel(5)
+	qs := o.QueryTable(new(AsignacionEspacioFisicoDependenciaV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -98,7 +109,7 @@ func GetAllAsignacionEspacioFisicoDependencia(query map[string]string, fields []
 		}
 	}
 
-	var l []AsignacionEspacioFisicoDependencia
+	var l []AsignacionEspacioFisicoDependenciaV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -123,9 +134,9 @@ func GetAllAsignacionEspacioFisicoDependencia(query map[string]string, fields []
 
 // UpdateAsignacionEspacioFisicoDependencia updates AsignacionEspacioFisicoDependencia by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateAsignacionEspacioFisicoDependenciaById(m *AsignacionEspacioFisicoDependencia) (err error) {
+func UpdateAsignacionEspacioFisicoDependenciaById(m *AsignacionEspacioFisicoDependenciaV2) (err error) {
 	o := orm.NewOrm()
-	v := AsignacionEspacioFisicoDependencia{Id: m.Id}
+	v := AsignacionEspacioFisicoDependenciaV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -140,11 +151,11 @@ func UpdateAsignacionEspacioFisicoDependenciaById(m *AsignacionEspacioFisicoDepe
 // the record to be deleted doesn't exist
 func DeleteAsignacionEspacioFisicoDependencia(id int) (err error) {
 	o := orm.NewOrm()
-	v := AsignacionEspacioFisicoDependencia{Id: id}
+	v := AsignacionEspacioFisicoDependenciaV2{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&AsignacionEspacioFisicoDependencia{Id: id}); err == nil {
+		if num, err = o.Delete(&AsignacionEspacioFisicoDependenciaV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

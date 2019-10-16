@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -15,6 +16,15 @@ type DependenciaPadre struct {
 	//Hija  *Dependencia `orm:"column(hija);rel(fk)"`
 }
 
+type DependenciaPadreV2 struct {
+	Id    int          `orm:"column(id);pk;auto"`
+	PadreId *DependenciaV2 `orm:"column(padre_id);rel(fk)"` 
+	HijaId  *DependenciaV2 `orm:"column(hija_id);rel(fk)"`
+	Activo           		   bool      `orm:"column(activo)"`
+	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
 //Estructura para construir el arbol de dependencia
 type TreeDependencia struct {
 	Id       int
@@ -22,12 +32,12 @@ type TreeDependencia struct {
 	Opciones *[]TreeDependencia
 }
 
-func (t *DependenciaPadre) TableName() string {
+func (t *DependenciaPadreV2) TableName() string {
 	return "dependencia_padre"
 }
 
 func init() {
-	orm.RegisterModel(new(DependenciaPadre))
+	orm.RegisterModel(new(DependenciaPadreV2))
 }
 
 // AddDependenciaPadre insert a new DependenciaPadre into database and returns

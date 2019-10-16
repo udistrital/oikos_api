@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -16,12 +17,26 @@ type EspacioFisico struct {
 	Codigo      string             `orm:"column(codigo)"`
 }
 
-func (t *EspacioFisico) TableName() string {
+type EspacioFisicoV2 struct {
+
+	Id                int    			 		`orm:"column(id);pk;auto"`
+	Nombre            string             		`orm:"column(nombre)"`
+	Descripcion       string             		`orm:"column(descripcion);null"`
+	Area              float64           		`orm:"column(area)"`
+	Capacidad         int                		`orm:"column(capacidad)"`
+	CodigoAbreviacion string             		`orm:"column(codigo_abreviacion);null"`
+	Activo            bool               		`orm:"column(activo)"`
+	FechaCreacion     time.Time          		`orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time          		`orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	TipoEspacio 	  *TipoEspacioFisicoV2      `orm:"column(tipo_espacio_fisico_id);rel(fk)"`
+}
+
+func (t *EspacioFisicoV2) TableName() string {
 	return "espacio_fisico"
 }
 
 func init() {
-	orm.RegisterModel(new(EspacioFisico))
+	orm.RegisterModel(new(EspacioFisicoV2))
 }
 
 // AddEspacioFisico insert a new EspacioFisico into database and returns

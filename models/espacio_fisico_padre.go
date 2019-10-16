@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 	"github.com/astaxie/beego/orm"
 )
 
@@ -14,12 +15,20 @@ type EspacioFisicoPadre struct {
 	Hijo  *EspacioFisico `orm:"column(hijo);rel(fk)"`
 }
 
-func (t *EspacioFisicoPadre) TableName() string {
+type EspacioFisicoPadreV2 struct {
+	Id                int              `orm:"column(id);pk;auto"`
+	PadreId           *EspacioFisicoV2 `orm:"column(padre_id);rel(fk)"`
+	HijoId  		  *EspacioFisicoV2 `orm:"column(hijo_id);rel(fk)"`
+	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
+func (t *EspacioFisicoPadreV2) TableName() string {
 	return "espacio_fisico_padre"
 }
 
 func init() {
-	orm.RegisterModel(new(EspacioFisicoPadre))
+	orm.RegisterModel(new(EspacioFisicoPadreV2))
 }
 
 // AddEspacioFisicoPadre insert a new EspacioFisicoPadre into database and returns
