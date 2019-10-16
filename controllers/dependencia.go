@@ -6,11 +6,10 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
 	"github.com/udistrital/oikos_api/models"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+	//"reflect"
 )
 
 // DependenciaController oprations for Dependencia
@@ -21,8 +20,8 @@ type DependenciaController struct {
 // URLMapping ...
 func (c *DependenciaController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	c.Mapping("GetOne", c.GetOne)
-	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetOne", c.GetOne)   //--check
+	c.Mapping("GetAll", c.GetAll)   //--check
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("ProyectosPorFacultad", c.ProyectosPorFacultad)
@@ -74,7 +73,20 @@ func (c *DependenciaController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+	
+  		temp := models.Dependencia {
+				Id: v.Id,
+				Nombre: v.Nombre,      		  
+				TelefonoDependencia: v.TelefonoDependencia, 
+				CorreoElectronico: v.CorreoElectronico,
+				//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+			}
+
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+
+		//c.Data["json"] = v  -------------- Temporal: Cambio por transición ------- //
 	}
 	c.ServeJSON()
 }
@@ -134,6 +146,7 @@ func (c *DependenciaController) GetAll() {
 	}
 
 	l, err := models.GetAllDependencia(query, fields, sortby, order, offset, limit)
+
 	if err != nil {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
@@ -143,7 +156,25 @@ func (c *DependenciaController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 		}
-		c.Data["json"] = l
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.Dependencia
+		for _, i := range l {
+			field, _ := i.(models.DependenciaV2)
+			
+			x := models.Dependencia {
+				Id: field.Id,
+				Nombre: field.Nombre,      		  
+				TelefonoDependencia: field.TelefonoDependencia,
+				CorreoElectronico: field.CorreoElectronico, 
+				//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+			}
+
+			temp = append(temp,x)
+		}
+		
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = l -------------- Temporal: Cambio por transición ------- //
 	}
 	c.ServeJSON()
 }

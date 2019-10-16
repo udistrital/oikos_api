@@ -13,12 +13,17 @@ type TipoDependencia struct {
 	Nombre string `orm:"column(nombre)"`
 }
 
-func (t *TipoDependencia) TableName() string {
+type TipoDependenciaV2 struct {
+	Id     int    `orm:"column(id);pk;auto"`
+	Nombre string `orm:"column(nombre)"`
+} 
+
+func (t *TipoDependenciaV2) TableName() string {
 	return "tipo_dependencia"
 }
 
 func init() {
-	orm.RegisterModel(new(TipoDependencia))
+	orm.RegisterModel(new(TipoDependenciaV2))
 }
 
 // AddTipoDependencia insert a new TipoDependencia into database and returns

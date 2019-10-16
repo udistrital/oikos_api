@@ -17,7 +17,7 @@ type AsignacionEspacioFisicoDependencia struct {
 	FechaFin         time.Time      `orm:"column(fecha_fin);type(date);null"`
 	DocumentoSoporte string         `orm:"column(documento_soporte)"`
 	EspacioFisicoId  *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
-	DependenciaId    *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
+//	DependenciaId    *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
 }
 
 func (t *AsignacionEspacioFisicoDependencia) TableName() string {

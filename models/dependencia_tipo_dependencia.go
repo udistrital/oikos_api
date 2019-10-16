@@ -14,12 +14,18 @@ type DependenciaTipoDependencia struct {
 	DependenciaId     *Dependencia     `orm:"column(dependencia_id);rel(fk)"`
 }
 
-func (t *DependenciaTipoDependencia) TableName() string {
+type DependenciaTipoDependenciaV2 struct {
+	Id                int              `orm:"column(id);pk;auto"`
+	TipoDependenciaId *TipoDependenciaV2 `orm:"column(tipo_dependencia_id);rel(fk)"`
+	DependenciaId     *DependenciaV2     `orm:"column(dependencia_id);rel(fk)"`
+}
+
+func (t *DependenciaTipoDependenciaV2) TableName() string {
 	return "dependencia_tipo_dependencia"
 }
 
 func init() {
-	orm.RegisterModel(new(DependenciaTipoDependencia))
+	orm.RegisterModel(new(DependenciaTipoDependenciaV2))
 }
 
 // AddDependenciaTipoDependencia insert a new DependenciaTipoDependencia into database and returns

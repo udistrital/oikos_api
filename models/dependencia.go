@@ -8,6 +8,7 @@ import (
 	"strings"
 	"container/list"
 	"github.com/astaxie/beego/orm"
+	"time"
 )
 
 var elementMap = make(map[int]DependenciaPadreHijo)
@@ -22,18 +23,32 @@ type Dependencia struct {
 
 }
 
+type DependenciaV2 struct {
+	Id     			 		   int    	`orm:"column(id);pk;auto"`
+	Nombre            		   string 	`orm:"column(nombre)"`
+	TelefonoDependencia        string    `orm:"column(telefono_dependencia)"`
+	CorreoElectronico          string    `orm:"column(correo_electronico)"`
+	Activo           		   bool      `orm:"column(activo)"`
+	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	DependenciaTipoDependencia []*DependenciaTipoDependenciaV2 `orm:"reverse(many)"`
+
+	
+}
+
 //Estructura para traer el ID y el nombre de cada proyecto curriculares
 type ProyectosCurriculares struct {
 	Id     int
 	Nombre string
 }
 
-func (t *Dependencia) TableName() string {
+func (t *DependenciaV2) TableName() string {
 	return "dependencia"
 }
 
 func init() {
-	orm.RegisterModel(new(Dependencia))
+	//orm.RegisterModel(new(Dependencia))
+	orm.RegisterModel(new(DependenciaV2))
 }
 
 
@@ -48,9 +63,9 @@ func AddDependencia(m *Dependencia) (id int64, err error) {
 
 // GetDependenciaById retrieves Dependencia by Id. Returns error if
 // Id doesn't exist
-func GetDependenciaById(id int) (v *Dependencia, err error) {
+func GetDependenciaById(id int) (v *DependenciaV2, err error) {
 	o := orm.NewOrm()
-	v = &Dependencia{Id: id}
+	v = &DependenciaV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -62,7 +77,8 @@ func GetDependenciaById(id int) (v *Dependencia, err error) {
 func GetAllDependencia(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Dependencia)).RelatedSel(5)
+	qs := o.QueryTable(new(DependenciaV2)).RelatedSel(5)
+	fmt.Println("hola soy qs:",qs)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -108,7 +124,7 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 		}
 	}
 
-	var l []Dependencia
+	var l []DependenciaV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
