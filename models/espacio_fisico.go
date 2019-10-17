@@ -47,7 +47,7 @@ func init() {
 
 // AddEspacioFisico insert a new EspacioFisico into database and returns
 // last inserted Id on success.
-func AddEspacioFisico(m *EspacioFisico) (id int64, err error) {
+func AddEspacioFisico(m *EspacioFisicoV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -55,9 +55,9 @@ func AddEspacioFisico(m *EspacioFisico) (id int64, err error) {
 
 // GetEspacioFisicoById retrieves EspacioFisico by Id. Returns error if
 // Id doesn't exist
-func GetEspacioFisicoById(id int) (v *EspacioFisico, err error) {
+func GetEspacioFisicoById(id int) (v *EspacioFisicoV2, err error) {
 	o := orm.NewOrm()
-	v = &EspacioFisico{Id: id}
+	v = &EspacioFisicoV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -69,7 +69,7 @@ func GetEspacioFisicoById(id int) (v *EspacioFisico, err error) {
 func GetAllEspacioFisico(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(EspacioFisico)).RelatedSel(5)
+	qs := o.QueryTable(new(EspacioFisicoV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -115,7 +115,7 @@ func GetAllEspacioFisico(query map[string]string, fields []string, sortby []stri
 		}
 	}
 
-	var l []EspacioFisico
+	var l []EspacioFisicoV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -140,9 +140,9 @@ func GetAllEspacioFisico(query map[string]string, fields []string, sortby []stri
 
 // UpdateEspacioFisico updates EspacioFisico by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateEspacioFisicoById(m *EspacioFisico) (err error) {
+func UpdateEspacioFisicoById(m *EspacioFisicoV2) (err error) {
 	o := orm.NewOrm()
-	v := EspacioFisico{Id: m.Id}
+	v := EspacioFisicoV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -157,11 +157,11 @@ func UpdateEspacioFisicoById(m *EspacioFisico) (err error) {
 // the record to be deleted doesn't exist
 func DeleteEspacioFisico(id int) (err error) {
 	o := orm.NewOrm()
-	v := EspacioFisico{Id: id}
+	v := EspacioFisicoV2{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&EspacioFisico{Id: id}); err == nil {
+		if num, err = o.Delete(&EspacioFisicoV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

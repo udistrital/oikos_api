@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
+	"time"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/oikos_api/models"
@@ -37,7 +37,28 @@ func (c *EspacioFisicoController) URLMapping() {
 func (c *EspacioFisicoController) Post() {
 	var v models.EspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddEspacioFisico(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		
+		te := &models.TipoEspacioFisicoV2 {
+			Id: v.TipoEspacio.Id,
+		}
+
+		temp := models.EspacioFisicoV2 {
+			Id  :   v.Id,          
+			Nombre:  v.Nombre,    
+			Descripcion:  "Descripción",    
+			Area  :  0 ,        
+			Capacidad :    0  ,  
+			CodigoAbreviacion : v.Codigo,
+			Activo   : true,     //v.Estado
+			FechaCreacion :  time.Now(),   
+			FechaModificacion :  time.Now(),		
+			TipoEspacio : te,	      
+		}
+
+		if _, err := models.AddEspacioFisico(&temp); err == nil {
+
+		//if _, err := models.AddEspacioFisico(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -72,7 +93,34 @@ func (c *EspacioFisicoController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+		te := &models.TipoEspacioFisico {
+				Id: v.TipoEspacio.Id,
+				Nombre: v.TipoEspacio.Nombre, 
+				Descripcion: v.TipoEspacio.Descripcion,
+				CodigoAbreviacion: v.TipoEspacio.CodigoAbreviacion,
+				Activo: v.TipoEspacio.Activo,
+				FechaCreacion: v.TipoEspacio.FechaCreacion,
+				FechaModificacion: v.TipoEspacio.FechaModificacion,	     		  
+		}
+
+		temp := models.EspacioFisico {
+			Id: v.Id,
+			Nombre: v.Nombre,   
+			Codigo: v.CodigoAbreviacion,
+			Estado: "ACTIVO",  //v.Activo
+			Descripcion:  v.Descripcion,    
+			Area  :  v.Area ,        
+			Capacidad : v.Capacidad ,  
+			FechaCreacion :  v.FechaCreacion,   
+			FechaModificacion :  v.FechaModificacion,		
+			TipoEspacio : te,	
+			//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+		}
+
+	c.Data["json"] = temp
+	//-------------- Temporal: Cambio por transición ------- //
+	//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -141,7 +189,41 @@ func (c *EspacioFisicoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 		}
-		c.Data["json"] = l
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.EspacioFisico
+		for _, i := range l {
+			field, _ := i.(models.EspacioFisicoV2)
+
+			te := &models.TipoEspacioFisico {
+				Id: field.TipoEspacio.Id,
+				Nombre: field.TipoEspacio.Nombre, 
+				Descripcion: field.TipoEspacio.Descripcion,
+				CodigoAbreviacion: field.TipoEspacio.CodigoAbreviacion,
+				Activo: field.TipoEspacio.Activo,
+				FechaCreacion: field.TipoEspacio.FechaCreacion,
+				FechaModificacion: field.TipoEspacio.FechaModificacion,	     		  
+			}
+			
+			x := models.EspacioFisico {
+				Id: field.Id,
+				Nombre: field.Nombre,   
+				Codigo: field.CodigoAbreviacion,
+				Estado: "ACTIVO",  //field.Activo
+				Descripcion:  field.Descripcion,    
+				Area  :  field.Area ,        
+				Capacidad : field.Capacidad ,  
+				FechaCreacion :  field.FechaCreacion,   
+				FechaModificacion :  field.FechaModificacion,		
+				TipoEspacio : te,	
+				//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+			}
+
+			temp = append(temp,x)
+		}
+		
+		c.Data["json"] = temp
+	
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -157,7 +239,15 @@ func (c *EspacioFisicoController) GetAll() {
 func (c *EspacioFisicoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.EspacioFisico{Id: id}
+	infoDep, _ := models.GetEspacioFisicoById(id)
+	v := models.EspacioFisicoV2{
+		Id: id,
+		Activo : true,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+
+	//v := models.EspacioFisico{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateEspacioFisicoById(&v); err == nil {
 			c.Data["json"] = v
