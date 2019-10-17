@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
+	"time"
 	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
@@ -36,7 +36,27 @@ func (c *EspacioFisicoPadreController) URLMapping() {
 func (c *EspacioFisicoPadreController) Post() {
 	var v models.EspacioFisicoPadre
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddEspacioFisicoPadre(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		
+		efp := &models.EspacioFisicoV2 {
+			Id: v.Padre.Id,
+		}
+
+		efh := &models.EspacioFisicoV2 {
+			Id: v.Hijo.Id,
+		}
+
+		temp := models.EspacioFisicoPadreV2 {
+			Id: v.Id,
+			PadreId: efp,
+			HijoId: efh,
+			FechaCreacion  : time.Now(),
+			FechaModificacion  : time.Now(),
+			
+		}
+		//-------------- Temporal: Cambio por transición ------- //
+		if _, err := models.AddEspacioFisicoPadre(&temp); err == nil {
+		//if _, err := models.AddEspacioFisicoPadre(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -71,7 +91,26 @@ func (c *EspacioFisicoPadreController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+	//-------------- Temporal: Cambio por transición ------- //
+
+	efp := &models.EspacioFisico {
+		Id : v.PadreId.Id,            			 		
+	}
+
+	efh := &models.EspacioFisico {
+		Id : v.HijoId.Id,            			 		
+	}
+	
+	temp := models.EspacioFisicoPadre {
+				Id: v.Id,
+				Padre: efp,
+				Hijo: efh,
+				FechaCreacion: v.FechaCreacion,
+				FechaModificacion: v.FechaModificacion,		  
+		}
+
+	c.Data["json"] = temp	
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -140,7 +179,75 @@ func (c *EspacioFisicoPadreController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 		}
-		c.Data["json"] = l
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.EspacioFisicoPadre
+		for _, i := range l {
+			field, _ := i.(models.EspacioFisicoPadreV2)
+			
+			tefp := &models.TipoEspacioFisico {
+				Id: field.PadreId.TipoEspacio.Id,
+				Nombre: field.PadreId.TipoEspacio.Nombre,      		  
+				Descripcion: field.PadreId.TipoEspacio.Descripcion,
+				CodigoAbreviacion: field.PadreId.TipoEspacio.CodigoAbreviacion,
+				Activo : field.PadreId.TipoEspacio.Activo,
+				FechaCreacion  : field.PadreId.TipoEspacio.FechaCreacion,
+				FechaModificacion  : field.PadreId.TipoEspacio.FechaModificacion,
+				
+			}
+		
+			tefh := &models.TipoEspacioFisico {
+				Id: field.HijoId.TipoEspacio.Id,
+				Nombre: field.HijoId.TipoEspacio.Nombre,      		  
+				Descripcion: field.HijoId.TipoEspacio.Descripcion,
+				CodigoAbreviacion: field.HijoId.TipoEspacio.CodigoAbreviacion,
+				Activo : field.HijoId.TipoEspacio.Activo,
+				FechaCreacion  : field.HijoId.TipoEspacio.FechaCreacion,
+				FechaModificacion  : field.HijoId.TipoEspacio.FechaModificacion,
+				
+			}
+		
+			efp := &models.EspacioFisico {
+				Id : field.PadreId.Id,            			 		
+				Nombre  : field.PadreId.Nombre,
+				Estado: "ACTIVO",
+				Codigo: field.PadreId.CodigoAbreviacion ,        	
+				Descripcion :  field.PadreId.Descripcion    ,      		
+				Area:  field.PadreId.Area      ,    	
+				Capacidad:  field.PadreId.Capacidad      ,         		
+				FechaCreacion :  field.PadreId.FechaCreacion    ,
+				FechaModificacion:  field.PadreId.FechaModificacion ,
+				TipoEspacio: tefp ,
+			}
+		
+			efh := &models.EspacioFisico {
+				Id : field.HijoId.Id,            			 		
+				Nombre  : field.HijoId.Nombre,
+				Estado: "ACTIVO",
+				Codigo: field.HijoId.CodigoAbreviacion,         	
+				Descripcion :  field.HijoId.Descripcion    ,      		
+				Area:  field.HijoId.Area      ,    	
+				Capacidad:  field.HijoId.Capacidad      ,         		
+				FechaCreacion :  field.HijoId.FechaCreacion    ,
+				FechaModificacion: field.HijoId.FechaModificacion ,
+				TipoEspacio: tefh ,
+			}
+			
+			x := models.EspacioFisicoPadre {
+						Id: field.Id,
+						Padre: efp,
+						Hijo: efh,
+						FechaCreacion: field.FechaCreacion,
+						FechaModificacion: field.FechaModificacion,		  
+				
+					}
+		
+
+			temp = append(temp,x)
+		}
+		
+		c.Data["json"] = temp
+
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -156,7 +263,15 @@ func (c *EspacioFisicoPadreController) GetAll() {
 func (c *EspacioFisicoPadreController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.EspacioFisicoPadre{Id: id}
+		//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetEspacioFisicoPadreById(id)
+	v := models.EspacioFisicoPadreV2{
+		Id: id,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+
+	//v := models.EspacioFisicoPadre{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateEspacioFisicoPadreById(&v); err == nil {
 			c.Data["json"] = v

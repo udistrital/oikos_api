@@ -10,11 +10,17 @@ import (
 )
 
 type EspacioFisico struct {
-	Id          int                `orm:"column(id);pk;auto"`
-	Estado      string             `orm:"column(estado)"`
-	TipoEspacio *TipoEspacioFisico `orm:"column(tipo_espacio);rel(fk)"`
-	Nombre      string             `orm:"column(nombre)"`
-	Codigo      string             `orm:"column(codigo)"`
+	Id         		    int                `orm:"column(id);pk;auto"`
+	Nombre      		string             `orm:"column(nombre)"`
+	Descripcion      	string             `orm:"column(descripcion);null"`
+	Area              	float64            `orm:"column(area)"`
+	Capacidad         	int                `orm:"column(capacidad)"`
+	Codigo      		string             `orm:"column(codigo)"`
+	Estado      		string             `orm:"column(estado)"`
+	FechaCreacion       time.Time          `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion   time.Time           `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	TipoEspacio        *TipoEspacioFisico   `orm:"column(tipo_espacio);rel(fk)"`
+
 }
 
 type EspacioFisicoV2 struct {
