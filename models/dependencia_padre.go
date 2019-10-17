@@ -12,14 +12,18 @@ import (
 
 type DependenciaPadre struct {
 	Id    int          `orm:"column(id);pk;auto"`
-	//Padre *Dependencia `orm:"column(padre);rel(fk)"`
-	//Hija  *Dependencia `orm:"column(hija);rel(fk)"`
+	Padre *Dependencia `orm:"column(padre);rel(fk)"`
+	Hija  *Dependencia `orm:"column(hija);rel(fk)"`
+	Activo           		   bool      `orm:"column(activo)"`
+	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+
 }
 
 type DependenciaPadreV2 struct {
-	Id    int          `orm:"column(id);pk;auto"`
-	PadreId *DependenciaV2 `orm:"column(padre_id);rel(fk)"` 
-	HijaId  *DependenciaV2 `orm:"column(hija_id);rel(fk)"`
+	Id                         int          `orm:"column(id);pk;auto"`
+	PadreId 				  *DependenciaV2 `orm:"column(padre_id);rel(fk)"` 
+	HijaId                    *DependenciaV2 `orm:"column(hija_id);rel(fk)"`
 	Activo           		   bool      `orm:"column(activo)"`
 	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
@@ -42,7 +46,7 @@ func init() {
 
 // AddDependenciaPadre insert a new DependenciaPadre into database and returns
 // last inserted Id on success.
-func AddDependenciaPadre(m *DependenciaPadre) (id int64, err error) {
+func AddDependenciaPadre(m *DependenciaPadreV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -50,12 +54,13 @@ func AddDependenciaPadre(m *DependenciaPadre) (id int64, err error) {
 
 // GetDependenciaPadreById retrieves DependenciaPadre by Id. Returns error if
 // Id doesn't exist
-func GetDependenciaPadreById(id int) (v *DependenciaPadre, err error) {
+func GetDependenciaPadreById(id int) (v *DependenciaPadreV2, err error) {
 	o := orm.NewOrm()
-	v = &DependenciaPadre{Id: id}
+	v = &DependenciaPadreV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
+	
 	return nil, err
 }
 
@@ -64,7 +69,7 @@ func GetDependenciaPadreById(id int) (v *DependenciaPadre, err error) {
 func GetAllDependenciaPadre(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(DependenciaPadre)).RelatedSel(5)
+	qs := o.QueryTable(new(DependenciaPadreV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -110,7 +115,7 @@ func GetAllDependenciaPadre(query map[string]string, fields []string, sortby []s
 		}
 	}
 
-	var l []DependenciaPadre
+	var l []DependenciaPadreV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -135,9 +140,9 @@ func GetAllDependenciaPadre(query map[string]string, fields []string, sortby []s
 
 // UpdateDependenciaPadre updates DependenciaPadre by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateDependenciaPadreById(m *DependenciaPadre) (err error) {
+func UpdateDependenciaPadreById(m *DependenciaPadreV2) (err error) {
 	o := orm.NewOrm()
-	v := DependenciaPadre{Id: m.Id}
+	v := DependenciaPadreV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -152,11 +157,11 @@ func UpdateDependenciaPadreById(m *DependenciaPadre) (err error) {
 // the record to be deleted doesn't exist
 func DeleteDependenciaPadre(id int) (err error) {
 	o := orm.NewOrm()
-	v := DependenciaPadre{Id: id}
+	v := DependenciaPadreV2{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&DependenciaPadre{Id: id}); err == nil {
+		if num, err = o.Delete(&DependenciaPadreV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

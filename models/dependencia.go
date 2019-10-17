@@ -78,7 +78,6 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
 	qs := o.QueryTable(new(DependenciaV2)).RelatedSel(5)
-	fmt.Println("hola soy qs:",qs)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
