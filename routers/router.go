@@ -82,6 +82,17 @@ func init() {
 			),
 		),
 
+		beego.NSNamespace("/campo",
+			beego.NSInclude(
+				&controllers.CampoController{},
+			),
+		),
+
+		beego.NSNamespace("/espacio_fisico_campo",
+			beego.NSInclude(
+				&controllers.EspacioFisicoCampoController{},
+			),
+		),
 	)
 
 	ns2 := beego.NewNamespace("/v2",
