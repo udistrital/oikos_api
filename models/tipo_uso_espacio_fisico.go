@@ -13,6 +13,10 @@ type TipoUsoEspacioFisico struct {
 	Id              int            `orm:"column(id);pk;auto"`
 	TipoUsoId       *TipoUso       `orm:"column(tipo_uso_id);rel(fk)"`
 	EspacioFisicoId *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
+	Activo            bool             `orm:"column(activo)"`
+	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+
 }
 
 type TipoUsoEspacioFisicoV2 struct {
@@ -34,7 +38,7 @@ func init() {
 
 // AddTipoUsoEspacioFisico insert a new TipoUsoEspacioFisico into database and returns
 // last inserted Id on success.
-func AddTipoUsoEspacioFisico(m *TipoUsoEspacioFisico) (id int64, err error) {
+func AddTipoUsoEspacioFisico(m *TipoUsoEspacioFisicoV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -42,9 +46,9 @@ func AddTipoUsoEspacioFisico(m *TipoUsoEspacioFisico) (id int64, err error) {
 
 // GetTipoUsoEspacioFisicoById retrieves TipoUsoEspacioFisico by Id. Returns error if
 // Id doesn't exist
-func GetTipoUsoEspacioFisicoById(id int) (v *TipoUsoEspacioFisico, err error) {
+func GetTipoUsoEspacioFisicoById(id int) (v *TipoUsoEspacioFisicoV2, err error) {
 	o := orm.NewOrm()
-	v = &TipoUsoEspacioFisico{Id: id}
+	v = &TipoUsoEspacioFisicoV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -56,7 +60,7 @@ func GetTipoUsoEspacioFisicoById(id int) (v *TipoUsoEspacioFisico, err error) {
 func GetAllTipoUsoEspacioFisico(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(TipoUsoEspacioFisico)).RelatedSel(5)
+	qs := o.QueryTable(new(TipoUsoEspacioFisicoV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -102,7 +106,7 @@ func GetAllTipoUsoEspacioFisico(query map[string]string, fields []string, sortby
 		}
 	}
 
-	var l []TipoUsoEspacioFisico
+	var l []TipoUsoEspacioFisicoV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -127,9 +131,9 @@ func GetAllTipoUsoEspacioFisico(query map[string]string, fields []string, sortby
 
 // UpdateTipoUsoEspacioFisico updates TipoUsoEspacioFisico by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateTipoUsoEspacioFisicoById(m *TipoUsoEspacioFisico) (err error) {
+func UpdateTipoUsoEspacioFisicoById(m *TipoUsoEspacioFisicoV2) (err error) {
 	o := orm.NewOrm()
-	v := TipoUsoEspacioFisico{Id: m.Id}
+	v := TipoUsoEspacioFisicoV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -148,7 +152,7 @@ func DeleteTipoUsoEspacioFisico(id int) (err error) {
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&TipoUsoEspacioFisico{Id: id}); err == nil {
+		if num, err = o.Delete(&TipoUsoEspacioFisicoV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
