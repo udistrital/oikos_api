@@ -95,7 +95,6 @@ func (c *DependenciaPadreController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		fmt.Println(v.PadreId)
 		dp := &models.Dependencia {
 			Id: v.PadreId.Id,
 			Nombre: v.PadreId.Nombre,
