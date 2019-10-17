@@ -328,3 +328,76 @@ COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_fin IS 'Fech
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.documento_soporte IS 'Documento que soporta la asignacion del espacio fisico.';
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
+
+
+
+--!!!!--
+--!!!!--
+--!!!!--
+CREATE SEQUENCE oikos.campo_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+
+
+CREATE TABLE oikos.campo
+(
+    id integer NOT NULL DEFAULT nextval('oikos.campo_id_seq'::regclass),
+	nombre character varying(100) NOT NULL,     -- 
+	descripcion character varying(100),
+	codigo_abreviacion character varying(20),
+	activo boolean NOT NULL,
+	fecha_creacion TIMESTAMP NOT NULL,
+	fecha_modificacion TIMESTAMP NOT NULL,
+	CONSTRAINT pk_campo PRIMARY KEY (id)
+);
+
+COMMENT ON TABLE oikos.campo IS 'Tabla de los campos o atributos que se necesiten en un espacio fisico.';
+COMMENT ON COLUMN oikos.campo.id IS 'Identificador de la tabla.';
+COMMENT ON COLUMN oikos.campo.nombre IS 'Nombre del nuevo campo que se requiere para espacios fisicos.';
+COMMENT ON COLUMN oikos.campo.descripcion IS 'Campo en el que se puede registrar una descripcion de la informacion del nuevo campo.';
+COMMENT ON COLUMN oikos.campo.codigo_abreviacion IS 'Código de abreviación, sigla, acrónimo u otra representación corta del registro si se requiere.';
+COMMENT ON COLUMN oikos.campo.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';
+COMMENT ON COLUMN oikos.campo.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
+COMMENT ON COLUMN oikos.campo.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
+
+CREATE SEQUENCE oikos.espacio_fisico_campo_id_seq
+	INCREMENT BY 1
+	MINVALUE 1
+	MAXVALUE 9223372036854775807
+	START WITH 1
+	CACHE 1
+	NO CYCLE
+	OWNED BY NONE;
+
+CREATE TABLE oikos.espacio_fisico_campo
+(
+    id integer NOT NULL DEFAULT nextval('oikos.espacio_fisico_campo_id_seq'::regclass),
+	valor character varying(50) NOT NULL,
+    espacio_fisico_id integer NOT NULL,
+    campo_id integer NOT NULL,
+    activo boolean NOT NULL,
+    fecha_inicio TIMESTAMP NOT NULL,
+    fecha_fin TIMESTAMP,
+	fecha_creacion TIMESTAMP NOT NULL,
+	fecha_modificacion TIMESTAMP NOT NULL,
+    CONSTRAINT pk_espacio_fisico_campo PRIMARY KEY (id),
+    CONSTRAINT fk_espacio_fisico_espacio_fisico_campo FOREIGN KEY (espacio_fisico_id) REFERENCES oikos.espacio_fisico(id),
+    CONSTRAINT fk_campo_espacio_fisico_campo FOREIGN KEY (campo_id) REFERENCES oikos.campo(id),
+	CONSTRAINT UQ_CAMPO UNIQUE (campo_id, espacio_fisico_id)
+);
+
+COMMENT ON TABLE oikos.espacio_fisico_campo IS 'Tabla de rompimiento entre campo y espacio_fisico.';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.id IS 'Identificador de la asignacion del espacio fisico.';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.valor IS 'Valor del nuevo campo para el espacio fisico.';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.espacio_fisico_id IS 'Identificador de la tabla espacio fisico.';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.campo_id IS 'Identificador de la tabla campo';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_inicio IS 'Fecha de inicio de la asignacion.';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_fin IS 'Fecha en la que finaliza la asignacion.';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
+COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
