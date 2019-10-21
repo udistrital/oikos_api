@@ -6,7 +6,7 @@ import (
 	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
-
+	"time"
 	"github.com/astaxie/beego"
 )
 
@@ -34,7 +34,20 @@ func (c *CampoController) URLMapping() {
 func (c *CampoController) Post() {
 	var v models.Campo
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddCampo(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+	
+		temp := models.CampoV2 {
+			Id  :   v.Id,          
+			Nombre:  v.Nombre,    
+			Descripcion:  v.Descripcion,    
+			CodigoAbreviacion : "C_"+v.Nombre,
+			Activo   : true,     //v.Estado
+			FechaCreacion :  time.Now(),   
+			FechaModificacion :  time.Now(),		
+		    
+		}
+		if _, err := models.AddCampo(&temp); err == nil {
+		//if _, err := models.AddCampo(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -60,7 +73,20 @@ func (c *CampoController) GetOne() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = v
+
+	temp := models.Campo {
+		Id: v.Id,
+		Nombre: v.Nombre,   
+		Descripcion:  v.Descripcion,   
+		CodigoAbreviacion: v.CodigoAbreviacion,
+		Activo: v.Activo, 
+		FechaCreacion :  v.FechaCreacion,   
+		FechaModificacion :  v.FechaModificacion,		
+	}
+
+	c.Data["json"] = temp
+//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -123,7 +149,25 @@ func (c *CampoController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = l
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.Campo
+		for _, i := range l {
+			field, _ := i.(models.CampoV2)
+
+			x := models.Campo {
+				Id: field.Id,
+				Nombre: field.Nombre,   
+				Descripcion:  field.Descripcion,   
+				CodigoAbreviacion: field.CodigoAbreviacion,
+				Activo: field.Activo, 
+				FechaCreacion :  field.FechaCreacion,   
+				FechaModificacion :  field.FechaModificacion,		
+			}
+
+			temp = append(temp,x)
+		}
+		c.Data["json"] = temp
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -139,7 +183,15 @@ func (c *CampoController) GetAll() {
 func (c *CampoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.Campo{Id: id}
+	infoDep, _ := models.GetCampoById(id)
+	v := models.CampoV2{
+		Id: id,
+		Activo : true,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+
+	//v := models.Campo{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateCampoById(&v); err == nil {
 			c.Data["json"] = "OK"

@@ -16,12 +16,19 @@ type EspacioFisicoCampo struct {
 	Campo         *Campo         `orm:"column(campo);rel(fk)"`
 }
 
-func (t *EspacioFisicoCampo) TableName() string {
+type EspacioFisicoCampoV2 struct {
+	Id            int            `orm:"column(id);pk;auto"`
+	Valor         string         `orm:"column(valor)"`
+	EspacioFisico *EspacioFisicoV2 `orm:"column(espacio_fisico);rel(fk)"`
+	Campo         *CampoV2         `orm:"column(campo);rel(fk)"`
+}
+
+func (t *EspacioFisicoCampoV2) TableName() string {
 	return "espacio_fisico_campo"
 }
 
 func init() {
-	orm.RegisterModel(new(EspacioFisicoCampo))
+	orm.RegisterModel(new(EspacioFisicoCampoV2))
 }
 
 // AddEspacioFisicoCampo insert a new EspacioFisicoCampo into database and returns
