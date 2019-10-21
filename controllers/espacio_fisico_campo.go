@@ -6,8 +6,9 @@ import (
 	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
-
+	"time"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 // EspacioFisicoCampoController oprations for EspacioFisicoCampo
@@ -34,14 +35,41 @@ func (c *EspacioFisicoCampoController) URLMapping() {
 func (c *EspacioFisicoCampoController) Post() {
 	var v models.EspacioFisicoCampo
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddEspacioFisicoCampo(&v); err == nil {
+		ca := &models.CampoV2 {
+			Id: v.Campo.Id,
+		}
+
+		ef := &models.EspacioFisicoV2 {
+			Id: v.EspacioFisico.Id,
+		}
+
+		temp := models.EspacioFisicoCampoV2 {
+			Id: v.Id,
+			Valor: v.Valor,
+			CampoId: ca,
+			EspacioFisicoId: ef,
+			FechaInicio: time.Now(),
+			Activo : true,
+			FechaCreacion  : time.Now(),
+			FechaModificacion  : time.Now(),
+			
+		}
+		//-------------- Temporal: Cambio por transición ------- //
+		if _, err := models.AddEspacioFisicoCampo(&temp); err == nil {
+		//if _, err := models.AddEspacioFisicoCampo(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -60,7 +88,54 @@ func (c *EspacioFisicoCampoController) GetOne() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+		te := &models.TipoEspacioFisico {
+			Id: v.EspacioFisicoId.TipoEspacio.Id,
+			Nombre: v.EspacioFisicoId.TipoEspacio.Nombre, 
+			Descripcion: v.EspacioFisicoId.TipoEspacio.Descripcion,
+			CodigoAbreviacion: v.EspacioFisicoId.TipoEspacio.CodigoAbreviacion,
+			Activo: v.EspacioFisicoId.TipoEspacio.Activo,
+			FechaCreacion: v.EspacioFisicoId.TipoEspacio.FechaCreacion,
+			FechaModificacion: v.EspacioFisicoId.TipoEspacio.FechaModificacion,	     		  
+		}
+
+		ca := &models.Campo {
+			Id: v.CampoId.Id,
+			Nombre: v.CampoId.Nombre,      
+			Descripcion: v.CampoId.Descripcion,
+			CodigoAbreviacion: v.CampoId.CodigoAbreviacion,
+			Activo: v.CampoId.Activo,
+			FechaCreacion: v.CampoId.FechaCreacion,
+			FechaModificacion: v.CampoId.FechaModificacion,		
+		}
+
+		ef := &models.EspacioFisico {
+			Id: v.EspacioFisicoId.Id,
+			Nombre: v.EspacioFisicoId.Nombre,      
+			Descripcion: v.EspacioFisicoId.Descripcion,
+			Codigo: v.EspacioFisicoId.CodigoAbreviacion,
+			Estado: "v.EspacioFisicoId.Activo",
+			FechaCreacion: v.EspacioFisicoId.FechaCreacion,
+			FechaModificacion: v.EspacioFisicoId.FechaModificacion,		
+			TipoEspacio: te,
+		}
+
+		temp := models.EspacioFisicoCampo {
+			Id: v.Id,
+			Valor: v.Valor,
+			Campo: ca,
+			EspacioFisico: ef,
+			FechaInicio: v.FechaInicio,
+			FechaFin: v.FechaFin,
+			Activo : v.Activo,
+			FechaCreacion  : v.FechaCreacion,
+			FechaModificacion  : v.FechaModificacion,
+			
+		}
+
+		c.Data["json"] = temp
+
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -123,7 +198,61 @@ func (c *EspacioFisicoCampoController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = l
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.EspacioFisicoCampo
+		for _, i := range l {
+			field, _ := i.(models.EspacioFisicoCampoV2)
+			
+			te := &models.TipoEspacioFisico {
+				Id: field.EspacioFisicoId.TipoEspacio.Id,
+				Nombre: field.EspacioFisicoId.TipoEspacio.Nombre, 
+				Descripcion: field.EspacioFisicoId.TipoEspacio.Descripcion,
+				CodigoAbreviacion: field.EspacioFisicoId.TipoEspacio.CodigoAbreviacion,
+				Activo: field.EspacioFisicoId.TipoEspacio.Activo,
+				FechaCreacion: field.EspacioFisicoId.TipoEspacio.FechaCreacion,
+				FechaModificacion: field.EspacioFisicoId.TipoEspacio.FechaModificacion,	     		  
+			}
+	
+			c := &models.Campo {
+				Id: field.CampoId.Id,
+				Nombre: field.CampoId.Nombre,      
+				Descripcion: field.CampoId.Descripcion,
+				CodigoAbreviacion: field.CampoId.CodigoAbreviacion,
+				Activo: field.CampoId.Activo,
+				FechaCreacion: field.CampoId.FechaCreacion,
+				FechaModificacion: field.CampoId.FechaModificacion,		
+			}
+	
+			ef := &models.EspacioFisico {
+				Id: field.EspacioFisicoId.Id,
+				Nombre: field.EspacioFisicoId.Nombre,      
+				Descripcion: field.EspacioFisicoId.Descripcion,
+				Codigo: field.EspacioFisicoId.CodigoAbreviacion,
+				Estado: "field.EspacioFisicoId.Activo",
+				FechaCreacion: field.EspacioFisicoId.FechaCreacion,
+				FechaModificacion: field.EspacioFisicoId.FechaModificacion,		
+				TipoEspacio: te,
+			}
+	
+			x := models.EspacioFisicoCampo {
+				Id: field.Id,
+				Valor: field.Valor,
+				Campo: c,
+				EspacioFisico: ef,
+				FechaInicio: field.FechaInicio,
+				FechaFin: field.FechaFin,
+				Activo : field.Activo,
+				FechaCreacion  : field.FechaCreacion,
+				FechaModificacion  : field.FechaModificacion,
+				
+			}
+
+			temp = append(temp,x)
+		}
+
+		c.Data["json"] = temp
+
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -139,7 +268,15 @@ func (c *EspacioFisicoCampoController) GetAll() {
 func (c *EspacioFisicoCampoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.EspacioFisicoCampo{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetEspacioFisicoCampoById(id)
+	v := models.EspacioFisicoCampoV2{
+		Id: id,
+		Activo : true,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+	//v := models.EspacioFisicoCampo{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateEspacioFisicoCampoById(&v); err == nil {
 			c.Data["json"] = "OK"
