@@ -45,9 +45,7 @@ CREATE TABLE oikos.espacio_fisico
     id integer NOT NULL DEFAULT nextval('oikos.espacio_fisico_id_seq'::regclass),
 	nombre character varying(100) NOT NULL,     -- 
 	descripcion character varying(100),
-    area numeric(5,2),
-    capacidad integer,
-	codigo_abreviacion character varying(20),
+    codigo_abreviacion character varying(20),
 	activo boolean NOT NULL,
     tipo_espacio_fisico_id integer NOT NULL,
 	fecha_creacion TIMESTAMP NOT NULL,

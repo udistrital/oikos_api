@@ -47,8 +47,6 @@ func (c *EspacioFisicoController) Post() {
 			Id  :   v.Id,          
 			Nombre:  v.Nombre,    
 			Descripcion:  "Descripción",    
-			Area  :  0 ,        
-			Capacidad :    0  ,  
 			CodigoAbreviacion : v.Codigo,
 			Activo   : true,     //v.Estado
 			FechaCreacion :  time.Now(),   
@@ -110,8 +108,6 @@ func (c *EspacioFisicoController) GetOne() {
 			Codigo: v.CodigoAbreviacion,
 			Estado: "ACTIVO",  //v.Activo
 			Descripcion:  v.Descripcion,    
-			Area  :  v.Area ,        
-			Capacidad : v.Capacidad ,  
 			FechaCreacion :  v.FechaCreacion,   
 			FechaModificacion :  v.FechaModificacion,		
 			TipoEspacio : te,	
@@ -210,8 +206,6 @@ func (c *EspacioFisicoController) GetAll() {
 				Codigo: field.CodigoAbreviacion,
 				Estado: "ACTIVO",  //field.Activo
 				Descripcion:  field.Descripcion,    
-				Area  :  field.Area ,        
-				Capacidad : field.Capacidad ,  
 				FechaCreacion :  field.FechaCreacion,   
 				FechaModificacion :  field.FechaModificacion,		
 				TipoEspacio : te,	

@@ -108,8 +108,6 @@ func (c *TipoUsoEspacioFisicoController) GetOne() {
 			Codigo: v.EspacioFisicoId.CodigoAbreviacion,
 			Estado: "ACTIVO",  //v.Activo
 			Descripcion:  v.EspacioFisicoId.Descripcion,    
-			Area  :  v.EspacioFisicoId.Area ,        
-			Capacidad : v.EspacioFisicoId.Capacidad ,  
 			FechaCreacion :  v.EspacioFisicoId.FechaCreacion,   
 			FechaModificacion :  v.EspacioFisicoId.FechaModificacion,		
 			TipoEspacio : te,	
@@ -228,8 +226,6 @@ func (c *TipoUsoEspacioFisicoController) GetAll() {
 				Codigo: field.EspacioFisicoId.CodigoAbreviacion,
 				Estado: "ACTIVO",  //field.Activo
 				Descripcion:  field.EspacioFisicoId.Descripcion,    
-				Area  :  field.EspacioFisicoId.Area ,        
-				Capacidad : field.EspacioFisicoId.Capacidad ,  
 				FechaCreacion :  field.EspacioFisicoId.FechaCreacion,   
 				FechaModificacion :  field.EspacioFisicoId.FechaModificacion,		
 				TipoEspacio : te,	

@@ -13,8 +13,6 @@ type EspacioFisico struct {
 	Id         		    int                `orm:"column(id);pk;auto"`
 	Nombre      		string             `orm:"column(nombre)"`
 	Descripcion      	string             `orm:"column(descripcion);null"`
-	Area              	float64            `orm:"column(area)"`
-	Capacidad         	int                `orm:"column(capacidad)"`
 	Codigo      		string             `orm:"column(codigo)"`
 	Estado      		string             `orm:"column(estado)"`
 	FechaCreacion       time.Time          `orm:"column(fecha_creacion);type(timestamp without time zone)"`
@@ -28,8 +26,6 @@ type EspacioFisicoV2 struct {
 	Id                int    			 		`orm:"column(id);pk;auto"`
 	Nombre            string             		`orm:"column(nombre)"`
 	Descripcion       string             		`orm:"column(descripcion);null"`
-	Area              float64           		`orm:"column(area)"`
-	Capacidad         int                		`orm:"column(capacidad)"`
 	CodigoAbreviacion string             		`orm:"column(codigo_abreviacion);null"`
 	Activo            bool               		`orm:"column(activo)"`
 	FechaCreacion     time.Time          		`orm:"column(fecha_creacion);type(timestamp without time zone)"`
