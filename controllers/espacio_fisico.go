@@ -38,7 +38,15 @@ func (c *EspacioFisicoController) Post() {
 	var v models.EspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		
+		var act bool;
+		if (v.Estado == "Activo"){
+			act = true
+		}else if (v.Estado == "Inactivo"){
+			act = false
+		}else{
+			act = true
+		}
+
 		te := &models.TipoEspacioFisicoV2 {
 			Id: v.TipoEspacio.Id,
 		}
@@ -46,9 +54,9 @@ func (c *EspacioFisicoController) Post() {
 		temp := models.EspacioFisicoV2 {
 			Id  :   v.Id,          
 			Nombre:  v.Nombre,    
-			Descripcion:  "Descripción",    
+			Descripcion:  "Descripción - " +v.Nombre,    
 			CodigoAbreviacion : v.Codigo,
-			Activo   : true,     //v.Estado
+			Activo   : act,
 			FechaCreacion :  time.Now(),   
 			FechaModificacion :  time.Now(),		
 			TipoEspacio : te,	      
@@ -92,6 +100,13 @@ func (c *EspacioFisicoController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
+		var act string;
+		if (v.Activo == true){
+			act = "Activo"
+		}else {
+			act = "Inactivo"
+		}
+
 		te := &models.TipoEspacioFisico {
 				Id: v.TipoEspacio.Id,
 				Nombre: v.TipoEspacio.Nombre, 
@@ -106,7 +121,7 @@ func (c *EspacioFisicoController) GetOne() {
 			Id: v.Id,
 			Nombre: v.Nombre,   
 			Codigo: v.CodigoAbreviacion,
-			Estado: "ACTIVO",  //v.Activo
+			Estado: act,
 			Descripcion:  v.Descripcion,    
 			FechaCreacion :  v.FechaCreacion,   
 			FechaModificacion :  v.FechaModificacion,		
@@ -186,9 +201,17 @@ func (c *EspacioFisicoController) GetAll() {
 			l = append(l, map[string]interface{}{})
 		}
 		//-------------- Temporal: Cambio por transición ------- //
+		
 		var temp []models.EspacioFisico
 		for _, i := range l {
 			field, _ := i.(models.EspacioFisicoV2)
+			var act string;
+			if (field.Activo == true){
+				act = "Activo"
+			}else {
+				act = "Inactivo"
+			}
+		
 
 			te := &models.TipoEspacioFisico {
 				Id: field.TipoEspacio.Id,
@@ -204,7 +227,7 @@ func (c *EspacioFisicoController) GetAll() {
 				Id: field.Id,
 				Nombre: field.Nombre,   
 				Codigo: field.CodigoAbreviacion,
-				Estado: "ACTIVO",  //field.Activo
+				Estado: act, 
 				Descripcion:  field.Descripcion,    
 				FechaCreacion :  field.FechaCreacion,   
 				FechaModificacion :  field.FechaModificacion,		
