@@ -207,6 +207,7 @@ func (c *TipoUsoEspacioFisicoController) GetAll() {
 		}
 		//-------------- Temporal: Cambio por transición ------- //
 		var temp []models.TipoUsoEspacioFisico
+		var act string;
 		for _, i := range l {
 			field, _ := i.(models.TipoUsoEspacioFisicoV2)
 			
@@ -219,12 +220,18 @@ func (c *TipoUsoEspacioFisicoController) GetAll() {
 				FechaCreacion: field.EspacioFisicoId.TipoEspacio.FechaCreacion,
 				FechaModificacion: field.EspacioFisicoId.TipoEspacio.FechaModificacion,	     		  
 			}
-	
+			
+			if (field.EspacioFisicoId.Activo == true){
+				act = "Activo"
+			}else {
+				act = "Inactivo"
+			}
+
 			ef := &models.EspacioFisico {
 				Id: field.EspacioFisicoId.Id,
 				Nombre: field.EspacioFisicoId.Nombre,   
 				Codigo: field.EspacioFisicoId.CodigoAbreviacion,
-				Estado: "ACTIVO",  //field.Activo
+				Estado: act,  //field.Activo
 				Descripcion:  field.EspacioFisicoId.Descripcion,    
 				FechaCreacion :  field.EspacioFisicoId.FechaCreacion,   
 				FechaModificacion :  field.EspacioFisicoId.FechaModificacion,		
@@ -255,7 +262,11 @@ func (c *TipoUsoEspacioFisicoController) GetAll() {
 			temp = append(temp,x)
 		}
 
-		c.Data["json"] = temp
+		if(len(temp) == 0){
+			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
+		}else{
+			c.Data["json"] = temp
+		}
 
 		//c.Data["json"] = l
 	}

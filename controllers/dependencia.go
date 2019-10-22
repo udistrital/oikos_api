@@ -221,7 +221,11 @@ func (c *DependenciaController) GetAll() {
 			temp = append(temp,x)
 		}
 		
-		c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
+		if(len(temp) == 0){
+			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
+		}else{
+			c.Data["json"] = temp
+		}
 		//-------------- Temporal: Cambio por transición ------- //
 		//c.Data["json"] = l -------------- Temporal: Cambio por transición ------- //
 	}
