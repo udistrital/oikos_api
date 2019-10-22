@@ -211,7 +211,7 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 			temp = append(temp,x)
 		}
 		
-		c.Data["json"] = temp
+		c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
 
 		//c.Data["json"] = l
 	}
