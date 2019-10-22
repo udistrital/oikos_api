@@ -176,14 +176,48 @@ func (c *DependenciaController) GetAll() {
 		for _, i := range l {
 			field, _ := i.(models.DependenciaV2)
 			
+			var dtp []*models.DependenciaTipoDependencia 
+
+			for _, j := range field.DependenciaTipoDependencia {
+				td := &models.TipoDependencia {
+					Id: j.TipoDependenciaId.Id,
+					Nombre: j.TipoDependenciaId.Nombre,      
+					Descripcion: j.TipoDependenciaId.Descripcion,
+					CodigoAbreviacion: j.TipoDependenciaId.CodigoAbreviacion,
+					Activo: j.TipoDependenciaId.Activo,
+					FechaCreacion: j.TipoDependenciaId.FechaCreacion,
+					FechaModificacion: j.TipoDependenciaId.FechaModificacion,		
+				}
+		
+				d := &models.Dependencia {
+					Id: j.DependenciaId.Id,
+					Nombre: j.DependenciaId.Nombre,      		  
+					TelefonoDependencia: j.DependenciaId.TelefonoDependencia, 
+					CorreoElectronico: j.DependenciaId.CorreoElectronico,
+				}
+
+				y := &models.DependenciaTipoDependencia {
+					Id: j.Id,
+					TipoDependenciaId: td,
+					DependenciaId: d,
+					Activo : j.Activo,
+					FechaCreacion  : j.FechaCreacion,
+					FechaModificacion  : j.FechaCreacion,
+					
+				}
+
+				dtp = append(dtp,y)
+			}
+
+					
 			x := models.Dependencia {
 				Id: field.Id,
 				Nombre: field.Nombre,      		  
 				TelefonoDependencia: field.TelefonoDependencia,
 				CorreoElectronico: field.CorreoElectronico, 
-				//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+				DependenciaTipoDependencia: dtp,       
 			}
-
+			
 			temp = append(temp,x)
 		}
 		
