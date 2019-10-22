@@ -181,6 +181,7 @@ func (c *EspacioFisicoPadreController) GetAll() {
 		}
 		//-------------- Temporal: Cambio por transición ------- //
 		var temp []models.EspacioFisicoPadre
+		var act string;
 		for _, i := range l {
 			field, _ := i.(models.EspacioFisicoPadreV2)
 			
@@ -205,22 +206,34 @@ func (c *EspacioFisicoPadreController) GetAll() {
 				FechaModificacion  : field.HijoId.TipoEspacio.FechaModificacion,
 				
 			}
-		
+			
+			if (field.PadreId.Activo == true){
+				act = "Activo"
+			}else {
+				act = "Inactivo"
+			}
+
 			efp := &models.EspacioFisico {
 				Id : field.PadreId.Id,            			 		
 				Nombre  : field.PadreId.Nombre,
-				Estado: "ACTIVO",
+				Estado: act,
 				Codigo: field.PadreId.CodigoAbreviacion ,        	
 				Descripcion :  field.PadreId.Descripcion    ,      		
 				FechaCreacion :  field.PadreId.FechaCreacion    ,
 				FechaModificacion:  field.PadreId.FechaModificacion ,
 				TipoEspacio: tefp ,
 			}
-		
+			
+			if (field.HijoId.Activo == true){
+				act = "Activo"
+			}else {
+				act = "Inactivo"
+			}
+
 			efh := &models.EspacioFisico {
 				Id : field.HijoId.Id,            			 		
 				Nombre  : field.HijoId.Nombre,
-				Estado: "ACTIVO",
+				Estado: act,
 				Codigo: field.HijoId.CodigoAbreviacion,         	
 				Descripcion :  field.HijoId.Descripcion    ,      		
 				FechaCreacion :  field.HijoId.FechaCreacion    ,
