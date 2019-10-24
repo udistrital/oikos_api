@@ -247,7 +247,7 @@ func (c *DependenciaController) Put() {
 	infoDep, _ := models.GetDependenciaById(id)
 	v := models.DependenciaV2{
 		Id: id,
-		Activo : true,
+		Activo : infoDep.Activo,
 		FechaCreacion : infoDep.FechaCreacion,
 		FechaModificacion  : time.Now(),
 	}

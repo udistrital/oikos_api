@@ -261,16 +261,26 @@ func (c *EspacioFisicoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	infoDep, _ := models.GetEspacioFisicoById(id)
-	v := models.EspacioFisicoV2{
-		Id: id,
-		Activo : true,
-		FechaCreacion : infoDep.FechaCreacion,
-		FechaModificacion  : time.Now(),
-	}
+	v := models.EspacioFisico{Id: id}
 
-	//v := models.EspacioFisico{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateEspacioFisicoById(&v); err == nil {
+
+		tef := &models.TipoEspacioFisicoV2{
+			Id: v.TipoEspacio.Id,
+		}
+
+		v2 := models.EspacioFisicoV2{
+			Id: id,
+			Nombre: v.Nombre,
+			Descripcion: v.Descripcion,
+			CodigoAbreviacion: v.Codigo,
+			Activo : infoDep.Activo,
+			FechaCreacion : infoDep.FechaCreacion,
+			FechaModificacion  : time.Now(),
+			TipoEspacio: tef,
+		}
+	
+		if err := models.UpdateEspacioFisicoById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)

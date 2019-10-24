@@ -9,7 +9,6 @@ import (
 	"time"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-
 )
 
 // CampoController oprations for Campo
@@ -203,16 +202,20 @@ func (c *CampoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	infoDep, _ := models.GetCampoById(id)
-	v := models.CampoV2{
-		Id: id,
-		Activo : true,
-		FechaCreacion : infoDep.FechaCreacion,
-		FechaModificacion  : time.Now(),
-	}
+	v := models.Campo{Id: id}
 
-	//v := models.Campo{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateCampoById(&v); err == nil {
+		v2 := models.CampoV2{
+			Id: id,
+			Nombre: v.Nombre,
+			Descripcion: v.Descripcion,
+			CodigoAbreviacion: infoDep.CodigoAbreviacion,
+			Activo : infoDep.Activo,
+			FechaCreacion : infoDep.FechaCreacion,
+			FechaModificacion  : time.Now(),
+		}
+
+		if err := models.UpdateCampoById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)

@@ -251,7 +251,7 @@ func (c *DependenciaTipoDependenciaController) Put() {
 	infoDep, _ := models.GetDependenciaTipoDependenciaById(id)
 	v := models.DependenciaTipoDependenciaV2{
 		Id: id,
-		Activo : true,
+		Activo : infoDep.Activo,
 		FechaCreacion : infoDep.FechaCreacion,
 		FechaModificacion  : time.Now(),
 	}
