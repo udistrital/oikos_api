@@ -7,7 +7,6 @@ import (
 	"strings"
 	"time"
 	"github.com/udistrital/oikos_api/models"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 )
@@ -166,30 +165,28 @@ func (c *TipoEspacioFisicoController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-		}
-
-		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.TipoEspacioFisico
-		for _, i := range l {
-			field, _ := i.(models.TipoEspacioFisicoV2)
-			x := models.TipoEspacioFisico {
-				Id: field.Id,
-				Nombre: field.Nombre,      
-				Descripcion: field.Descripcion,
-				CodigoAbreviacion: field.CodigoAbreviacion,
-				Activo: field.Activo,
-				FechaCreacion: field.FechaCreacion,
-				FechaModificacion: field.FechaModificacion,		  
-			}
-
-			temp = append(temp,x)
-		}
-				
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
+			c.Data["json"] = l
 		}else{
+			//-------------- Temporal: Cambio por transición ------- //
+			var temp []models.TipoEspacioFisico
+			for _, i := range l {
+				field, _ := i.(models.TipoEspacioFisicoV2)
+				x := models.TipoEspacioFisico {
+					Id: field.Id,
+					Nombre: field.Nombre,      
+					Descripcion: field.Descripcion,
+					CodigoAbreviacion: field.CodigoAbreviacion,
+					Activo: field.Activo,
+					FechaCreacion: field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,		  
+				}
+
+				temp = append(temp,x)
+			}
+				
 			c.Data["json"] = temp
 		}
+
 		//-------------- Temporal: Cambio por transición ------- //
 
 		//c.Data["json"] = l
@@ -210,16 +207,19 @@ func (c *TipoEspacioFisicoController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	//-------------- Temporal: Cambio por transición ------- //
 	infoDep, _ := models.GetTipoEspacioFisicoById(id)
-	v := models.TipoEspacioFisicoV2{
+	v := models.TipoEspacioFisico{Id: id}
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		v2 := models.TipoEspacioFisicoV2{
 			Id: id,
-			Activo : true,
+			Nombre: v.Nombre,
+			Descripcion: infoDep.Descripcion,
+			CodigoAbreviacion: infoDep.CodigoAbreviacion,
+			Activo : infoDep.Activo,
 			FechaCreacion : infoDep.FechaCreacion,
 			FechaModificacion  : time.Now(),
-	}
-	
-	//v := models.TipoEspacioFisico{Id: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateTipoEspacioFisicoById(&v); err == nil {
+		}
+
+		if err := models.UpdateTipoEspacioFisicoById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)

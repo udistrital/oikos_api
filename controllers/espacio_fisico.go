@@ -10,6 +10,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
 	"github.com/udistrital/oikos_api/models"
+
 )
 
 // EspacioFisicoController oprations for EspacioFisico
@@ -199,51 +200,47 @@ func (c *EspacioFisicoController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
+		}else{
+			var temp []models.EspacioFisico
+			for _, i := range l {
+				field, _ := i.(models.EspacioFisicoV2)
+				var act string;
+				if (field.Activo == true){
+					act = "Activo"
+				}else {
+					act = "Inactivo"
+				}
+			
+
+				te := &models.TipoEspacioFisico {
+					Id: field.TipoEspacio.Id,
+					Nombre: field.TipoEspacio.Nombre, 
+					Descripcion: field.TipoEspacio.Descripcion,
+					CodigoAbreviacion: field.TipoEspacio.CodigoAbreviacion,
+					Activo: field.TipoEspacio.Activo,
+					FechaCreacion: field.TipoEspacio.FechaCreacion,
+					FechaModificacion: field.TipoEspacio.FechaModificacion,	     		  
+				}
+				
+				x := models.EspacioFisico {
+					Id: field.Id,
+					Nombre: field.Nombre,   
+					Codigo: field.CodigoAbreviacion,
+					Estado: act, 
+					Descripcion:  field.Descripcion,    
+					FechaCreacion :  field.FechaCreacion,   
+					FechaModificacion :  field.FechaModificacion,		
+					TipoEspacio : te,	
+					//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+				}
+
+				temp = append(temp,x)
+			}
+		c.Data["json"] = temp
 		}
 		//-------------- Temporal: Cambio por transición ------- //
-		
-		var temp []models.EspacioFisico
-		for _, i := range l {
-			field, _ := i.(models.EspacioFisicoV2)
-			var act string;
-			if (field.Activo == true){
-				act = "Activo"
-			}else {
-				act = "Inactivo"
-			}
-		
-
-			te := &models.TipoEspacioFisico {
-				Id: field.TipoEspacio.Id,
-				Nombre: field.TipoEspacio.Nombre, 
-				Descripcion: field.TipoEspacio.Descripcion,
-				CodigoAbreviacion: field.TipoEspacio.CodigoAbreviacion,
-				Activo: field.TipoEspacio.Activo,
-				FechaCreacion: field.TipoEspacio.FechaCreacion,
-				FechaModificacion: field.TipoEspacio.FechaModificacion,	     		  
-			}
 			
-			x := models.EspacioFisico {
-				Id: field.Id,
-				Nombre: field.Nombre,   
-				Codigo: field.CodigoAbreviacion,
-				Estado: act, 
-				Descripcion:  field.Descripcion,    
-				FechaCreacion :  field.FechaCreacion,   
-				FechaModificacion :  field.FechaModificacion,		
-				TipoEspacio : te,	
-				//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
-			}
-
-			temp = append(temp,x)
-		}
-		
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
-		}else{
-			c.Data["json"] = temp
-		}
-	
 		//c.Data["json"] = l
 	}
 	c.ServeJSON()

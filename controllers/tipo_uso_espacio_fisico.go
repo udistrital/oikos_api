@@ -288,7 +288,7 @@ func (c *TipoUsoEspacioFisicoController) Put() {
 	infoDep, _ := models.GetTipoUsoEspacioFisicoById(id)
 	v := models.TipoUsoEspacioFisicoV2{
 		Id: id,
-		Activo : true,
+		Activo : infoDep.Activo,
 		FechaCreacion : infoDep.FechaCreacion,
 		FechaModificacion  : time.Now(),
 	}

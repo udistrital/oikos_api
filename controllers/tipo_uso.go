@@ -209,15 +209,19 @@ func (c *TipoUsoController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	//-------------- Temporal: Cambio por transición ------- //
 	infoDep, _ := models.GetTipoUsoById(id)
-	v := models.TipoUsoV2{
-		Id: id,
-		Activo : true,
-		FechaCreacion : infoDep.FechaCreacion,
-		FechaModificacion  : time.Now(),
-	}
-	//v := models.TipoUso{Id: id}
+	v := models.TipoUso{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateTipoUsoById(&v); err == nil {
+		v2 := models.TipoUsoV2{
+			Id: id,
+			Nombre: v.Nombre,
+			Descripcion: infoDep.Descripcion,
+			CodigoAbreviacion: infoDep.CodigoAbreviacion,
+			Activo : infoDep.Activo,
+			FechaCreacion : infoDep.FechaCreacion,
+			FechaModificacion  : time.Now(),
+		}
+
+		if err := models.UpdateTipoUsoById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)

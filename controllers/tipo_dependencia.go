@@ -207,15 +207,18 @@ func (c *TipoDependenciaController) Put() {
 	id, _ := strconv.Atoi(idStr)
 	//-------------- Temporal: Cambio por transición ------- //
 	infoDep, _ := models.GetTipoDependenciaById(id)
-	v := models.TipoDependenciaV2{
+	v := models.TipoDependencia{Id: id}
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		v2 := models.TipoDependenciaV2{
 			Id: id,
-			Activo : true,
+			Nombre: v.Nombre,
+			Descripcion: infoDep.Descripcion,
+			CodigoAbreviacion: infoDep.CodigoAbreviacion,
+			Activo : infoDep.Activo,
 			FechaCreacion : infoDep.FechaCreacion,
 			FechaModificacion  : time.Now(),
-	}
-	//v := models.TipoDependencia{Id: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateTipoDependenciaById(&v); err == nil {
+		}
+		if err := models.UpdateTipoDependenciaById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
