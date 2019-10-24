@@ -243,18 +243,25 @@ func (c *DependenciaPadreController) GetAll() {
 func (c *DependenciaPadreController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
+	v := models.DependenciaPadre{Id: id}
 	//-------------- Temporal: Cambio por transición ------- //
-	infoDep, _ := models.GetDependenciaPadreById(id)
-	v := models.DependenciaPadreV2{
-		Id: id,
-		Activo : true,
-		FechaCreacion : infoDep.FechaCreacion,
-		FechaModificacion  : time.Now(),
-	}
-
-	//v := models.DependenciaPadre{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateDependenciaPadreById(&v); err == nil {
+		dp := &models.DependenciaV2{
+			Id: v.Padre.Id,
+		}
+		dh := &models.DependenciaV2{
+			Id: v.Hija.Id,
+		}	
+		v2 := models.DependenciaPadreV2{
+			Id: id,
+			PadreId: dp,
+			HijaId: dh,
+			Activo : v.Activo,
+			FechaCreacion : v.FechaCreacion,
+			FechaModificacion  : time.Now(),
+		}
+
+		if err := models.UpdateDependenciaPadreById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
