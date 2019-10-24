@@ -276,17 +276,26 @@ func (c *EspacioFisicoPadreController) GetAll() {
 func (c *EspacioFisicoPadreController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-		//-------------- Temporal: Cambio por transición ------- //
-	infoDep, _ := models.GetEspacioFisicoPadreById(id)
-	v := models.EspacioFisicoPadreV2{
-		Id: id,
-		FechaCreacion : infoDep.FechaCreacion,
-		FechaModificacion  : time.Now(),
-	}
+	v := models.EspacioFisicoPadre{Id: id}
 
-	//v := models.EspacioFisicoPadre{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateEspacioFisicoPadreById(&v); err == nil {
+	//-------------- Temporal: Cambio por transición ------- //
+		efp := &models.EspacioFisicoV2{
+			Id: v.Padre.Id,
+		}
+		efh := &models.EspacioFisicoV2{
+			Id: v.Hijo.Id,
+		}	
+
+		v2 := models.EspacioFisicoPadreV2{
+			Id: id,
+			PadreId: efp,
+			HijoId: efh,
+			FechaCreacion : v.FechaCreacion,
+			FechaModificacion  : time.Now(),
+		}
+
+		if err := models.UpdateEspacioFisicoPadreById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
