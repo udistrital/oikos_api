@@ -170,7 +170,8 @@ func (c *DependenciaController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-		}
+			c.Data["json"] = l
+		}else{
 		//-------------- Temporal: Cambio por transición ------- //
 		var temp []models.Dependencia
 		for _, i := range l {
@@ -220,12 +221,9 @@ func (c *DependenciaController) GetAll() {
 			
 			temp = append(temp,x)
 		}
-		
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
-		}else{
-			c.Data["json"] = temp
-		}
+		c.Data["json"] = temp
+	}
+				
 		//-------------- Temporal: Cambio por transición ------- //
 		//c.Data["json"] = l -------------- Temporal: Cambio por transición ------- //
 	}

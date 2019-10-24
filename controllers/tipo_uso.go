@@ -166,30 +166,26 @@ func (c *TipoUsoController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-		}
-		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.TipoUso
-		for _, i := range l {
-			field, _ := i.(models.TipoUsoV2)
-			x := models.TipoUso {
-				Id: field.Id,
-				Nombre: field.Nombre,      
-				Descripcion: field.Descripcion,
-				CodigoAbreviacion: field.CodigoAbreviacion,
-				Activo: field.Activo,
-				FechaCreacion: field.FechaCreacion,
-				FechaModificacion: field.FechaModificacion,		  
-			}
-
-			temp = append(temp,x)
-		}
-				
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
+			c.Data["json"] = l
 		}else{
+			//-------------- Temporal: Cambio por transición ------- //
+			var temp []models.TipoUso
+			for _, i := range l {
+				field, _ := i.(models.TipoUsoV2)
+				x := models.TipoUso {
+					Id: field.Id,
+					Nombre: field.Nombre,      
+					Descripcion: field.Descripcion,
+					CodigoAbreviacion: field.CodigoAbreviacion,
+					Activo: field.Activo,
+					FechaCreacion: field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,		  
+				}
+
+				temp = append(temp,x)
+			}
 			c.Data["json"] = temp
-		}
-		//-------------- Temporal: Cambio por transición ------- //
+		}	
 		
 		//c.Data["json"] = l
 	}

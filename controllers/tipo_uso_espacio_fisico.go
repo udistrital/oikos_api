@@ -204,67 +204,64 @@ func (c *TipoUsoEspacioFisicoController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-		}
-		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.TipoUsoEspacioFisico
-		var act string;
-		for _, i := range l {
-			field, _ := i.(models.TipoUsoEspacioFisicoV2)
-			
-			te := &models.TipoEspacioFisico {
-				Id: field.EspacioFisicoId.TipoEspacio.Id,
-				Nombre: field.EspacioFisicoId.TipoEspacio.Nombre, 
-				Descripcion: field.EspacioFisicoId.TipoEspacio.Descripcion,
-				CodigoAbreviacion: field.EspacioFisicoId.TipoEspacio.CodigoAbreviacion,
-				Activo: field.EspacioFisicoId.TipoEspacio.Activo,
-				FechaCreacion: field.EspacioFisicoId.TipoEspacio.FechaCreacion,
-				FechaModificacion: field.EspacioFisicoId.TipoEspacio.FechaModificacion,	     		  
-			}
-			
-			if (field.EspacioFisicoId.Activo == true){
-				act = "Activo"
-			}else {
-				act = "Inactivo"
-			}
-
-			ef := &models.EspacioFisico {
-				Id: field.EspacioFisicoId.Id,
-				Nombre: field.EspacioFisicoId.Nombre,   
-				Codigo: field.EspacioFisicoId.CodigoAbreviacion,
-				Estado: act,  //field.Activo
-				Descripcion:  field.EspacioFisicoId.Descripcion,    
-				FechaCreacion :  field.EspacioFisicoId.FechaCreacion,   
-				FechaModificacion :  field.EspacioFisicoId.FechaModificacion,		
-				TipoEspacio : te,	
-				//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
-			}
-	
-			tu := &models.TipoUso {
-				Id: field.TipoUsoId .Id,
-				Nombre: field.TipoUsoId.Nombre,      
-				Descripcion: field.TipoUsoId.Descripcion,
-				CodigoAbreviacion: field.TipoUsoId.CodigoAbreviacion,
-				Activo: field.TipoUsoId.Activo,
-				FechaCreacion: field.TipoUsoId.FechaCreacion,
-				FechaModificacion: field.TipoUsoId.FechaModificacion,		
-			}
-	
-			x := models.TipoUsoEspacioFisico {
-				Id: field.Id,
-				TipoUsoId : tu,
-				EspacioFisicoId : ef,
-				Activo : true,
-				FechaCreacion  : field.FechaCreacion,
-				FechaModificacion  : field.FechaModificacion,
-				
-			}
-
-			temp = append(temp,x)
-		}
-
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
+			c.Data["json"] = l
 		}else{
+		//-------------- Temporal: Cambio por transición ------- //
+			var temp []models.TipoUsoEspacioFisico
+			var act string;
+			for _, i := range l {
+				field, _ := i.(models.TipoUsoEspacioFisicoV2)
+				
+				te := &models.TipoEspacioFisico {
+					Id: field.EspacioFisicoId.TipoEspacio.Id,
+					Nombre: field.EspacioFisicoId.TipoEspacio.Nombre, 
+					Descripcion: field.EspacioFisicoId.TipoEspacio.Descripcion,
+					CodigoAbreviacion: field.EspacioFisicoId.TipoEspacio.CodigoAbreviacion,
+					Activo: field.EspacioFisicoId.TipoEspacio.Activo,
+					FechaCreacion: field.EspacioFisicoId.TipoEspacio.FechaCreacion,
+					FechaModificacion: field.EspacioFisicoId.TipoEspacio.FechaModificacion,	     		  
+				}
+				
+				if (field.EspacioFisicoId.Activo == true){
+					act = "Activo"
+				}else {
+					act = "Inactivo"
+				}
+
+				ef := &models.EspacioFisico {
+					Id: field.EspacioFisicoId.Id,
+					Nombre: field.EspacioFisicoId.Nombre,   
+					Codigo: field.EspacioFisicoId.CodigoAbreviacion,
+					Estado: act,  //field.Activo
+					Descripcion:  field.EspacioFisicoId.Descripcion,    
+					FechaCreacion :  field.EspacioFisicoId.FechaCreacion,   
+					FechaModificacion :  field.EspacioFisicoId.FechaModificacion,		
+					TipoEspacio : te,	
+					//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+				}
+		
+				tu := &models.TipoUso {
+					Id: field.TipoUsoId .Id,
+					Nombre: field.TipoUsoId.Nombre,      
+					Descripcion: field.TipoUsoId.Descripcion,
+					CodigoAbreviacion: field.TipoUsoId.CodigoAbreviacion,
+					Activo: field.TipoUsoId.Activo,
+					FechaCreacion: field.TipoUsoId.FechaCreacion,
+					FechaModificacion: field.TipoUsoId.FechaModificacion,		
+				}
+		
+				x := models.TipoUsoEspacioFisico {
+					Id: field.Id,
+					TipoUsoId : tu,
+					EspacioFisicoId : ef,
+					Activo : true,
+					FechaCreacion  : field.FechaCreacion,
+					FechaModificacion  : field.FechaModificacion,
+					
+				}
+
+				temp = append(temp,x)
+			}
 			c.Data["json"] = temp
 		}
 

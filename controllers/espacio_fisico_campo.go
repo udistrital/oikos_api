@@ -204,6 +204,10 @@ func (c *EspacioFisicoCampoController) GetAll() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
+		if l == nil {
+			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
+		}else{
 		//-------------- Temporal: Cambio por transición ------- //
 		var temp []models.EspacioFisicoCampo
 		for _, i := range l {
@@ -255,12 +259,11 @@ func (c *EspacioFisicoCampoController) GetAll() {
 
 			temp = append(temp,x)
 		}
+		
+		c.Data["json"] = temp
 
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
-		}else{
-			c.Data["json"] = temp
-		}
+	}
+		
 
 		//c.Data["json"] = l
 	}

@@ -20,7 +20,7 @@ func init() {
 // Run the migrations
 func (m *CrearTablaEspacioFisico_20191010_105717) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
-	m.SQL("CREATE TABLE IF NOT EXISTS oikos.espacio_fisico ( id serial NOT NULL, nombre character varying(100) NOT NULL, -- descripcion character varying(100), area numeric(5,2), capacidad integer, codigo_abreviacion character varying(20), activo boolean NOT NULL, tipo_espacio_fisico_id integer NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_espacio_fisico PRIMARY KEY (id), CONSTRAINT fk_tipo_espacio_fisico_espacio_fisico FOREIGN KEY (tipo_espacio_fisico_id) REFERENCES oikos.tipo_espacio_fisico(id) );")
+	m.SQL("CREATE TABLE IF NOT EXISTS oikos.espacio_fisico ( id serial NOT NULL, nombre character varying(100) NOT NULL, -- descripcion character varying(100), codigo_abreviacion character varying(20), activo boolean NOT NULL, tipo_espacio_fisico_id integer NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_espacio_fisico PRIMARY KEY (id), CONSTRAINT fk_tipo_espacio_fisico_espacio_fisico FOREIGN KEY (tipo_espacio_fisico_id) REFERENCES oikos.tipo_espacio_fisico(id) );")
 	m.SQL("ALTER TABLE oikos.espacio_fisico OWNER TO desarrollooas;")
 	m.SQL("COMMENT ON TABLE oikos.espacio_fisico IS 'Tabla de Rompimiento que reune los atributos de un espacio fisico';")
 	m.SQL("COMMENT ON COLUMN oikos.espacio_fisico.id IS 'Identificador del espacio fisico especifico de la Universidad Distrital.';")

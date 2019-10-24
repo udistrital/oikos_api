@@ -185,39 +185,35 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-		}
-		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.AsignacionEspacioFisicoDependencia
-		for _, i := range l {
-			field, _ := i.(models.AsignacionEspacioFisicoDependenciaV2)
-			dc := strconv.Itoa(field.DocumentoSoporte)
-			ef := &models.EspacioFisico {
-				Id: field.EspacioFisicoId.Id,
-			}
-			d := &models.Dependencia {
-				Id: field.DependenciaId.Id,
-			}
-			x := models.AsignacionEspacioFisicoDependencia {
-				Id: field.Id,
-				Estado: "TRUE",
-				FechaInicio:  field.FechaInicio,
-				FechaFin: field.FechaFin,
-				EspacioFisicoId: ef,
-				DependenciaId: d,
-				DocumentoSoporte: dc, 
-			
-			}
-
-			temp = append(temp,x)
-		}
-		
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
+			c.Data["json"] = l
 		}else{
+			//-------------- Temporal: Cambio por transición ------- //
+			var temp []models.AsignacionEspacioFisicoDependencia
+			for _, i := range l {
+				field, _ := i.(models.AsignacionEspacioFisicoDependenciaV2)
+				dc := strconv.Itoa(field.DocumentoSoporte)
+				ef := &models.EspacioFisico {
+					Id: field.EspacioFisicoId.Id,
+				}
+				d := &models.Dependencia {
+					Id: field.DependenciaId.Id,
+				}
+				x := models.AsignacionEspacioFisicoDependencia {
+					Id: field.Id,
+					Estado: "TRUE",
+					FechaInicio:  field.FechaInicio,
+					FechaFin: field.FechaFin,
+					EspacioFisicoId: ef,
+					DependenciaId: d,
+					DocumentoSoporte: dc, 
+				
+				}
+
+				temp = append(temp,x)
+			}
 			c.Data["json"] = temp
 		}
 		
-
 		//c.Data["json"] = l
 	}
 	c.ServeJSON()

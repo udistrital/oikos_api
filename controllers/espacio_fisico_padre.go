@@ -178,7 +178,8 @@ func (c *EspacioFisicoPadreController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-		}
+			c.Data["json"] = l
+		}else{
 		//-------------- Temporal: Cambio por transición ------- //
 		var temp []models.EspacioFisicoPadre
 		var act string;
@@ -253,13 +254,9 @@ func (c *EspacioFisicoPadreController) GetAll() {
 
 			temp = append(temp,x)
 		}
+		c.Data["json"] = temp
+	}
 		
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
-		}else{
-			c.Data["json"] = temp
-		}
-
 		//c.Data["json"] = l
 	}
 	c.ServeJSON()

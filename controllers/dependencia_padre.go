@@ -188,45 +188,45 @@ func (c *DependenciaPadreController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-		}
-
-		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.DependenciaPadre
-		for _, i := range l {
-			field, _ := i.(models.DependenciaPadreV2)
-			
-			dp := &models.Dependencia {
-				Id: field.PadreId.Id,
-				Nombre: field.PadreId.Nombre,
-				TelefonoDependencia:field.PadreId.TelefonoDependencia,
-				CorreoElectronico: field.PadreId.CorreoElectronico,
-			}
-
-			dh := &models.Dependencia {
-				Id: field.HijaId.Id,
-				Nombre: field.HijaId.Nombre,
-				TelefonoDependencia:field.HijaId.TelefonoDependencia,
-				CorreoElectronico: field.HijaId.CorreoElectronico,
-			}
-
-			x := models.DependenciaPadre {
-				Id: field.Id,
-				Padre: dp,
-				Hija: dh,
-				Activo: field.Activo,
-				FechaCreacion: field.FechaCreacion,
-				FechaModificacion: field.FechaModificacion,		  
-		
-			}
-
-			temp = append(temp,x)
-		}
-		
-		if(len(temp) == 0){
-			c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
+			c.Data["json"] = l
 		}else{
+				//-------------- Temporal: Cambio por transición ------- //
+			var temp []models.DependenciaPadre
+			for _, i := range l {
+				field, _ := i.(models.DependenciaPadreV2)
+				
+				dp := &models.Dependencia {
+					Id: field.PadreId.Id,
+					Nombre: field.PadreId.Nombre,
+					TelefonoDependencia:field.PadreId.TelefonoDependencia,
+					CorreoElectronico: field.PadreId.CorreoElectronico,
+				}
+
+				dh := &models.Dependencia {
+					Id: field.HijaId.Id,
+					Nombre: field.HijaId.Nombre,
+					TelefonoDependencia:field.HijaId.TelefonoDependencia,
+					CorreoElectronico: field.HijaId.CorreoElectronico,
+				}
+
+				x := models.DependenciaPadre {
+					Id: field.Id,
+					Padre: dp,
+					Hija: dh,
+					Activo: field.Activo,
+					FechaCreacion: field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,		  
+			
+				}
+
+				temp = append(temp,x)
+			}
+
 			c.Data["json"] = temp
+
 		}
+
+		
 		//c.Data["json"] = l
 	}
 	c.ServeJSON()
