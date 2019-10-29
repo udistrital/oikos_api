@@ -329,3 +329,33 @@ func (c *DependenciaPadreController) ArbolDependencias() {
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }
+
+
+// TRDependenciaPadre ...
+// @Title TRDependenciaPadre
+// @Description Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.
+// @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadreV2 content"
+// @Success 201 {int} models.DependenciaPadreV2
+// @Failure 400 the request contains incorrect syntax
+// @router /tr_dependencia_padre [post]
+func (c *DependenciaPadreController) TRDependenciaPadre() {
+	var v models.DependenciaPadreV2
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		
+		if _, err := models.TRDependenciaPadre(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = v
+		} else {
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
+		}
+	} else {
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
+	}
+	c.ServeJSON()
+}

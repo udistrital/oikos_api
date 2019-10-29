@@ -272,3 +272,28 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 	}
 	return dependenciaHijas
 }
+
+
+func TRDependenciaPadre(m *DependenciaPadreV2) (id int64, err error) {
+	o := orm.NewOrm()
+	Hija := m.HijaId
+	Hija.Activo = true
+	Hija.FechaCreacion = time.Now()
+	Hija.FechaModificacion = time.Now()
+	o.Begin()
+	id, err = o.Insert(Hija)
+		if err != nil {
+		    o.Rollback()
+		} else {
+			m.Activo = true
+			m.FechaCreacion = time.Now()
+			m.FechaModificacion = time.Now()
+		    _, err = o.Insert(m)
+			if err != nil {
+				o.Rollback()
+			}
+		}
+	
+	o.Commit()
+	return
+}
