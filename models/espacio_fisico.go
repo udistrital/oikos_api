@@ -286,7 +286,7 @@ func GetEspaciosFisicosPadresById(espacioFisicoHijo int)(espaciosFisicos []Espac
 		
 	var espacioFisicoPadres []EspacioFisicoPadreHijo
 	var listaEspaciosFisicos []EspacioFisicoPadreHijo
-	l.Init()
+	lef.Init()
 
 	qb, _ := orm.NewQueryBuilder("mysql")
 	//buscar todos
@@ -309,20 +309,21 @@ func GetEspaciosFisicosPadresById(espacioFisicoHijo int)(espaciosFisicos []Espac
 		elementMapEF[s.Id] = s 
 	}
 
-   
+	   
 	 //Obtener informacion sobre espacio físico que se busca
 	 var Cola EspacioFisicoPadreHijo
-	 Cola.Id = elementMap[espacioFisicoHijo].Id;
-	 Cola.Nombre = elementMap[espacioFisicoHijo].Nombre
-	 Cola.Padre = elementMap[espacioFisicoHijo].Padre;
-	 Cola.Hijo = elementMap[espacioFisicoHijo].Hija;
+	 Cola.Id = elementMapEF[espacioFisicoHijo].Id;
+	 Cola.Nombre = elementMapEF[espacioFisicoHijo].Nombre
+	 Cola.Padre = elementMapEF[espacioFisicoHijo].Padre;
+	 Cola.Hijo = elementMapEF[espacioFisicoHijo].Hijo;
+	
 	
 	 if (Cola.Hijo != 0){
 		getEspaciosFisicosPadres(Cola)
 		lef.PushBack(Cola)
    
 		//Buscar cabeza de la lista
-		p := buscarEF(l.Front().Value.(EspacioFisicoPadreHijo).Padre)
+		p := buscarEF(lef.Front().Value.(EspacioFisicoPadreHijo).Padre)
 		lef.PushFront(p)
    
 		for temp := lef.Front(); temp != nil; temp = temp.Next() {
