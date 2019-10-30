@@ -178,8 +178,8 @@ func Facultades() (facultad []Tree) {
 		var facultades []Tree
 	
 		_, err := o.Raw(`SELECT dh.id AS id, dh.nombre AS nombre
-											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-						 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
+						 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
 											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 											 WHERE dtd.tipo_dependencia_id = 2`).QueryRows(&facultades)
 	

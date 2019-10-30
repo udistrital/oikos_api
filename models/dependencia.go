@@ -193,8 +193,8 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 		if nivel_academico == "PREGRADO" {
 	
 			num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
+												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
 												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 14`).QueryRows(&proyectosCurriculares)
 	
@@ -206,8 +206,8 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 	
 		} else if nivel_academico == "POSGRADO" {
 			num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
+												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
 												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 15`).QueryRows(&proyectosCurriculares)
 	
@@ -218,8 +218,8 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			}
 		} else if nivel_academico == "undefined" {
 			num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
+												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
+												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
 												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
 	

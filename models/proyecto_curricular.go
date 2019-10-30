@@ -57,11 +57,11 @@ func GetAllProyectosByFacultades() (facultad []DependenciaPadreHijo, e error) {
 		   //buscar todos los proyectos curriculares
 			qb.Select("de.id",
 				"de.nombre",
-				"dep.padre",
-				"dep.hija").
+				"dep.padre_id",
+				"dep.hija_id").
 				From("oikos.dependencia as de").
-				LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-				InnerJoin("oikos.dependencia_tipo_dependencia dtd").On("dep.hija = dtd.dependencia_id").
+				LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
+				InnerJoin("oikos.dependencia_tipo_dependencia dtd").On("dep.hija_id = dtd.dependencia_id").
 				Where("dtd.tipo_dependencia_id IN (1,14,15)").
 				OrderBy("de.id")
 		
@@ -117,11 +117,11 @@ func GetAllProyectosByFacultadId(idFacultad int) (facultad []DependenciaPadreHij
 	   //buscar todos los proyectos curriculares
 		qb.Select("de.id",
 			"de.nombre",
-			"dep.padre",
-			"dep.hija").
+			"dep.padre_id",
+			"dep.hija_id").
 			From("oikos.dependencia as de").
-			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
-			InnerJoin("oikos.dependencia_tipo_dependencia dtd").On("dep.hija = dtd.dependencia_id").
+			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
+			InnerJoin("oikos.dependencia_tipo_dependencia dtd").On("dep.hija_id = dtd.dependencia_id").
 			Where("dtd.tipo_dependencia_id IN (1,14,15)").
 			OrderBy("de.id")
 	
