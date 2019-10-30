@@ -225,11 +225,11 @@ func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
 	o := orm.NewOrm()
 	//Arreglo
 	var dependenciaPadres []TreeDependencia
-	num, err := o.Raw(`SELECT de.id AS id, de.nombre AS nombre, dep.padre AS padre
-										 FROM oikos.dependencia
-										 AS de left join oikos.dependencia_padre
-										 AS dep ON de.id = dep.hija
-										 WHERE padre IS NULL ORDER BY de.id`).QueryRows(&dependenciaPadres)
+	num, err := o.Raw(`SELECT de.id AS id, de.nombre AS nombre, dep.padre_id AS padre
+							FROM oikos.dependencia
+							AS de left join oikos.dependencia_padre
+							AS dep ON de.id = dep.hija_id
+							WHERE padre_id IS NULL ORDER BY de.id`).QueryRows(&dependenciaPadres)
 
 	if err == nil {
 		fmt.Println("Dependencias padre encontradas: ", num)
@@ -251,10 +251,10 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 	//Arreglo
 	var dependenciaHijas []TreeDependencia
 
-	num, err := o.Raw(`SELECT de.id, de.nombre, dep.padre, dep.hija
+	num, err := o.Raw(`SELECT de.id, de.nombre, dep.padre_id, dep.hija_id
 											 FROM oikos.dependencia AS de
-											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija
-											 WHERE dep.padre = ` + padre + ` ORDER BY de.id`).QueryRows(&dependenciaHijas)
+											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija_id
+											 WHERE dep.padre_id = ` + padre + ` ORDER BY de.id`).QueryRows(&dependenciaHijas)
 
 	//Condicional si el error es nulo
 	if err == nil {
