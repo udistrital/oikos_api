@@ -305,10 +305,10 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 		//buscar todos
 		qb.Select("de.id",
 			"de.nombre",
-			"dep.padre",
-			"dep.hija").
+			"dep.padre_id",
+			"dep.hija_id").
 			From("oikos.dependencia as de").
-			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
+			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
 			OrderBy("de.id")
 	
 		sql := qb.String()
@@ -358,10 +358,10 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 		//buscar todos
 		qb.Select("de.id",
 			"de.nombre",
-			"dep.padre",
-			"dep.hija").
+			"dep.padre_id",
+			"dep.hija_id").
 			From("oikos.dependencia as de").
-			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija").
+			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
 			OrderBy("de.id")
 	
 		sql := qb.String()
@@ -373,7 +373,7 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 		for _, s := range dependenciaHijas {  
 			elementMap[s.Id] = s 
 		}
-	
+		
 		c:= buscarDep(dependenciaPadre)
 		Cabeza := &c
 		getDependenciasHijas(Cabeza,dependenciaPadre)

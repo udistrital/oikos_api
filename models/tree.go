@@ -7,9 +7,9 @@ type Tree struct {
 }
 
 type DependenciaPadreHijo struct {
-	Id       int
-	Nombre   string
-	Padre    int
-	Hija     int
+	Id       int		  `orm:"column(id)"`
+	Nombre   string		  `orm:"column(nombre)"`
+	Padre    int          `orm:"column(padre_id)"`
+	Hija     int		  `orm:"column(hija_id)"`
 	Opciones []DependenciaPadreHijo
 }
