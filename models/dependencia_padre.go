@@ -206,11 +206,11 @@ func Facultades() (facultad []Tree) {
 		//Arreglo que tendra las facultades encontradas
 		var proyectos_curriculares []Tree
 	
-		_, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre, dep.hija
+		_, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre_id, dep.hija_id
 											 FROM oikos.dependencia AS de
-											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dep.hija = dtd.dependencia_id
-											 WHERE dep.padre =` + padre + ` AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`).QueryRows(&proyectos_curriculares)
+											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija_id
+											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dep.hija_id = dtd.dependencia_id
+											 WHERE dep.padre_id =` + padre + ` AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`).QueryRows(&proyectos_curriculares)
 	
 		if err == nil {
 				
