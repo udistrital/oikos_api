@@ -7,7 +7,11 @@ import (
 	"strings"
 	"time"
 	"github.com/astaxie/beego/orm"
+	"container/list"
 )
+
+var elementMapEF = make(map[int]EspacioFisicoPadreHijo)
+var lef = list.New()
 
 type EspacioFisico struct {
 	Id         		    int                `orm:"column(id);pk;auto"`
@@ -181,4 +185,153 @@ func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
 		fmt.Println("Espacio físicos huerfanos encontrados: ", num)
 	}
 	return espaciosHuerfanos
+}
+
+func buscarEF(ef int)(padre EspacioFisicoPadreHijo){
+	
+	var x EspacioFisicoPadreHijo
+	for _,element := range elementMapEF{
+
+		if(ef == element.Id){
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			x.Hijo = element.Hijo
+		
+		}
+	}
+
+	return x
+}
+
+//Funcion recursiva que busca los espacios fisicos hijos a partir de un id del espacio físico padre
+func getEspacioFisicoHijos(Padre *EspacioFisicoPadreHijo,padre int)(ef []EspacioFisicoPadreHijo){ 
+		
+	for _,element := range elementMapEF{
+				
+		if(padre == element.Padre){
+			var x EspacioFisicoPadreHijo
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			j := &x
+			x.Opciones = getEspacioFisicoHijos(j,element.Id)
+			Padre.Opciones = append(Padre.Opciones,x)
+	
+		}
+	   
+	}
+
+	return Padre.Opciones
+
+}
+
+func GetEspaciosFisicosHijosById(espacioFisicoPadre int)(espaciosFisicos *EspacioFisicoPadreHijo, e error){
+	
+		
+	var espaciosFisicosHijos []EspacioFisicoPadreHijo
+
+	qb, _ := orm.NewQueryBuilder("mysql")
+	//buscar todos
+	qb.Select("ef.id",
+		"ef.nombre",
+		"efp.padre_id",
+		"efp.hijo_id").
+		From("oikos.espacio_fisico as ef").
+		LeftJoin("oikos.espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
+		OrderBy("ef.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_,err:=o.Raw(sql).QueryRows(&espaciosFisicosHijos)
+
+	//TO MAP
+	for _, s := range espaciosFisicosHijos {  
+		elementMapEF[s.Id] = s 
+	}
+	
+	c:= buscarEF(espacioFisicoPadre)
+	Cabeza := &c
+	getEspacioFisicoHijos(Cabeza,espacioFisicoPadre)
+	 
+
+	return Cabeza, err
+}
+
+
+
+func getEspaciosFisicosPadres(Hijo EspacioFisicoPadreHijo)(ef EspacioFisicoPadreHijo){ 
+	
+	
+	var x EspacioFisicoPadreHijo
+	for _,element := range elementMapEF{
+
+		if(Hijo.Padre == element.Hijo){
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			x.Hijo = element.Hijo
+
+			lef.PushFront(x)
+			getEspaciosFisicosPadres(x)
+		}
+	}
+	
+	return x
+	
+}
+
+func GetEspaciosFisicosPadresById(espacioFisicoHijo int)(espaciosFisicos []EspacioFisicoPadreHijo, e error){
+		
+	var espacioFisicoPadres []EspacioFisicoPadreHijo
+	var listaEspaciosFisicos []EspacioFisicoPadreHijo
+	l.Init()
+
+	qb, _ := orm.NewQueryBuilder("mysql")
+	//buscar todos
+	qb.Select("ef.id",
+		"ef.nombre",
+		"efp.padre_id",
+		"efp.hijo_id").
+		From("oikos.espacio_fisico as ef").
+		LeftJoin("oikos.espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
+		OrderBy("ef.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_,err:=o.Raw(sql).QueryRows(&espacioFisicoPadres)
+
+
+	//TO MAP
+	for _, s := range espacioFisicoPadres {  
+		elementMapEF[s.Id] = s 
+	}
+
+   
+	 //Obtener informacion sobre espacio físico que se busca
+	 var Cola EspacioFisicoPadreHijo
+	 Cola.Id = elementMap[espacioFisicoHijo].Id;
+	 Cola.Nombre = elementMap[espacioFisicoHijo].Nombre
+	 Cola.Padre = elementMap[espacioFisicoHijo].Padre;
+	 Cola.Hijo = elementMap[espacioFisicoHijo].Hija;
+	
+	 if (Cola.Hijo != 0){
+		getEspaciosFisicosPadres(Cola)
+		lef.PushBack(Cola)
+   
+		//Buscar cabeza de la lista
+		p := buscarEF(l.Front().Value.(EspacioFisicoPadreHijo).Padre)
+		lef.PushFront(p)
+   
+		for temp := lef.Front(); temp != nil; temp = temp.Next() {
+			listaEspaciosFisicos = append(listaEspaciosFisicos,temp.Value.(EspacioFisicoPadreHijo))
+	   }
+	 }
+	
+
+	
+
+	return listaEspaciosFisicos, err
 }
