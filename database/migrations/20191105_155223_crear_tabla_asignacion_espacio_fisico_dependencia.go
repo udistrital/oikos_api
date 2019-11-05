@@ -5,20 +5,20 @@ import (
 )
 
 // DO NOT MODIFY
-type CrearTablaAsignacionEspacioFisicoDependencia_20191010_112624 struct {
+type CrearTablaAsignacionEspacioFisicoDependencia_20191105_155223 struct {
 	migration.Migration
 }
 
 // DO NOT MODIFY
 func init() {
-	m := &CrearTablaAsignacionEspacioFisicoDependencia_20191010_112624{}
-	m.Created = "20191010_112624"
+	m := &CrearTablaAsignacionEspacioFisicoDependencia_20191105_155223{}
+	m.Created = "20191105_155223"
 
-	migration.Register("CrearTablaAsignacionEspacioFisicoDependencia_20191010_112624", m)
+	migration.Register("CrearTablaAsignacionEspacioFisicoDependencia_20191105_155223", m)
 }
 
 // Run the migrations
-func (m *CrearTablaAsignacionEspacioFisicoDependencia_20191010_112624) Up() {
+func (m *CrearTablaAsignacionEspacioFisicoDependencia_20191105_155223) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE TABLE IF NOT EXISTS oikos.asignacion_espacio_fisico_dependencia ( id serial NOT NULL, espacio_fisico_id integer NOT NULL, dependencia_id integer NOT NULL, activo boolean NOT NULL, fecha_inicio TIMESTAMP NOT NULL, fecha_fin TIMESTAMP, documento_soporte integer, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_asignacion_espacio_fisico_dependencia PRIMARY KEY (id), CONSTRAINT fk_espacio_fisico_asignacion_espacio_fisico_dependencia FOREIGN KEY (espacio_fisico_id) REFERENCES oikos.espacio_fisico(id), CONSTRAINT fk_dependencia_asignacion_espacio_fisico_dependencia FOREIGN KEY (dependencia_id) REFERENCES oikos.dependencia(id) );")
 	m.SQL("ALTER TABLE oikos.asignacion_espacio_fisico_dependencia OWNER TO desarrollooas;")
@@ -36,7 +36,7 @@ func (m *CrearTablaAsignacionEspacioFisicoDependencia_20191010_112624) Up() {
 }
 
 // Reverse the migrations
-func (m *CrearTablaAsignacionEspacioFisicoDependencia_20191010_112624) Down() {
+func (m *CrearTablaAsignacionEspacioFisicoDependencia_20191105_155223) Down() {
 	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DROP TABLE IF EXISTS oikos.asignacion_espacio_fisico_dependencia")
 }

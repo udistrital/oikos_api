@@ -5,20 +5,20 @@ import (
 )
 
 // DO NOT MODIFY
-type CreatTablaEspacioFisicoCampo_20191105_111617 struct {
+type CrearTablaEspacioFisicoCampo_20191105_155239 struct {
 	migration.Migration
 }
 
 // DO NOT MODIFY
 func init() {
-	m := &CreatTablaEspacioFisicoCampo_20191105_111617{}
-	m.Created = "20191105_111617"
+	m := &CrearTablaEspacioFisicoCampo_20191105_155239{}
+	m.Created = "20191105_155239"
 
-	migration.Register("CreatTablaEspacioFisicoCampo_20191105_111617", m)
+	migration.Register("CrearTablaEspacioFisicoCampo_20191105_155239", m)
 }
 
 // Run the migrations
-func (m *CreatTablaEspacioFisicoCampo_20191105_111617) Up() {
+func (m *CrearTablaEspacioFisicoCampo_20191105_155239) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE TABLE oikos.espacio_fisico_campo ( id serial NOT NULL, valor character varying(50) NOT NULL, espacio_fisico_id integer NOT NULL, campo_id integer NOT NULL, activo boolean NOT NULL, fecha_inicio TIMESTAMP NOT NULL, fecha_fin TIMESTAMP, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_espacio_fisico_campo PRIMARY KEY (id), CONSTRAINT fk_espacio_fisico_espacio_fisico_campo FOREIGN KEY (espacio_fisico_id) REFERENCES oikos.espacio_fisico(id), CONSTRAINT fk_campo_espacio_fisico_campo FOREIGN KEY (campo_id) REFERENCES oikos.campo(id), CONSTRAINT UQ_CAMPO UNIQUE (campo_id, espacio_fisico_id) );")
 	m.SQL("ALTER TABLE oikos.espacio_fisico_campo OWNER TO desarrollooas;")
@@ -36,7 +36,7 @@ func (m *CreatTablaEspacioFisicoCampo_20191105_111617) Up() {
 }
 
 // Reverse the migrations
-func (m *CreatTablaEspacioFisicoCampo_20191105_111617) Down() {
+func (m *CrearTablaEspacioFisicoCampo_20191105_155239) Down() {
 	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DROP TABLE IF EXISTS oikos.espacio_fisico_campo")
 }

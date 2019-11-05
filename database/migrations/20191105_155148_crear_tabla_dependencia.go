@@ -5,20 +5,20 @@ import (
 )
 
 // DO NOT MODIFY
-type CrearTablaDependencia_20191010_111610 struct {
+type CrearTablaDependencia_20191105_155148 struct {
 	migration.Migration
 }
 
 // DO NOT MODIFY
 func init() {
-	m := &CrearTablaDependencia_20191010_111610{}
-	m.Created = "20191010_111610"
+	m := &CrearTablaDependencia_20191105_155148{}
+	m.Created = "20191105_155148"
 
-	migration.Register("CrearTablaDependencia_20191010_111610", m)
+	migration.Register("CrearTablaDependencia_20191105_155148", m)
 }
 
 // Run the migrations
-func (m *CrearTablaDependencia_20191010_111610) Up() {
+func (m *CrearTablaDependencia_20191105_155148) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE TABLE IF NOT EXISTS oikos.dependencia ( id serial NOT NULL, nombre character varying(130) NOT NULL, telefono_dependencia character varying(500) NOT NULL, correo_electronico character varying(100), activo boolean NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_dependencia PRIMARY KEY (id) );")
 	m.SQL("ALTER TABLE oikos.dependencia OWNER TO desarrollooas;")
@@ -34,7 +34,7 @@ func (m *CrearTablaDependencia_20191010_111610) Up() {
 }
 
 // Reverse the migrations
-func (m *CrearTablaDependencia_20191010_111610) Down() {
+func (m *CrearTablaDependencia_20191105_155148) Down() {
 	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DROP TABLE IF EXISTS oikos.dependencia")
 }

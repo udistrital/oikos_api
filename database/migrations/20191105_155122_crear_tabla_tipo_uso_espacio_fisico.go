@@ -5,20 +5,20 @@ import (
 )
 
 // DO NOT MODIFY
-type CrearTablaTipoUsoEspacioFisico_20191010_110416 struct {
+type CrearTablaTipoUsoEspacioFisico_20191105_155122 struct {
 	migration.Migration
 }
 
 // DO NOT MODIFY
 func init() {
-	m := &CrearTablaTipoUsoEspacioFisico_20191010_110416{}
-	m.Created = "20191010_110416"
+	m := &CrearTablaTipoUsoEspacioFisico_20191105_155122{}
+	m.Created = "20191105_155122"
 
-	migration.Register("CrearTablaTipoUsoEspacioFisico_20191010_110416", m)
+	migration.Register("CrearTablaTipoUsoEspacioFisico_20191105_155122", m)
 }
 
 // Run the migrations
-func (m *CrearTablaTipoUsoEspacioFisico_20191010_110416) Up() {
+func (m *CrearTablaTipoUsoEspacioFisico_20191105_155122) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE TABLE IF NOT EXISTS oikos.tipo_uso_espacio_fisico ( id serial NOT NULL, tipo_uso_id integer NOT NULL, espacio_fisico_id integer NOT NULL, activo boolean NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_tipo_uso_espacio_fisico PRIMARY KEY (id), CONSTRAINT fk_tipo_uso_tipo_uso_espacio_fisico FOREIGN KEY (tipo_uso_id) REFERENCES oikos.tipo_uso(id), CONSTRAINT fk_espacio_fisico_tipo_uso_espacio_fisico FOREIGN KEY (espacio_fisico_id) REFERENCES oikos.espacio_fisico(id) );")
 	m.SQL("ALTER TABLE oikos.tipo_uso_espacio_fisico OWNER TO desarrollooas;")
@@ -33,7 +33,7 @@ func (m *CrearTablaTipoUsoEspacioFisico_20191010_110416) Up() {
 }
 
 // Reverse the migrations
-func (m *CrearTablaTipoUsoEspacioFisico_20191010_110416) Down() {
+func (m *CrearTablaTipoUsoEspacioFisico_20191105_155122) Down() {
 	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DROP TABLE IF EXISTS oikos.tipo_uso_espacio_fisico")
 }
