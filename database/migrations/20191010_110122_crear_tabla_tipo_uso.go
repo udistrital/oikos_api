@@ -20,7 +20,7 @@ func init() {
 // Run the migrations
 func (m *CrearTablaTipoUso_20191010_110122) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
-	m.SQL("CREATE TABLE IF NOT EXISTS oikos.tipo_uso ( id serial NOT NULL, nombre character varying(100) NOT NULL, -- descripcion character varying(100), codigo_abreviacion character varying(20), activo boolean NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_tipo_uso PRIMARY KEY (id) );")
+	m.SQL("CREATE TABLE IF NOT EXISTS oikos.tipo_uso ( id serial NOT NULL, nombre character varying(100) NOT NULL, descripcion character varying(100), codigo_abreviacion character varying(20), activo boolean NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_tipo_uso PRIMARY KEY (id) );")
 	m.SQL("ALTER TABLE oikos.tipo_uso OWNER TO desarrollooas;")
 	m.SQL("COMMENT ON TABLE oikos.tipo_uso IS 'Tabla quie contiene los diversos usos que puede tener un espacio fisico.';")
 	m.SQL("COMMENT ON COLUMN oikos.tipo_uso.id IS 'Identificador del tipo de uso de espacios fisicos.';")
