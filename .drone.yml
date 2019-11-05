@@ -26,7 +26,7 @@ steps:
     environment:
       PG_MIGRATION_USER:
         from_secret: PG_MIGRATION_USER
-      PG_MIGRATION_PASS:s
+      PG_MIGRATION_PASS:
         from_secret: PG_MIGRATION_PASS
       PG_MIGRATION_URL:
         from_secret: PG_MIGRATION_URL
