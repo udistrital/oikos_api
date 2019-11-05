@@ -5,20 +5,20 @@ import (
 )
 
 // DO NOT MODIFY
-type CrearSchemaOikos_20191010_105143 struct {
+type CrearSchemaOikos_20191105_155035 struct {
 	migration.Migration
 }
 
 // DO NOT MODIFY
 func init() {
-	m := &CrearSchemaOikos_20191010_105143{}
-	m.Created = "20191010_105143"
+	m := &CrearSchemaOikos_20191105_155035{}
+	m.Created = "20191105_155035"
 
-	migration.Register("CrearSchemaOikos_20191010_105143", m)
+	migration.Register("CrearSchemaOikos_20191105_155035", m)
 }
 
 // Run the migrations
-func (m *CrearSchemaOikos_20191010_105143) Up() {
+func (m *CrearSchemaOikos_20191105_155035) Up() {
 	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE SCHEMA IF NOT EXISTS oikos;")
 	m.SQL("ALTER SCHEMA oikos OWNER TO desarrollooas;")
@@ -26,7 +26,7 @@ func (m *CrearSchemaOikos_20191010_105143) Up() {
 }
 
 // Reverse the migrations
-func (m *CrearSchemaOikos_20191010_105143) Down() {
+func (m *CrearSchemaOikos_20191105_155035) Down() {
 	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DROP SCHEMA IF EXISTS oikos");
 }
