@@ -93,13 +93,13 @@ func (c *EspacioFisicoCampoController) GetOne() {
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
 		te := &models.TipoEspacioFisico {
-			Id: v.EspacioFisicoId.TipoEspacio.Id,
-			Nombre: v.EspacioFisicoId.TipoEspacio.Nombre, 
-			Descripcion: v.EspacioFisicoId.TipoEspacio.Descripcion,
-			CodigoAbreviacion: v.EspacioFisicoId.TipoEspacio.CodigoAbreviacion,
-			Activo: v.EspacioFisicoId.TipoEspacio.Activo,
-			FechaCreacion: v.EspacioFisicoId.TipoEspacio.FechaCreacion,
-			FechaModificacion: v.EspacioFisicoId.TipoEspacio.FechaModificacion,	     		  
+			Id: v.EspacioFisicoId.TipoEspacioFisicoId.Id,
+			Nombre: v.EspacioFisicoId.TipoEspacioFisicoId.Nombre, 
+			Descripcion: v.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
+			CodigoAbreviacion: v.EspacioFisicoId.TipoEspacioFisicoId.CodigoAbreviacion,
+			Activo: v.EspacioFisicoId.TipoEspacioFisicoId.Activo,
+			FechaCreacion: v.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
+			FechaModificacion: v.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,	     		  
 		}
 
 		ca := &models.Campo {
@@ -214,13 +214,13 @@ func (c *EspacioFisicoCampoController) GetAll() {
 			field, _ := i.(models.EspacioFisicoCampoV2)
 			
 			te := &models.TipoEspacioFisico {
-				Id: field.EspacioFisicoId.TipoEspacio.Id,
-				Nombre: field.EspacioFisicoId.TipoEspacio.Nombre, 
-				Descripcion: field.EspacioFisicoId.TipoEspacio.Descripcion,
-				CodigoAbreviacion: field.EspacioFisicoId.TipoEspacio.CodigoAbreviacion,
-				Activo: field.EspacioFisicoId.TipoEspacio.Activo,
-				FechaCreacion: field.EspacioFisicoId.TipoEspacio.FechaCreacion,
-				FechaModificacion: field.EspacioFisicoId.TipoEspacio.FechaModificacion,	     		  
+				Id: field.EspacioFisicoId.TipoEspacioFisicoId.Id,
+				Nombre: field.EspacioFisicoId.TipoEspacioFisicoId.Nombre, 
+				Descripcion: field.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
+				CodigoAbreviacion: field.EspacioFisicoId.TipoEspacioFisicoId.CodigoAbreviacion,
+				Activo: field.EspacioFisicoId.TipoEspacioFisicoId.Activo,
+				FechaCreacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
+				FechaModificacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,	     		  
 			}
 	
 			c := &models.Campo {

@@ -21,13 +21,15 @@ type DependenciaPadre struct {
 }
 
 type DependenciaPadreV2 struct {
-	Id                         int          `orm:"column(id);pk;auto"`
-	PadreId 				  *DependenciaV2 `orm:"column(padre_id);rel(fk)"` 
-	HijaId                    *DependenciaV2 `orm:"column(hija_id);rel(fk)"`
-	Activo           		   bool      `orm:"column(activo)"`
-	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id                int          `orm:"column(id);pk;auto"`
+	PadreId           *DependenciaV2 `orm:"column(padre_id);rel(fk)"`
+	HijaId            *DependenciaV2 `orm:"column(hija_id);rel(fk)"`
+	Activo            bool         `orm:"column(activo)"`
+	FechaCreacion     time.Time    `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time    `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
+
+
 
 //Estructura para construir el arbol de dependencia
 type TreeDependencia struct {

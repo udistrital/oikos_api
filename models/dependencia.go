@@ -24,16 +24,14 @@ type Dependencia struct {
 }
 
 type DependenciaV2 struct {
-	Id     			 		   int    	`orm:"column(id);pk;auto"`
-	Nombre            		   string 	`orm:"column(nombre)"`
-	TelefonoDependencia        string    `orm:"column(telefono_dependencia)"`
-	CorreoElectronico          string    `orm:"column(correo_electronico)"`
-	Activo           		   bool      `orm:"column(activo)"`
-	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id                  int       `orm:"column(id);pk;auto"`
+	Nombre              string    `orm:"column(nombre)"`
+	TelefonoDependencia string    `orm:"column(telefono_dependencia)"`
+	CorreoElectronico   string    `orm:"column(correo_electronico);null"`
+	Activo              bool      `orm:"column(activo)"`
+	FechaCreacion       time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion   time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 	DependenciaTipoDependencia []*DependenciaTipoDependenciaV2 `orm:"reverse(many)"`
-
-	
 }
 
 //Estructura para traer el ID y el nombre de cada proyecto curriculares

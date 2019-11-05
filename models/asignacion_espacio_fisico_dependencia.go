@@ -20,15 +20,15 @@ type AsignacionEspacioFisicoDependencia struct {
 }
 
 type AsignacionEspacioFisicoDependenciaV2 struct {
-	Id               int                 `orm:"column(id);pk;auto"`
-	EspacioFisicoId  *EspacioFisicoV2    `orm:"column(espacio_fisico_id);rel(fk)"`
-	DependenciaId    *DependenciaV2      `orm:"column(dependencia_id);rel(fk)"`
-	Activo           bool                `orm:"column(activo)"`
-	FechaInicio      time.Time           `orm:"column(fecha_inicio);type(date)"`
-	FechaFin         time.Time           `orm:"column(fecha_fin);type(date);null"`
-	DocumentoSoporte           int       `orm:"column(documento_soporte)"`   
-	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id                int            `orm:"column(id);pk;auto"`
+	EspacioFisicoId   *EspacioFisicoV2 `orm:"column(espacio_fisico_id);rel(fk)"`
+	DependenciaId     *DependenciaV2   `orm:"column(dependencia_id);rel(fk)"`
+	Activo            bool           `orm:"column(activo)"`
+	FechaInicio       time.Time      `orm:"column(fecha_inicio);type(timestamp without time zone)"`
+	FechaFin          time.Time      `orm:"column(fecha_fin);type(timestamp without time zone);null"`
+	DocumentoSoporte  int            `orm:"column(documento_soporte);null"`
+	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
 func (t *AsignacionEspacioFisicoDependenciaV2) TableName() string {

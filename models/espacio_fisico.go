@@ -26,15 +26,14 @@ type EspacioFisico struct {
 }
 
 type EspacioFisicoV2 struct {
-
-	Id                int    			 		`orm:"column(id);pk;auto"`
-	Nombre            string             		`orm:"column(nombre)"`
-	Descripcion       string             		`orm:"column(descripcion);null"`
-	CodigoAbreviacion string             		`orm:"column(codigo_abreviacion);null"`
-	Activo            bool               		`orm:"column(activo)"`
-	FechaCreacion     time.Time          		`orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time          		`orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-	TipoEspacio 	  *TipoEspacioFisicoV2      `orm:"column(tipo_espacio_fisico_id);rel(fk)"`
+	Id                  int                `orm:"column(id);pk;auto"`
+	Nombre              string             `orm:"column(nombre)"`
+	Descripcion         string             `orm:"column(descripcion);null"`
+	CodigoAbreviacion   string             `orm:"column(codigo_abreviacion);null"`
+	Activo              bool               `orm:"column(activo)"`
+	TipoEspacioFisicoId *TipoEspacioFisicoV2 `orm:"column(tipo_espacio_fisico_id);rel(fk)"`
+	FechaCreacion       time.Time          `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion   time.Time          `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
 func (t *EspacioFisicoV2) TableName() string {

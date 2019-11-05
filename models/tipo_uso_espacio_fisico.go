@@ -20,12 +20,12 @@ type TipoUsoEspacioFisico struct {
 }
 
 type TipoUsoEspacioFisicoV2 struct {
-	Id                int              `orm:"column(id);pk;auto"`
+	Id                int            `orm:"column(id);pk;auto"`
 	TipoUsoId         *TipoUsoV2       `orm:"column(tipo_uso_id);rel(fk)"`
 	EspacioFisicoId   *EspacioFisicoV2 `orm:"column(espacio_fisico_id);rel(fk)"`
-	Activo            bool             `orm:"column(activo)"`
-	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Activo            bool           `orm:"column(activo)"`
+	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
 func (t *TipoUsoEspacioFisicoV2) TableName() string {

@@ -60,7 +60,7 @@ func (c *EspacioFisicoController) Post() {
 			Activo   : act,
 			FechaCreacion :  time.Now(),   
 			FechaModificacion :  time.Now(),		
-			TipoEspacio : te,	      
+			TipoEspacioFisicoId : te,	      
 		}
 
 		if _, err := models.AddEspacioFisico(&temp); err == nil {
@@ -109,13 +109,13 @@ func (c *EspacioFisicoController) GetOne() {
 		}
 
 		te := &models.TipoEspacioFisico {
-				Id: v.TipoEspacio.Id,
-				Nombre: v.TipoEspacio.Nombre, 
-				Descripcion: v.TipoEspacio.Descripcion,
-				CodigoAbreviacion: v.TipoEspacio.CodigoAbreviacion,
-				Activo: v.TipoEspacio.Activo,
-				FechaCreacion: v.TipoEspacio.FechaCreacion,
-				FechaModificacion: v.TipoEspacio.FechaModificacion,	     		  
+				Id: v.TipoEspacioFisicoId.Id,
+				Nombre: v.TipoEspacioFisicoId.Nombre, 
+				Descripcion: v.TipoEspacioFisicoId.Descripcion,
+				CodigoAbreviacion: v.TipoEspacioFisicoId.CodigoAbreviacion,
+				Activo: v.TipoEspacioFisicoId.Activo,
+				FechaCreacion: v.TipoEspacioFisicoId.FechaCreacion,
+				FechaModificacion: v.TipoEspacioFisicoId.FechaModificacion,	     		  
 		}
 
 		temp := models.EspacioFisico {
@@ -214,13 +214,13 @@ func (c *EspacioFisicoController) GetAll() {
 			
 
 				te := &models.TipoEspacioFisico {
-					Id: field.TipoEspacio.Id,
-					Nombre: field.TipoEspacio.Nombre, 
-					Descripcion: field.TipoEspacio.Descripcion,
-					CodigoAbreviacion: field.TipoEspacio.CodigoAbreviacion,
-					Activo: field.TipoEspacio.Activo,
-					FechaCreacion: field.TipoEspacio.FechaCreacion,
-					FechaModificacion: field.TipoEspacio.FechaModificacion,	     		  
+					Id: field.TipoEspacioFisicoId.Id,
+					Nombre: field.TipoEspacioFisicoId.Nombre, 
+					Descripcion: field.TipoEspacioFisicoId.Descripcion,
+					CodigoAbreviacion: field.TipoEspacioFisicoId.CodigoAbreviacion,
+					Activo: field.TipoEspacioFisicoId.Activo,
+					FechaCreacion: field.TipoEspacioFisicoId.FechaCreacion,
+					FechaModificacion: field.TipoEspacioFisicoId.FechaModificacion,	     		  
 				}
 				
 				x := models.EspacioFisico {
@@ -274,7 +274,7 @@ func (c *EspacioFisicoController) Put() {
 			Activo : infoDep.Activo,
 			FechaCreacion : infoDep.FechaCreacion,
 			FechaModificacion  : time.Now(),
-			TipoEspacio: tef,
+			TipoEspacioFisicoId: tef,
 		}
 	
 		if err := models.UpdateEspacioFisicoById(&v2); err == nil {
