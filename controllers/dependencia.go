@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
-
 	"github.com/udistrital/oikos_api/models"
-
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"time"
 )
 
 // DependenciaController oprations for Dependencia
@@ -20,11 +20,12 @@ type DependenciaController struct {
 // URLMapping ...
 func (c *DependenciaController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	c.Mapping("GetOne", c.GetOne)
-	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetOne", c.GetOne)   //--check
+	c.Mapping("GetAll", c.GetAll)   //--check
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("ProyectosPorFacultad", c.ProyectosPorFacultad)
+	c.Mapping("GetDependenciasHijasById", c.GetDependenciasHijasById)
 }
 
 // Post ...
@@ -32,19 +33,40 @@ func (c *DependenciaController) URLMapping() {
 // @Description create Dependencia
 // @Param	body		body 	models.Dependencia	true		"body for Dependencia content"
 // @Success 201 {int} models.Dependencia
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *DependenciaController) Post() {
 	var v models.Dependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddDependencia(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		
+		temp := models.DependenciaV2 {
+			Id: v.Id,
+			Nombre: v.Nombre,      		  
+			TelefonoDependencia: v.TelefonoDependencia, 
+			CorreoElectronico: v.CorreoElectronico,
+			Activo : true,
+			FechaCreacion  : time.Now(),
+			FechaModificacion  : time.Now(),
+			
+		}
+	
+		if _, err := models.AddDependencia(&temp); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //	
+		//if _, err := models.AddDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -54,16 +76,32 @@ func (c *DependenciaController) Post() {
 // @Description get Dependencia by id
 // @Param	id		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.Dependencia
-// @Failure 403 :id is empty
+// @Failure 404 not found resource
 // @router /:id [get]
 func (c *DependenciaController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetDependenciaById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+	
+  		temp := models.Dependencia {
+				Id: v.Id,
+				Nombre: v.Nombre,      		  
+				TelefonoDependencia: v.TelefonoDependencia, 
+				CorreoElectronico: v.CorreoElectronico,
+				//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+			}
+
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+
+		//c.Data["json"] = v  -------------- Temporal: Cambio por transición ------- //
 	}
 	c.ServeJSON()
 }
@@ -78,7 +116,7 @@ func (c *DependenciaController) GetOne() {
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
 // @Success 200 {object} models.Dependencia
-// @Failure 403
+// @Failure 404 not found resource
 // @router / [get]
 func (c *DependenciaController) GetAll() {
 	var fields []string
@@ -123,10 +161,71 @@ func (c *DependenciaController) GetAll() {
 	}
 
 	l, err := models.GetAllDependencia(query, fields, sortby, order, offset, limit)
+
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
-		c.Data["json"] = l
+		if l == nil {
+			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
+		}else{
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.Dependencia
+		for _, i := range l {
+			field, _ := i.(models.DependenciaV2)
+			
+			var dtp []*models.DependenciaTipoDependencia 
+
+			for _, j := range field.DependenciaTipoDependencia {
+				td := &models.TipoDependencia {
+					Id: j.TipoDependenciaId.Id,
+					Nombre: j.TipoDependenciaId.Nombre,      
+					Descripcion: j.TipoDependenciaId.Descripcion,
+					CodigoAbreviacion: j.TipoDependenciaId.CodigoAbreviacion,
+					Activo: j.TipoDependenciaId.Activo,
+					FechaCreacion: j.TipoDependenciaId.FechaCreacion,
+					FechaModificacion: j.TipoDependenciaId.FechaModificacion,		
+				}
+		
+				d := &models.Dependencia {
+					Id: j.DependenciaId.Id,
+					Nombre: j.DependenciaId.Nombre,      		  
+					TelefonoDependencia: j.DependenciaId.TelefonoDependencia, 
+					CorreoElectronico: j.DependenciaId.CorreoElectronico,
+				}
+
+				y := &models.DependenciaTipoDependencia {
+					Id: j.Id,
+					TipoDependenciaId: td,
+					DependenciaId: d,
+					Activo : j.Activo,
+					FechaCreacion  : j.FechaCreacion,
+					FechaModificacion  : j.FechaCreacion,
+					
+				}
+
+				dtp = append(dtp,y)
+			}
+
+					
+			x := models.Dependencia {
+				Id: field.Id,
+				Nombre: field.Nombre,      		  
+				TelefonoDependencia: field.TelefonoDependencia,
+				CorreoElectronico: field.CorreoElectronico, 
+				DependenciaTipoDependencia: dtp,       
+			}
+			
+			temp = append(temp,x)
+		}
+		c.Data["json"] = temp
+	}
+				
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = l -------------- Temporal: Cambio por transición ------- //
 	}
 	c.ServeJSON()
 }
@@ -137,20 +236,36 @@ func (c *DependenciaController) GetAll() {
 // @Param	id		path 	string	true		"The id you want to update"
 // @Param	body		body 	models.Dependencia	true		"body for Dependencia content"
 // @Success 200 {object} models.Dependencia
-// @Failure 403 :id is not int
+// @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *DependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.Dependencia{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetDependenciaById(id)
+	v := models.DependenciaV2{
+		Id: id,
+		Activo : infoDep.Activo,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+	//v := models.Dependencia{Id: id} 
+	//-------------- Temporal: Cambio por transición ------- //
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+
 		if err := models.UpdateDependenciaById(&v); err == nil {
-			c.Data["json"] = "OK"
+			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -160,15 +275,18 @@ func (c *DependenciaController) Put() {
 // @Description delete the Dependencia
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
-// @Failure 403 id is empty
+// @Failure 404 not found resource
 // @router /:id [delete]
 func (c *DependenciaController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteDependencia(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"Id": id}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	}
 	c.ServeJSON()
 }
@@ -217,6 +335,60 @@ func (c *DependenciaController) ProyectosPorFacultadNivelAcademico() {
 	fmt.Println(l)
 
 	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// GetDependenciasHijasById ...
+// @Title GetDependenciasHijasById
+// @Description A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.
+// @Param	dependencia	path 	int	true		"Id de la dependencia"
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 403 :dependencia_padre is empty
+// @router /get_dependencias_hijas_by_id/:dependencia [get]
+func (c *DependenciaController) GetDependenciasHijasById() {
+	//Se crea variable que contiene el id con tipo de dato string
+	dependenciaPadre := c.Ctx.Input.Param(":dependencia")
+	depPadreint, _ := strconv.Atoi(dependenciaPadre)
+	l, err := models.GetDependenciasHijasById(depPadreint)
+	if err != nil {
+		beego.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
+
+	} else {
+
+		c.Data["json"] = map[string]interface{}{"Body": l, "Type": "success"}
+	}
+
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// GetDependenciasPadresById ...
+// @Title GetDependenciasPadresById
+// @Description A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.
+// @Param	dependencia	path 	string	true		"Id de la dependencia"
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 404 :dependencia is empty
+// @router /get_dependencias_padres_by_id/:dependencia [get]
+func (c *DependenciaController) GetDependenciasPadresById() {
+	//Se crea variable que contiene el id con tipo de dato string
+	dependenciaHija := c.Ctx.Input.Param(":dependencia")
+	depHijaint, _ := strconv.Atoi(dependenciaHija)
+	l, err := models.GetDependenciasPadresById(depHijaint)
+	if err != nil {
+		beego.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
+
+	} else {
+
+		c.Data["json"] = map[string]interface{}{"Body": l, "Type": "success"}
+	}
+
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }

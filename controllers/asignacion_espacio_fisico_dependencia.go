@@ -3,11 +3,12 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
-
+	"github.com/udistrital/oikos_api/models"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"time"
 )
 
 // AsignacionEspacioFisicoDependenciaController oprations for AsignacionEspacioFisicoDependencia
@@ -29,19 +30,50 @@ func (c *AsignacionEspacioFisicoDependenciaController) URLMapping() {
 // @Description create AsignacionEspacioFisicoDependencia
 // @Param	body		body 	models.AsignacionEspacioFisicoDependencia	true		"body for AsignacionEspacioFisicoDependencia content"
 // @Success 201 {int} models.AsignacionEspacioFisicoDependencia
-// @Failure 403 body is empty
+// @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *AsignacionEspacioFisicoDependenciaController) Post() {
 	var v models.AsignacionEspacioFisicoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddAsignacionEspacioFisicoDependencia(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		dc,_ := strconv.Atoi(v.DocumentoSoporte)
+		ef := &models.EspacioFisicoV2 {
+			Id: v.EspacioFisicoId.Id,
+		}
+		d := &models.DependenciaV2 {
+			Id: v.DependenciaId.Id,
+		}
+
+		temp := models.AsignacionEspacioFisicoDependenciaV2 {
+					
+					Id: v.Id,
+					EspacioFisicoId: ef,
+					DependenciaId: d,
+					FechaInicio:  v.FechaInicio,
+					FechaFin: v.FechaFin,
+					DocumentoSoporte: dc, 
+	  /*GetEstado*/ Activo : true ,
+					FechaCreacion  : time.Now(),
+					FechaModificacion  : time.Now(),
+					
+		}
+			
+		if _, err := models.AddAsignacionEspacioFisicoDependencia(&temp); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //	
+		//	if _, err := models.AddAsignacionEspacioFisicoDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -51,16 +83,41 @@ func (c *AsignacionEspacioFisicoDependenciaController) Post() {
 // @Description get AsignacionEspacioFisicoDependencia by id
 // @Param	id		path 	string	true		"The key for staticblock"
 // @Success 200 {object} models.AsignacionEspacioFisicoDependencia
-// @Failure 403 :id is empty
+// @Failure 404 not found resource
 // @router /:id [get]
 func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetAsignacionEspacioFisicoDependenciaById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+		dc := strconv.Itoa(v.DocumentoSoporte)
+		ef := &models.EspacioFisico {
+			Id: v.EspacioFisicoId.Id,
+		}
+		d := &models.Dependencia {
+			Id: v.DependenciaId.Id,
+		}
+
+		temp := models.AsignacionEspacioFisicoDependencia {
+					
+			  Id: v.Id,
+/*GetEstado*/ Estado: "ACTIVO",
+			  FechaInicio:  v.FechaInicio,
+			  FechaFin: v.FechaFin,
+			  DocumentoSoporte: dc, 
+			  EspacioFisicoId: ef,
+			  DependenciaId: d,
+
+		}
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -75,7 +132,7 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
 // @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	string	false	"Start position of result set. Must be an integer"
 // @Success 200 {object} models.AsignacionEspacioFisicoDependencia
-// @Failure 403
+// @Failure 404 not found resource
 // @router / [get]
 func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 	var fields []string
@@ -121,9 +178,43 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 
 	l, err := models.GetAllAsignacionEspacioFisicoDependencia(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
-		c.Data["json"] = l
+		if l == nil {
+			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
+		}else{
+			//-------------- Temporal: Cambio por transición ------- //
+			var temp []models.AsignacionEspacioFisicoDependencia
+			for _, i := range l {
+				field, _ := i.(models.AsignacionEspacioFisicoDependenciaV2)
+				dc := strconv.Itoa(field.DocumentoSoporte)
+				ef := &models.EspacioFisico {
+					Id: field.EspacioFisicoId.Id,
+				}
+				d := &models.Dependencia {
+					Id: field.DependenciaId.Id,
+				}
+				x := models.AsignacionEspacioFisicoDependencia {
+					Id: field.Id,
+					Estado: "TRUE",
+					FechaInicio:  field.FechaInicio,
+					FechaFin: field.FechaFin,
+					EspacioFisicoId: ef,
+					DependenciaId: d,
+					DocumentoSoporte: dc, 
+				
+				}
+
+				temp = append(temp,x)
+			}
+			c.Data["json"] = temp
+		}
+		
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -134,20 +225,36 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 // @Param	id		path 	string	true		"The id you want to update"
 // @Param	body		body 	models.AsignacionEspacioFisicoDependencia	true		"body for AsignacionEspacioFisicoDependencia content"
 // @Success 200 {object} models.AsignacionEspacioFisicoDependencia
-// @Failure 403 :id is not int
+// @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *AsignacionEspacioFisicoDependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.AsignacionEspacioFisicoDependencia{Id: id}
+
+	//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetAsignacionEspacioFisicoDependenciaById(id)
+	v := models.AsignacionEspacioFisicoDependenciaV2{
+		Id: id,
+		Activo : true ,
+		FechaCreacion : infoDep.FechaCreacion,
+		FechaModificacion  : time.Now(),
+	}
+	//-------------- Temporal: Cambio por transición ------- //
+	//v := models.AsignacionEspacioFisicoDependencia{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateAsignacionEspacioFisicoDependenciaById(&v); err == nil {
-			c.Data["json"] = "OK"
+			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -157,15 +264,18 @@ func (c *AsignacionEspacioFisicoDependenciaController) Put() {
 // @Description delete the AsignacionEspacioFisicoDependencia
 // @Param	id		path 	string	true		"The id you want to delete"
 // @Success 200 {string} delete success!
-// @Failure 403 id is empty
+// @Failure 404 not found resource
 // @router /:id [delete]
 func (c *AsignacionEspacioFisicoDependenciaController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteAsignacionEspacioFisicoDependencia(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"Id": id}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	}
 	c.ServeJSON()
 }

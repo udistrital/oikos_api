@@ -356,6 +356,47 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
+  /dependencia/get_dependencias_hijas_by_id/{dependencia}:
+    get:
+      tags:
+      - dependencia
+      description: A partir de una dependencia dada, se obtienen las hijas de ella
+        en una estructura de árbol.
+      operationId: DependenciaController.GetDependenciasHijasById
+      parameters:
+      - in: path
+        name: dependencia
+        description: Id de la dependencia
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DependenciaPadre'
+        "403":
+          description: :dependencia_padre is empty
+  /dependencia/get_dependencias_padres_by_id/{dependencia}:
+    get:
+      tags:
+      - dependencia
+      description: A partir de una dependencia dada, se obtienen todos sus predecesores
+        en una estructura de árbol.
+      operationId: DependenciaController.GetDependenciasPadresById
+      parameters:
+      - in: path
+        name: dependencia
+        description: Id de la dependencia
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DependenciaPadre'
+        "404":
+          description: :dependencia is empty
   /dependencia/proyectosPorFacultad/{id_facultad}:
     get:
       tags:
@@ -516,19 +557,6 @@ paths:
           description: '{string} delete success!'
         "403":
           description: id is empty
-  /dependencia_padre/ArbolDependencias:
-    get:
-      tags:
-      - dependencia_padre
-      description: Construye el arbol de dependencias
-      operationId: DependenciaPadreController.ArbolDependencias
-      responses:
-        "200":
-          description: ""
-          schema:
-            $ref: '#/definitions/models.DependenciaPadre'
-        "403":
-          description: ""
   /dependencia_padre/FacultadesConProyectos:
     get:
       tags:
@@ -1486,20 +1514,29 @@ definitions:
     title: AsignacionEspacioFisicoDependencia
     type: object
     properties:
+      Activo:
+        type: boolean
       DependenciaId:
         $ref: '#/definitions/models.Dependencia'
       DocumentoSoporte:
-        type: string
+        type: integer
+        format: int64
       EspacioFisicoId:
         $ref: '#/definitions/models.EspacioFisico'
       Estado:
         type: string
+      FechaCreacion:
+        type: string
+        format: datetime
       FechaFin:
         type: string
-        format: string
+        format: datetime
       FechaInicio:
         type: string
-        format: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1518,12 +1555,16 @@ definitions:
     title: Dependencia
     type: object
     properties:
+      Activo:
+        type: boolean
       CorreoElectronico:
         type: string
-      DependenciaTipoDependencia:
-        type: array
-        items:
-          $ref: '#/definitions/models.DependenciaTipoDependencia'
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1535,19 +1576,39 @@ definitions:
     title: DependenciaPadre
     type: object
     properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Hija:
+        $ref: '#/definitions/models.Dependencia'
+      HijaId:
         $ref: '#/definitions/models.Dependencia'
       Id:
         type: integer
         format: int64
       Padre:
         $ref: '#/definitions/models.Dependencia'
+      PadreId:
+        $ref: '#/definitions/models.Dependencia'
   models.DependenciaTipoDependencia:
     title: DependenciaTipoDependencia
     type: object
     properties:
+      Activo:
+        type: boolean
       DependenciaId:
         $ref: '#/definitions/models.Dependencia'
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1557,10 +1618,28 @@ definitions:
     title: EspacioFisico
     type: object
     properties:
+      Activo:
+        type: boolean
+      Area:
+        type: number
+        format: double
+      Capacidad:
+        type: integer
+        format: int64
       Codigo:
+        type: string
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
         type: string
       Estado:
         type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1585,17 +1664,39 @@ definitions:
     title: EspacioFisicoPadre
     type: object
     properties:
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Hijo:
+        $ref: '#/definitions/models.EspacioFisico'
+      HijoId:
         $ref: '#/definitions/models.EspacioFisico'
       Id:
         type: integer
         format: int64
       Padre:
         $ref: '#/definitions/models.EspacioFisico'
+      PadreId:
+        $ref: '#/definitions/models.EspacioFisico'
   models.TipoDependencia:
     title: TipoDependencia
     type: object
     properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1605,6 +1706,18 @@ definitions:
     title: TipoEspacioFisico
     type: object
     properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1614,6 +1727,18 @@ definitions:
     title: TipoUso
     type: object
     properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1623,8 +1748,16 @@ definitions:
     title: TipoUsoEspacioFisico
     type: object
     properties:
+      Activo:
+        type: boolean
       EspacioFisicoId:
         $ref: '#/definitions/models.EspacioFisico'
+      FechaCreacion:
+        type: string
+        format: datetime
+      FechaModificacion:
+        type: string
+        format: datetime
       Id:
         type: integer
         format: int64

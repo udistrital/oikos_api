@@ -6,8 +6,9 @@ import (
 	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
-
+	"time"
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 // CampoController oprations for Campo
@@ -34,14 +35,33 @@ func (c *CampoController) URLMapping() {
 func (c *CampoController) Post() {
 	var v models.Campo
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddCampo(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+	
+		temp := models.CampoV2 {
+			Id  :   v.Id,          
+			Nombre:  v.Nombre,    
+			Descripcion:  v.Descripcion,    
+			CodigoAbreviacion : "C_"+v.Nombre,
+			Activo   : true,    
+			FechaCreacion :  time.Now(),   
+			FechaModificacion :  time.Now(),		
+		    
+		}
+		if _, err := models.AddCampo(&temp); err == nil {
+		//if _, err := models.AddCampo(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -58,9 +78,25 @@ func (c *CampoController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetCampoById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	} else {
-		c.Data["json"] = v
+
+	temp := models.Campo {
+		Id: v.Id,
+		Nombre: v.Nombre,   
+		Descripcion:  v.Descripcion,   
+		CodigoAbreviacion: v.CodigoAbreviacion,
+		Activo: v.Activo, 
+		FechaCreacion :  v.FechaCreacion,   
+		FechaModificacion :  v.FechaModificacion,		
+	}
+
+	c.Data["json"] = temp
+//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -121,9 +157,36 @@ func (c *CampoController) GetAll() {
 
 	l, err := models.GetAllCampo(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
-		c.Data["json"] = l
+		if l == nil {
+			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
+		}else{
+			//-------------- Temporal: Cambio por transición ------- //
+			var temp []models.Campo
+			for _, i := range l {
+				field, _ := i.(models.CampoV2)
+
+				x := models.Campo {
+					Id: field.Id,
+					Nombre: field.Nombre,   
+					Descripcion:  field.Descripcion,   
+					CodigoAbreviacion: field.CodigoAbreviacion,
+					Activo: field.Activo, 
+					FechaCreacion :  field.FechaCreacion,   
+					FechaModificacion :  field.FechaModificacion,		
+				}
+
+				temp = append(temp,x)
+			}
+			c.Data["json"] = temp
+		}
+
+		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -139,15 +202,33 @@ func (c *CampoController) GetAll() {
 func (c *CampoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
+	infoDep, _ := models.GetCampoById(id)
 	v := models.Campo{Id: id}
+
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateCampoById(&v); err == nil {
-			c.Data["json"] = "OK"
+		v2 := models.CampoV2{
+			Id: id,
+			Nombre: v.Nombre,
+			Descripcion: v.Descripcion,
+			CodigoAbreviacion: infoDep.CodigoAbreviacion,
+			Activo : infoDep.Activo,
+			FechaCreacion : infoDep.FechaCreacion,
+			FechaModificacion  : time.Now(),
+		}
+
+		if err := models.UpdateCampoById(&v2); err == nil {
+			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -163,9 +244,12 @@ func (c *CampoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteCampo(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"Id": id}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	}
 	c.ServeJSON()
 }
