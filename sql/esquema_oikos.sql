@@ -56,14 +56,12 @@ CREATE TABLE oikos.espacio_fisico
 );
 
 COMMENT ON TABLE oikos.espacio_fisico IS 'Tabla de Rompimiento que reune los atributos de un espacio fisico';
-COMMENT ON COLUMN oikos.espacio_fisico.id    IS 'Identificador del espacio fisico especifico de la Universidad Distrital.';
-COMMENT ON COLUMN oikos.espacio_fisico.nombre    IS 'Nombre perteneciente al espacio físico';
+COMMENT ON COLUMN oikos.espacio_fisico.id IS 'Identificador del espacio fisico especifico de la Universidad Distrital.';
+COMMENT ON COLUMN oikos.espacio_fisico.nombre IS 'Nombre perteneciente al espacio físico';
 COMMENT ON COLUMN oikos.espacio_fisico.descripcion IS 'Campo en el que se puede registrar una descripcion de la informacion de espacio_fisico.';
-COMMENT ON COLUMN oikos.espacio_fisico.area IS 'Área del espacio fisico en metros cuadrados.';
-COMMENT ON COLUMN oikos.espacio_fisico.capacidad IS 'Número de personas en espacio físico';
 COMMENT ON COLUMN oikos.espacio_fisico.codigo_abreviacion IS 'Código de abreviación, sigla, acrónimo u otra representación corta del registro si se requiere.';
 COMMENT ON COLUMN oikos.espacio_fisico.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';
-COMMENT ON COLUMN oikos.espacio_fisico.tipo_espacio_fisico_id    IS 'Llave foranea que contiene el identificador del tipo de espacio fisico de la entidad tipo_espacio_fisico';
+COMMENT ON COLUMN oikos.espacio_fisico.tipo_espacio_fisico_id IS 'Llave foranea que contiene el identificador del tipo de espacio fisico de la entidad tipo_espacio_fisico';
 COMMENT ON COLUMN oikos.espacio_fisico.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';
 COMMENT ON COLUMN oikos.espacio_fisico.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 
@@ -345,7 +343,7 @@ CREATE SEQUENCE oikos.campo_id_seq
 CREATE TABLE oikos.campo
 (
     id integer NOT NULL DEFAULT nextval('oikos.campo_id_seq'::regclass),
-	nombre character varying(100) NOT NULL,     -- 
+	nombre character varying(100) NOT NULL,
 	descripcion character varying(100),
 	codigo_abreviacion character varying(20),
 	activo boolean NOT NULL,
@@ -376,7 +374,7 @@ CREATE TABLE oikos.espacio_fisico_campo
 (
     id integer NOT NULL DEFAULT nextval('oikos.espacio_fisico_campo_id_seq'::regclass),
 	valor character varying(50) NOT NULL,
-    espacio_fisico_id integer NOT NULL,
+	espacio_fisico_id integer NOT NULL,
     campo_id integer NOT NULL,
     activo boolean NOT NULL,
     fecha_inicio TIMESTAMP NOT NULL,
