@@ -19,7 +19,7 @@ steps:
       - master
       - test
       event:
-      - pushs
+      - push
 
   - name: beego_migrate
     image: golang:1.9
