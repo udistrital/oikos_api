@@ -187,7 +187,13 @@ func (c *EspacioFisicoController) GetAll() {
 				return
 			}
 			k, v := kv[0], kv[1]
-			query[k] = v
+			if (k == "TipoEspacio.Id"){
+				query["TipoEspacioFisicoId.Id"] = v
+			}else{
+				query[k] = v
+			}
+			
+			
 		}
 	}
 
