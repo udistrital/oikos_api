@@ -16,7 +16,7 @@ paths:
       tags:
       - asignacion_espacio_fisico_dependencia
       description: get AsignacionEspacioFisicoDependencia
-      operationId: AsignacionEspacioFisicoDependenciaController.Get All
+      operationId: AsignacionEspacioFisicoDependenciaV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -47,32 +47,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - asignacion_espacio_fisico_dependencia
       description: create AsignacionEspacioFisicoDependencia
-      operationId: AsignacionEspacioFisicoDependenciaController.Post
+      operationId: AsignacionEspacioFisicoDependenciaV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for AsignacionEspacioFisicoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
+          $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
       responses:
         "201":
-          description: '{int} models.AsignacionEspacioFisicoDependencia'
-        "403":
-          description: body is empty
+          description: '{int} models.AsignacionEspacioFisicoDependenciaV2'
+        "400":
+          description: the request contains incorrect syntax
   /asignacion_espacio_fisico_dependencia/{id}:
     get:
       tags:
       - asignacion_espacio_fisico_dependencia
       description: get AsignacionEspacioFisicoDependencia by id
-      operationId: AsignacionEspacioFisicoDependenciaController.Get One
+      operationId: AsignacionEspacioFisicoDependenciaV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -83,14 +83,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - asignacion_espacio_fisico_dependencia
       description: update the AsignacionEspacioFisicoDependencia
-      operationId: AsignacionEspacioFisicoDependenciaController.Put
+      operationId: AsignacionEspacioFisicoDependenciaV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -102,19 +102,19 @@ paths:
         description: body for AsignacionEspacioFisicoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
+          $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.AsignacionEspacioFisicoDependencia'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - asignacion_espacio_fisico_dependencia
       description: delete the AsignacionEspacioFisicoDependencia
-      operationId: AsignacionEspacioFisicoDependenciaController.Delete
+      operationId: AsignacionEspacioFisicoDependenciaV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -124,14 +124,14 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /campo/:
     get:
       tags:
       - campo
       description: get Campo
-      operationId: CampoController.Get All
+      operationId: CampoV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -162,32 +162,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Campo'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.CampoV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - campo
       description: create Campo
-      operationId: CampoController.Post
+      operationId: CampoV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for Campo content
         required: true
         schema:
-          $ref: '#/definitions/models.Campo'
+          $ref: '#/definitions/models.CampoV2'
       responses:
         "201":
-          description: '{int} models.Campo'
-        "403":
-          description: body is empty
+          description: '{int} models.CampoV2'
+        "400":
+          description: the request contains incorrect syntax
   /campo/{id}:
     get:
       tags:
       - campo
       description: get Campo by id
-      operationId: CampoController.Get One
+      operationId: CampoV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -198,14 +198,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Campo'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.CampoV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - campo
       description: update the Campo
-      operationId: CampoController.Put
+      operationId: CampoV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -217,19 +217,19 @@ paths:
         description: body for Campo content
         required: true
         schema:
-          $ref: '#/definitions/models.Campo'
+          $ref: '#/definitions/models.CampoV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Campo'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.CampoV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - campo
       description: delete the Campo
-      operationId: CampoController.Delete
+      operationId: CampoV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -239,14 +239,14 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /dependencia/:
     get:
       tags:
       - dependencia
       description: get Dependencia
-      operationId: DependenciaController.Get All
+      operationId: DependenciaV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -277,32 +277,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Dependencia'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.DependenciaV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - dependencia
       description: create Dependencia
-      operationId: DependenciaController.Post
+      operationId: DependenciaV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for Dependencia content
         required: true
         schema:
-          $ref: '#/definitions/models.Dependencia'
+          $ref: '#/definitions/models.DependenciaV2'
       responses:
         "201":
-          description: '{int} models.Dependencia'
-        "403":
-          description: body is empty
+          description: '{int} models.DependenciaV2'
+        "400":
+          description: the request contains incorrect syntax
   /dependencia/{id}:
     get:
       tags:
       - dependencia
       description: get Dependencia by id
-      operationId: DependenciaController.Get One
+      operationId: DependenciaV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -313,14 +313,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Dependencia'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.DependenciaV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - dependencia
       description: update the Dependencia
-      operationId: DependenciaController.Put
+      operationId: DependenciaV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -332,19 +332,19 @@ paths:
         description: body for Dependencia content
         required: true
         schema:
-          $ref: '#/definitions/models.Dependencia'
+          $ref: '#/definitions/models.DependenciaV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Dependencia'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.DependenciaV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - dependencia
       description: delete the Dependencia
-      operationId: DependenciaController.Delete
+      operationId: DependenciaV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -354,8 +354,8 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /dependencia/get_dependencias_hijas_by_id/{dependencia}:
     get:
       tags:
@@ -447,7 +447,7 @@ paths:
       tags:
       - dependencia_padre
       description: get DependenciaPadre
-      operationId: DependenciaPadreController.Get All
+      operationId: DependenciaPadreV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -478,32 +478,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadre'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.DependenciaPadreV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - dependencia_padre
       description: create DependenciaPadre
-      operationId: DependenciaPadreController.Post
+      operationId: DependenciaPadreV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for DependenciaPadre content
         required: true
         schema:
-          $ref: '#/definitions/models.DependenciaPadre'
+          $ref: '#/definitions/models.DependenciaPadreV2'
       responses:
         "201":
-          description: '{int} models.DependenciaPadre'
-        "403":
-          description: body is empty
+          description: '{int} models.DependenciaPadreV2'
+        "400":
+          description: the request contains incorrect syntax
   /dependencia_padre/{id}:
     get:
       tags:
       - dependencia_padre
       description: get DependenciaPadre by id
-      operationId: DependenciaPadreController.Get One
+      operationId: DependenciaPadreV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -514,14 +514,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadre'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.DependenciaPadreV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - dependencia_padre
       description: update the DependenciaPadre
-      operationId: DependenciaPadreController.Put
+      operationId: DependenciaPadreV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -533,19 +533,19 @@ paths:
         description: body for DependenciaPadre content
         required: true
         schema:
-          $ref: '#/definitions/models.DependenciaPadre'
+          $ref: '#/definitions/models.DependenciaPadreV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadre'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.DependenciaPadreV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - dependencia_padre
       description: delete the DependenciaPadre
-      operationId: DependenciaPadreController.Delete
+      operationId: DependenciaPadreV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -555,8 +555,21 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
+        "404":
+          description: not found resource
+  /dependencia_padre/ArbolDependencias:
+    get:
+      tags:
+      - dependencia_padre
+      description: ArbolDependencias
+      operationId: DependenciaPadreController.ArbolDependencias
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Tree'
         "403":
-          description: id is empty
+          description: ""
   /dependencia_padre/FacultadesConProyectos:
     get:
       tags:
@@ -570,12 +583,32 @@ paths:
             $ref: '#/definitions/models.DependenciaPadre'
         "403":
           description: ""
+  /dependencia_padre/tr_dependencia_padre:
+    post:
+      tags:
+      - dependencia_padre
+      description: Transacción que inserta una dependencia y le asocia un padre, al
+        insertar en la tabla dependencia_padre. Se verifica que el padre exista y
+        si no, se reversa la inserción de la dependencia.
+      operationId: DependenciaPadreController.TRDependenciaPadre
+      parameters:
+      - in: body
+        name: body
+        description: body for DependenciaPadreV2 content
+        required: true
+        schema:
+          $ref: '#/definitions/models.DependenciaPadreV2'
+      responses:
+        "201":
+          description: '{int} models.DependenciaPadreV2'
+        "400":
+          description: the request contains incorrect syntax
   /dependencia_tipo_dependencia/:
     get:
       tags:
       - dependencia_tipo_dependencia
       description: get DependenciaTipoDependencia
-      operationId: DependenciaTipoDependenciaController.Get All
+      operationId: DependenciaTipoDependenciaV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -606,32 +639,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaTipoDependencia'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - dependencia_tipo_dependencia
       description: create DependenciaTipoDependencia
-      operationId: DependenciaTipoDependenciaController.Post
+      operationId: DependenciaTipoDependenciaV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for DependenciaTipoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/models.DependenciaTipoDependencia'
+          $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
       responses:
         "201":
-          description: '{int} models.DependenciaTipoDependencia'
-        "403":
-          description: body is empty
+          description: '{int} models.DependenciaTipoDependenciaV2'
+        "400":
+          description: the request contains incorrect syntax
   /dependencia_tipo_dependencia/{id}:
     get:
       tags:
       - dependencia_tipo_dependencia
       description: get DependenciaTipoDependencia by id
-      operationId: DependenciaTipoDependenciaController.Get One
+      operationId: DependenciaTipoDependenciaV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -642,14 +675,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaTipoDependencia'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - dependencia_tipo_dependencia
       description: update the DependenciaTipoDependencia
-      operationId: DependenciaTipoDependenciaController.Put
+      operationId: DependenciaTipoDependenciaV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -661,19 +694,19 @@ paths:
         description: body for DependenciaTipoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/models.DependenciaTipoDependencia'
+          $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaTipoDependencia'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - dependencia_tipo_dependencia
       description: delete the DependenciaTipoDependencia
-      operationId: DependenciaTipoDependenciaController.Delete
+      operationId: DependenciaTipoDependenciaV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -683,14 +716,14 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /espacio_fisico/:
     get:
       tags:
       - espacio_fisico
       description: get EspacioFisico
-      operationId: EspacioFisicoController.Get All
+      operationId: EspacioFisicoV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -721,32 +754,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisico'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.EspacioFisicoV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - espacio_fisico
       description: create EspacioFisico
-      operationId: EspacioFisicoController.Post
+      operationId: EspacioFisicoV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for EspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/models.EspacioFisico'
+          $ref: '#/definitions/models.EspacioFisicoV2'
       responses:
         "201":
-          description: '{int} models.EspacioFisico'
-        "403":
-          description: body is empty
+          description: '{int} models.EspacioFisicoV2'
+        "400":
+          description: the request contains incorrect syntax
   /espacio_fisico/{id}:
     get:
       tags:
       - espacio_fisico
       description: get EspacioFisico by id
-      operationId: EspacioFisicoController.Get One
+      operationId: EspacioFisicoV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -757,14 +790,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisico'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.EspacioFisicoV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - espacio_fisico
       description: update the EspacioFisico
-      operationId: EspacioFisicoController.Put
+      operationId: EspacioFisicoV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -776,19 +809,19 @@ paths:
         description: body for EspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/models.EspacioFisico'
+          $ref: '#/definitions/models.EspacioFisicoV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisico'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.EspacioFisicoV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - espacio_fisico
       description: delete the EspacioFisico
-      operationId: EspacioFisicoController.Delete
+      operationId: EspacioFisicoV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -798,8 +831,8 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /espacio_fisico/EspaciosHuerfanos/{id}:
     get:
       tags:
@@ -819,12 +852,53 @@ paths:
             $ref: '#/definitions/models.EspacioFisico'
         "403":
           description: id is empty
+  /espacio_fisico/get_espacios_fisicos_hijos_by_id/{espacio_fisico}:
+    get:
+      tags:
+      - espacio_fisico
+      description: A partir de un espacio físico dado, se obtienen los hijas de él
+        en una estructura de árbol.
+      operationId: EspacioFisicoController.GetEspaciosFisicosHijosById
+      parameters:
+      - in: path
+        name: espacio_fisico
+        description: Id del espacio físico
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.EspacioFisicoPadreHijo'
+        "403":
+          description: :espacio_fisico is empty
+  /espacio_fisico/get_espacios_fisicos_padres_by_id/{espacio_fisico}:
+    get:
+      tags:
+      - espacio_fisico
+      description: A partir de una espacio_fisico dado, se obtienen todos sus predecesores
+        en una estructura de árbol.
+      operationId: EspacioFisicoController.GetEspaciosFisicosPadresById
+      parameters:
+      - in: path
+        name: espacio_fisico
+        description: Id de la espacio_fisico
+        required: true
+        type: string
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/.EspafioFisicoPadreHijo'
+        "404":
+          description: :espacio_fisico is empty
   /espacio_fisico_campo/:
     get:
       tags:
       - espacio_fisico_campo
       description: get EspacioFisicoCampo
-      operationId: EspacioFisicoCampoController.Get All
+      operationId: EspacioFisicoCampoV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -855,32 +929,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoCampo'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.EspacioFisicoCampoV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - espacio_fisico_campo
       description: create EspacioFisicoCampo
-      operationId: EspacioFisicoCampoController.Post
+      operationId: EspacioFisicoCampoV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for EspacioFisicoCampo content
         required: true
         schema:
-          $ref: '#/definitions/models.EspacioFisicoCampo'
+          $ref: '#/definitions/models.EspacioFisicoCampoV2'
       responses:
         "201":
-          description: '{int} models.EspacioFisicoCampo'
-        "403":
-          description: body is empty
+          description: '{int} models.EspacioFisicoCampoV2'
+        "400":
+          description: the request contains incorrect syntax
   /espacio_fisico_campo/{id}:
     get:
       tags:
       - espacio_fisico_campo
       description: get EspacioFisicoCampo by id
-      operationId: EspacioFisicoCampoController.Get One
+      operationId: EspacioFisicoCampoV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -891,14 +965,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoCampo'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.EspacioFisicoCampoV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - espacio_fisico_campo
       description: update the EspacioFisicoCampo
-      operationId: EspacioFisicoCampoController.Put
+      operationId: EspacioFisicoCampoV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -910,19 +984,19 @@ paths:
         description: body for EspacioFisicoCampo content
         required: true
         schema:
-          $ref: '#/definitions/models.EspacioFisicoCampo'
+          $ref: '#/definitions/models.EspacioFisicoCampoV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoCampo'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.EspacioFisicoCampoV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - espacio_fisico_campo
       description: delete the EspacioFisicoCampo
-      operationId: EspacioFisicoCampoController.Delete
+      operationId: EspacioFisicoCampoV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -932,14 +1006,14 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /espacio_fisico_padre/:
     get:
       tags:
       - espacio_fisico_padre
       description: get EspacioFisicoPadre
-      operationId: EspacioFisicoPadreController.Get All
+      operationId: EspacioFisicoPadreV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -970,32 +1044,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoPadre'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.EspacioFisicoPadreV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - espacio_fisico_padre
       description: create EspacioFisicoPadre
-      operationId: EspacioFisicoPadreController.Post
+      operationId: EspacioFisicoPadreV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for EspacioFisicoPadre content
         required: true
         schema:
-          $ref: '#/definitions/models.EspacioFisicoPadre'
+          $ref: '#/definitions/models.EspacioFisicoPadreV2'
       responses:
         "201":
-          description: '{int} models.EspacioFisicoPadre'
-        "403":
-          description: body is empty
+          description: '{int} models.EspacioFisicoPadreV2'
+        "400":
+          description: the request contains incorrect syntax
   /espacio_fisico_padre/{id}:
     get:
       tags:
       - espacio_fisico_padre
       description: get EspacioFisicoPadre by id
-      operationId: EspacioFisicoPadreController.Get One
+      operationId: EspacioFisicoPadreV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -1006,14 +1080,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoPadre'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.EspacioFisicoPadreV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - espacio_fisico_padre
       description: update the EspacioFisicoPadre
-      operationId: EspacioFisicoPadreController.Put
+      operationId: EspacioFisicoPadreV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -1025,19 +1099,19 @@ paths:
         description: body for EspacioFisicoPadre content
         required: true
         schema:
-          $ref: '#/definitions/models.EspacioFisicoPadre'
+          $ref: '#/definitions/models.EspacioFisicoPadreV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoPadre'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.EspacioFisicoPadreV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - espacio_fisico_padre
       description: delete the EspacioFisicoPadre
-      operationId: EspacioFisicoPadreController.Delete
+      operationId: EspacioFisicoPadreV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -1047,14 +1121,48 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
+        "404":
+          description: not found resource
+  /proyecto_curricular/get_all_proyectos_by_facultad_id/{id_facultad}:
+    get:
+      tags:
+      - proyecto_curricular
+      description: Se obtienen los proyectos curriculares, dado un id de una facultad
+      operationId: ProyectoCurricularController.GetAllProyectosByFacultadId
+      parameters:
+      - in: path
+        name: id_facultad
+        description: El id de la facultad a consultar sus proyectos curriculares
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DependenciaPadreHijo'
         "403":
-          description: id is empty
+          description: ""
+  /proyecto_curricular/get_all_proyectos_by_facultades:
+    get:
+      tags:
+      - proyecto_curricular
+      description: Obtener una lista de todas las facultades y sus respectivos proyectos
+        curriculares
+      operationId: ProyectoCurricularController.GetAllProyectosByFacultades
+      responses:
+        "200":
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DependenciaPadreHijo'
+        "403":
+          description: ""
   /tipo_dependencia/:
     get:
       tags:
       - tipo_dependencia
       description: get TipoDependencia
-      operationId: TipoDependenciaController.Get All
+      operationId: TipoDependenciaV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -1085,32 +1193,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoDependencia'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.TipoDependenciaV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - tipo_dependencia
       description: create TipoDependencia
-      operationId: TipoDependenciaController.Post
+      operationId: TipoDependenciaV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for TipoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/models.TipoDependencia'
+          $ref: '#/definitions/models.TipoDependenciaV2'
       responses:
         "201":
-          description: '{int} models.TipoDependencia'
-        "403":
-          description: body is empty
+          description: '{int} models.TipoDependenciaV2'
+        "400":
+          description: the request contains incorrect syntax
   /tipo_dependencia/{id}:
     get:
       tags:
       - tipo_dependencia
       description: get TipoDependencia by id
-      operationId: TipoDependenciaController.Get One
+      operationId: TipoDependenciaV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -1121,14 +1229,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoDependencia'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.TipoDependenciaV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - tipo_dependencia
       description: update the TipoDependencia
-      operationId: TipoDependenciaController.Put
+      operationId: TipoDependenciaV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -1140,19 +1248,19 @@ paths:
         description: body for TipoDependencia content
         required: true
         schema:
-          $ref: '#/definitions/models.TipoDependencia'
+          $ref: '#/definitions/models.TipoDependenciaV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoDependencia'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.TipoDependenciaV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - tipo_dependencia
       description: delete the TipoDependencia
-      operationId: TipoDependenciaController.Delete
+      operationId: TipoDependenciaV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -1162,14 +1270,14 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /tipo_espacio_fisico/:
     get:
       tags:
       - tipo_espacio_fisico
       description: get TipoEspacioFisico
-      operationId: TipoEspacioFisicoController.Get All
+      operationId: TipoEspacioFisicoV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -1200,32 +1308,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoEspacioFisico'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.TipoEspacioFisicoV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - tipo_espacio_fisico
       description: create TipoEspacioFisico
-      operationId: TipoEspacioFisicoController.Post
+      operationId: TipoEspacioFisicoV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for TipoEspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/models.TipoEspacioFisico'
+          $ref: '#/definitions/models.TipoEspacioFisicoV2'
       responses:
         "201":
-          description: '{int} models.TipoEspacioFisico'
-        "403":
-          description: body is empty
+          description: '{int} models.TipoEspacioFisicoV2'
+        "400":
+          description: the request contains incorrect syntax
   /tipo_espacio_fisico/{id}:
     get:
       tags:
       - tipo_espacio_fisico
       description: get TipoEspacioFisico by id
-      operationId: TipoEspacioFisicoController.Get One
+      operationId: TipoEspacioFisicoV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -1236,14 +1344,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoEspacioFisico'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.TipoEspacioFisicoV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - tipo_espacio_fisico
       description: update the TipoEspacioFisico
-      operationId: TipoEspacioFisicoController.Put
+      operationId: TipoEspacioFisicoV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -1255,19 +1363,19 @@ paths:
         description: body for TipoEspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/models.TipoEspacioFisico'
+          $ref: '#/definitions/models.TipoEspacioFisicoV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoEspacioFisico'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.TipoEspacioFisicoV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - tipo_espacio_fisico
       description: delete the TipoEspacioFisico
-      operationId: TipoEspacioFisicoController.Delete
+      operationId: TipoEspacioFisicoV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -1277,14 +1385,14 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /tipo_uso/:
     get:
       tags:
       - tipo_uso
       description: get TipoUso
-      operationId: TipoUsoController.Get All
+      operationId: TipoUsoV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -1315,32 +1423,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoUso'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.TipoUsoV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - tipo_uso
       description: create TipoUso
-      operationId: TipoUsoController.Post
+      operationId: TipoUsoV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for TipoUso content
         required: true
         schema:
-          $ref: '#/definitions/models.TipoUso'
+          $ref: '#/definitions/models.TipoUsoV2'
       responses:
         "201":
-          description: '{int} models.TipoUso'
-        "403":
-          description: body is empty
+          description: '{int} models.TipoUsoV2'
+        "400":
+          description: the request contains incorrect syntax
   /tipo_uso/{id}:
     get:
       tags:
       - tipo_uso
       description: get TipoUso by id
-      operationId: TipoUsoController.Get One
+      operationId: TipoUsoV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -1351,14 +1459,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoUso'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.TipoUsoV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - tipo_uso
       description: update the TipoUso
-      operationId: TipoUsoController.Put
+      operationId: TipoUsoV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -1370,19 +1478,19 @@ paths:
         description: body for TipoUso content
         required: true
         schema:
-          $ref: '#/definitions/models.TipoUso'
+          $ref: '#/definitions/models.TipoUsoV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoUso'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.TipoUsoV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - tipo_uso
       description: delete the TipoUso
-      operationId: TipoUsoController.Delete
+      operationId: TipoUsoV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -1392,14 +1500,14 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
   /tipo_uso_espacio_fisico/:
     get:
       tags:
       - tipo_uso_espacio_fisico
       description: get TipoUsoEspacioFisico
-      operationId: TipoUsoEspacioFisicoController.Get All
+      operationId: TipoUsoEspacioFisicoV2Controller.Get All
       parameters:
       - in: query
         name: query
@@ -1430,32 +1538,32 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoUsoEspacioFisico'
-        "403":
-          description: ""
+            $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
+        "404":
+          description: not found resource
     post:
       tags:
       - tipo_uso_espacio_fisico
       description: create TipoUsoEspacioFisico
-      operationId: TipoUsoEspacioFisicoController.Post
+      operationId: TipoUsoEspacioFisicoV2Controller.Post
       parameters:
       - in: body
         name: body
         description: body for TipoUsoEspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/models.TipoUsoEspacioFisico'
+          $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
       responses:
         "201":
-          description: '{int} models.TipoUsoEspacioFisico'
-        "403":
-          description: body is empty
+          description: '{int} models.TipoUsoEspacioFisicoV2'
+        "400":
+          description: the request contains incorrect syntax
   /tipo_uso_espacio_fisico/{id}:
     get:
       tags:
       - tipo_uso_espacio_fisico
       description: get TipoUsoEspacioFisico by id
-      operationId: TipoUsoEspacioFisicoController.Get One
+      operationId: TipoUsoEspacioFisicoV2Controller.Get One
       parameters:
       - in: path
         name: id
@@ -1466,14 +1574,14 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoUsoEspacioFisico'
-        "403":
-          description: :id is empty
+            $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
+        "404":
+          description: not found resource
     put:
       tags:
       - tipo_uso_espacio_fisico
       description: update the TipoUsoEspacioFisico
-      operationId: TipoUsoEspacioFisicoController.Put
+      operationId: TipoUsoEspacioFisicoV2Controller.Put
       parameters:
       - in: path
         name: id
@@ -1485,19 +1593,19 @@ paths:
         description: body for TipoUsoEspacioFisico content
         required: true
         schema:
-          $ref: '#/definitions/models.TipoUsoEspacioFisico'
+          $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoUsoEspacioFisico'
-        "403":
-          description: :id is not int
+            $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
+        "400":
+          description: the request contains incorrect syntax
     delete:
       tags:
       - tipo_uso_espacio_fisico
       description: delete the TipoUsoEspacioFisico
-      operationId: TipoUsoEspacioFisicoController.Delete
+      operationId: TipoUsoEspacioFisicoV2Controller.Delete
       parameters:
       - in: path
         name: id
@@ -1507,36 +1615,59 @@ paths:
       responses:
         "200":
           description: '{string} delete success!'
-        "403":
-          description: id is empty
+        "404":
+          description: not found resource
 definitions:
+  .EspafioFisicoPadreHijo:
+    type: object
+  .Tree:
+    type: object
   models.AsignacionEspacioFisicoDependencia:
     title: AsignacionEspacioFisicoDependencia
+    type: object
+    properties:
+      DependenciaId:
+        $ref: '#/definitions/models.Dependencia'
+      DocumentoSoporte:
+        type: string
+      EspacioFisicoId:
+        $ref: '#/definitions/models.EspacioFisico'
+      Estado:
+        type: string
+      FechaFin:
+        type: string
+        format: string
+      FechaInicio:
+        type: string
+        format: string
+      Id:
+        type: integer
+        format: int64
+  models.AsignacionEspacioFisicoDependenciaV2:
+    title: AsignacionEspacioFisicoDependenciaV2
     type: object
     properties:
       Activo:
         type: boolean
       DependenciaId:
-        $ref: '#/definitions/models.Dependencia'
+        $ref: '#/definitions/models.DependenciaV2'
       DocumentoSoporte:
         type: integer
         format: int64
       EspacioFisicoId:
-        $ref: '#/definitions/models.EspacioFisico'
-      Estado:
-        type: string
+        $ref: '#/definitions/models.EspacioFisicoV2'
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaFin:
         type: string
-        format: datetime
+        format: string
       FechaInicio:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
       Id:
         type: integer
         format: int64
@@ -1544,8 +1675,39 @@ definitions:
     title: Campo
     type: object
     properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
       Descripcion:
         type: string
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+  models.CampoV2:
+    title: CampoV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
       Id:
         type: integer
         format: int64
@@ -1555,16 +1717,12 @@ definitions:
     title: Dependencia
     type: object
     properties:
-      Activo:
-        type: boolean
       CorreoElectronico:
         type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
+      DependenciaTipoDependencia:
+        type: array
+        items:
+          $ref: '#/definitions/models.DependenciaTipoDependencia'
       Id:
         type: integer
         format: int64
@@ -1580,21 +1738,55 @@ definitions:
         type: boolean
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
       Hija:
-        $ref: '#/definitions/models.Dependencia'
-      HijaId:
         $ref: '#/definitions/models.Dependencia'
       Id:
         type: integer
         format: int64
       Padre:
         $ref: '#/definitions/models.Dependencia'
+  models.DependenciaPadreHijo:
+    title: DependenciaPadreHijo
+    type: object
+    properties:
+      Hija:
+        type: integer
+        format: int64
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      Opciones:
+        type: array
+        items:
+          $ref: '#/definitions/models.DependenciaPadreHijo'
+      Padre:
+        type: integer
+        format: int64
+  models.DependenciaPadreV2:
+    title: DependenciaPadreV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      HijaId:
+        $ref: '#/definitions/models.DependenciaV2'
+      Id:
+        type: integer
+        format: int64
       PadreId:
-        $ref: '#/definitions/models.Dependencia'
+        $ref: '#/definitions/models.DependenciaV2'
   models.DependenciaTipoDependencia:
     title: DependenciaTipoDependencia
     type: object
@@ -1605,30 +1797,64 @@ definitions:
         $ref: '#/definitions/models.Dependencia'
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
       Id:
         type: integer
         format: int64
       TipoDependenciaId:
         $ref: '#/definitions/models.TipoDependencia'
-  models.EspacioFisico:
-    title: EspacioFisico
+  models.DependenciaTipoDependenciaV2:
+    title: DependenciaTipoDependenciaV2
     type: object
     properties:
       Activo:
         type: boolean
-      Area:
-        type: number
-        format: double
-      Capacidad:
+      DependenciaId:
+        $ref: '#/definitions/models.DependenciaV2'
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      Id:
         type: integer
         format: int64
-      Codigo:
+      TipoDependenciaId:
+        $ref: '#/definitions/models.TipoDependenciaV2'
+  models.DependenciaV2:
+    title: DependenciaV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      CorreoElectronico:
         type: string
-      CodigoAbreviacion:
+      DependenciaTipoDependencia:
+        type: array
+        items:
+          $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      TelefonoDependencia:
+        type: string
+  models.EspacioFisico:
+    title: EspacioFisico
+    type: object
+    properties:
+      Codigo:
         type: string
       Descripcion:
         type: string
@@ -1636,10 +1862,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
       Id:
         type: integer
         format: int64
@@ -1651,10 +1877,51 @@ definitions:
     title: EspacioFisicoCampo
     type: object
     properties:
+      Activo:
+        type: boolean
       Campo:
         $ref: '#/definitions/models.Campo'
       EspacioFisico:
         $ref: '#/definitions/models.EspacioFisico'
+      FechaCreacion:
+        type: string
+        format: string
+      FechaFin:
+        type: string
+        format: string
+      FechaInicio:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      Id:
+        type: integer
+        format: int64
+      Valor:
+        type: string
+  models.EspacioFisicoCampoV2:
+    title: EspacioFisicoCampoV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      CampoId:
+        $ref: '#/definitions/models.CampoV2'
+      EspacioFisicoId:
+        $ref: '#/definitions/models.EspacioFisicoV2'
+      FechaCreacion:
+        type: string
+        format: string
+      FechaFin:
+        type: string
+        format: string
+      FechaInicio:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
       Id:
         type: integer
         format: int64
@@ -1666,21 +1933,76 @@ definitions:
     properties:
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
       Hijo:
-        $ref: '#/definitions/models.EspacioFisico'
-      HijoId:
         $ref: '#/definitions/models.EspacioFisico'
       Id:
         type: integer
         format: int64
       Padre:
         $ref: '#/definitions/models.EspacioFisico'
+  models.EspacioFisicoPadreHijo:
+    title: EspacioFisicoPadreHijo
+    type: object
+    properties:
+      Hijo:
+        type: integer
+        format: int64
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      Opciones:
+        type: array
+        items:
+          $ref: '#/definitions/models.EspacioFisicoPadreHijo'
+      Padre:
+        type: integer
+        format: int64
+  models.EspacioFisicoPadreV2:
+    title: EspacioFisicoPadreV2
+    type: object
+    properties:
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      HijoId:
+        $ref: '#/definitions/models.EspacioFisicoV2'
+      Id:
+        type: integer
+        format: int64
       PadreId:
-        $ref: '#/definitions/models.EspacioFisico'
+        $ref: '#/definitions/models.EspacioFisicoV2'
+  models.EspacioFisicoV2:
+    title: EspacioFisicoV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      TipoEspacioFisicoId:
+        $ref: '#/definitions/models.TipoEspacioFisicoV2'
   models.TipoDependencia:
     title: TipoDependencia
     type: object
@@ -1693,10 +2015,31 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+  models.TipoDependenciaV2:
+    title: TipoDependenciaV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
       Id:
         type: integer
         format: int64
@@ -1714,10 +2057,31 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+  models.TipoEspacioFisicoV2:
+    title: TipoEspacioFisicoV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
       Id:
         type: integer
         format: int64
@@ -1735,10 +2099,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
       Id:
         type: integer
         format: int64
@@ -1754,15 +2118,66 @@ definitions:
         $ref: '#/definitions/models.EspacioFisico'
       FechaCreacion:
         type: string
-        format: datetime
+        format: string
       FechaModificacion:
         type: string
-        format: datetime
+        format: string
       Id:
         type: integer
         format: int64
       TipoUsoId:
         $ref: '#/definitions/models.TipoUso'
+  models.TipoUsoEspacioFisicoV2:
+    title: TipoUsoEspacioFisicoV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      EspacioFisicoId:
+        $ref: '#/definitions/models.EspacioFisicoV2'
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      Id:
+        type: integer
+        format: int64
+      TipoUsoId:
+        $ref: '#/definitions/models.TipoUsoV2'
+  models.TipoUsoV2:
+    title: TipoUsoV2
+    type: object
+    properties:
+      Activo:
+        type: boolean
+      CodigoAbreviacion:
+        type: string
+      Descripcion:
+        type: string
+      FechaCreacion:
+        type: string
+        format: string
+      FechaModificacion:
+        type: string
+        format: string
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+  models.Tree:
+    title: Tree
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      Opciones:
+        $ref: '#/definitions/78653.<nil>.Tree'
 tags:
 - name: tipo_uso
   description: |
@@ -1788,15 +2203,54 @@ tags:
 - name: asignacion_espacio_fisico_dependencia
   description: |
     AsignacionEspacioFisicoDependenciaController oprations for AsignacionEspacioFisicoDependencia
-- name: campo
-  description: |
-    CampoController oprations for Campo
-- name: espacio_fisico_campo
-  description: |
-    EspacioFisicoCampoController oprations for EspacioFisicoCampo
 - name: dependencia_tipo_dependencia
   description: |
     DependenciaTipoDependenciaController oprations for DependenciaTipoDependencia
 - name: tipo_dependencia
   description: |
     TipoDependenciaController oprations for TipoDependencia
+- name: campo
+  description: |
+    CampoController oprations for Campo
+- name: espacio_fisico_campo
+  description: |
+    EspacioFisicoCampoController oprations for EspacioFisicoCampo
+- name: proyecto_curricular
+  description: |
+    ProyectoCurricularController oprations for Facultad
+- name: tipo_uso_espacio_fisico
+  description: |
+    TipoUsoEspacioFisicoV2Controller operations for TipoUsoEspacioFisico
+- name: tipo_uso
+  description: |
+    TipoUsoV2Controller operations for TipoUso
+- name: tipo_espacio_fisico
+  description: |
+    TipoEspacioFisicoV2Controller operations for TipoEspacioFisico
+- name: espacio_fisico_padre
+  description: |
+    EspacioFisicoPadreV2Controller operations for EspacioFisicoPadre
+- name: espacio_fisico_campo
+  description: |
+    EspacioFisicoCampoV2Controller operations for EspacioFisicoCampo
+- name: tipo_dependencia
+  description: |
+    TipoDependenciaV2Controller operations for TipoDependencia
+- name: espacio_fisico
+  description: |
+    EspacioFisicoV2Controller operations for EspacioFisico
+- name: dependencia_tipo_dependencia
+  description: |
+    DependenciaTipoDependenciaV2Controller operations for DependenciaTipoDependencia
+- name: dependencia_padre
+  description: |
+    DependenciaPadreV2Controller operations for DependenciaPadre
+- name: dependencia
+  description: |
+    DependenciaV2Controller operations for Dependencia
+- name: campo
+  description: |
+    CampoV2Controller operations for Campo
+- name: asignacion_espacio_fisico_dependencia
+  description: |
+    AsignacionEspacioFisicoDependenciaV2Controller operations for AsignacionEspacioFisicoDependencia
