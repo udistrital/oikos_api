@@ -6,7 +6,7 @@ API CRUD para la gestión de dependencias y espacios físicos dentro de la Unive
 Este proyecto está escrito en el lenguaje Go, generado mediante el framework [Beego](https://beego.me/).
 
 ## Modelo de Datos
-![entrada](https://github.com/udistrital/oikos_api/blob/dev/sql/esquema_oikos.png)
+![entrada](https://github.com/udistrital/oikos_api/blob/dev/sql/esquema_oikos_final.png)
 
 ## Ejecución
 
