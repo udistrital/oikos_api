@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
+	"fmt"
 	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
@@ -193,5 +193,108 @@ func (c *DependenciaV2Controller) Delete() {
 		c.Data["system"] = err
 		c.Abort("404")
 	}
+	c.ServeJSON()
+}
+
+
+// ProyectosPorFacultad ...
+// @Title ProyectosPorFacultad
+// @Description Get curricular projects by faculty
+// @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
+// @Param	nivel_academico		path 	string	true		"El nivel académico a consultar de acuerdo a la facultad"
+// @Success 200 {object} models.Dependencia
+// @Failure 403 :id_facultad is empty
+// @router /proyectosPorFacultad/:id_facultad/:nivel_academico [get]
+func (c *DependenciaV2Controller) ProyectosPorFacultad() {
+	//Se crea variable que contiene el id con tipo de dato string
+	idStr := c.Ctx.Input.Param(":id_facultad")
+	nivel_academico := c.Ctx.Input.Param(":nivel_academico")
+	//Se nombra la variable id, en la cual se hizo la conversión de string a int
+	id_facultad, _ := strconv.Atoi(idStr)
+
+	//Construcción Json menus
+	l := models.ProyectosPorFacultad(id_facultad, nivel_academico)
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// ProyectosPorFacultadNivelAcademico ...
+// @Title ProyectosPorFacultadNivelAcademico
+// @Description Get curricular projects by faculty and academic level
+// @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
+// @Success 200 {object} models.Dependencia
+// @Failure 403 :id_facultad is empty
+// @router /proyectosPorFacultad/:id_facultad [get]
+func (c *DependenciaV2Controller) ProyectosPorFacultadNivelAcademico() {
+	//Se crea variable que contiene el id con tipo de dato string
+	idStr := c.Ctx.Input.Param(":id_facultad")
+	//Se nombra la variable id, en la cual se hizo la conversión de string a int
+	id_facultad, _ := strconv.Atoi(idStr)
+
+	//Construcción Json menus
+	l := models.ProyectosPorFacultad(id_facultad, "undefined")
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// GetDependenciasHijasById ...
+// @Title GetDependenciasHijasById
+// @Description A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.
+// @Param	dependencia	path 	int	true		"Id de la dependencia"
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 403 :dependencia_padre is empty
+// @router /get_dependencias_hijas_by_id/:dependencia [get]
+func (c *DependenciaV2Controller) GetDependenciasHijasById() {
+	//Se crea variable que contiene el id con tipo de dato string
+	dependenciaPadre := c.Ctx.Input.Param(":dependencia")
+	depPadreint, _ := strconv.Atoi(dependenciaPadre)
+	l, err := models.GetDependenciasHijasById(depPadreint)
+	if err != nil {
+		beego.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
+
+	} else {
+
+		c.Data["json"] = map[string]interface{}{"Body": l, "Type": "success"}
+	}
+
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// GetDependenciasPadresById ...
+// @Title GetDependenciasPadresById
+// @Description A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.
+// @Param	dependencia	path 	string	true		"Id de la dependencia"
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 404 :dependencia is empty
+// @router /get_dependencias_padres_by_id/:dependencia [get]
+func (c *DependenciaV2Controller) GetDependenciasPadresById() {
+	//Se crea variable que contiene el id con tipo de dato string
+	dependenciaHija := c.Ctx.Input.Param(":dependencia")
+	depHijaint, _ := strconv.Atoi(dependenciaHija)
+	l, err := models.GetDependenciasPadresById(depHijaint)
+	if err != nil {
+		beego.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
+
+	} else {
+
+		c.Data["json"] = map[string]interface{}{"Body": l, "Type": "success"}
+	}
+
+	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }

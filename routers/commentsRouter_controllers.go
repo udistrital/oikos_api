@@ -385,6 +385,33 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaPadreV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaPadreV2Controller"],
+        beego.ControllerComments{
+            Method: "ArbolDependenciasV2",
+            Router: `/ArbolDependencias`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaPadreV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaPadreV2Controller"],
+        beego.ControllerComments{
+            Method: "FacultadesConProyectosV2",
+            Router: `/FacultadesConProyectos`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaPadreV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaPadreV2Controller"],
+        beego.ControllerComments{
+            Method: "TRDependenciaPadreV2",
+            Router: `/tr_dependencia_padre`,
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaTipoDependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaTipoDependenciaController"],
         beego.ControllerComments{
             Method: "Post",
@@ -516,6 +543,42 @@ func init() {
             Method: "Delete",
             Router: `/:id`,
             AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaV2Controller"],
+        beego.ControllerComments{
+            Method: "GetDependenciasHijasById",
+            Router: `/get_dependencias_hijas_by_id/:dependencia`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaV2Controller"],
+        beego.ControllerComments{
+            Method: "GetDependenciasPadresById",
+            Router: `/get_dependencias_padres_by_id/:dependencia`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaV2Controller"],
+        beego.ControllerComments{
+            Method: "ProyectosPorFacultadNivelAcademico",
+            Router: `/proyectosPorFacultad/:id_facultad`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaV2Controller"],
+        beego.ControllerComments{
+            Method: "ProyectosPorFacultad",
+            Router: `/proyectosPorFacultad/:id_facultad/:nivel_academico`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
@@ -813,6 +876,33 @@ func init() {
             Method: "Delete",
             Router: `/:id`,
             AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"],
+        beego.ControllerComments{
+            Method: "EspaciosHuerfanos",
+            Router: `/EspaciosHuerfanos/:id`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"],
+        beego.ControllerComments{
+            Method: "GetEspaciosFisicosHijosById",
+            Router: `/get_espacios_fisicos_hijos_by_id/:espacio_fisico`,
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"],
+        beego.ControllerComments{
+            Method: "GetEspaciosFisicosPadresById",
+            Router: `/get_espacios_fisicos_padres_by_id/:espacio_fisico`,
+            AllowHTTPMethods: []string{"get"},
             MethodParams: param.Make(),
             Filters: nil,
             Params: nil})
