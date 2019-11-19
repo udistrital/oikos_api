@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
+	"fmt"
 	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
@@ -193,5 +193,84 @@ func (c *EspacioFisicoV2Controller) Delete() {
 		c.Data["system"] = err
 		c.Abort("404")
 	}
+	c.ServeJSON()
+}
+
+// EspaciosHuerfanos ...
+// @Title EspaciosHuerfanos
+// @Description Función para cargar los espacios físicos huerfanos
+// @Param	id		path 	string	true		"Id del espacio físico"
+// @Success 200 {object} models.EspacioFisico
+// @Failure 403 id is empty
+// @router /EspaciosHuerfanos/:id [get]
+//Función para cargar los espacios físicos huerfanos
+func (c *EspacioFisicoV2Controller) EspaciosHuerfanos() {
+	fmt.Println("tipo ", c.Ctx.Input.Param(":id"))
+	tipo := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(tipo)
+	//perfiles := ("Admin_Arka")
+	//perfilesR := strings.NewReplacer(",", "','")
+
+	//Construcción Json Menús Huerfanos
+	l := models.EspacioFisicosHuerfanos(id)
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// GetEspaciosFisicosHijosById ...
+// @Title GetEspaciosFisicosHijosById
+// @Description A partir de un espacio físico dado, se obtienen los hijas de él en una estructura de árbol.
+// @Param	espacio_fisico	path 	int	true		"Id del espacio físico"
+// @Success 200 {object} models.EspacioFisicoPadreHijo
+// @Failure 403 :espacio_fisico is empty
+// @router /get_espacios_fisicos_hijos_by_id/:espacio_fisico [get]
+func (c *EspacioFisicoV2Controller) GetEspaciosFisicosHijosById() {
+	//Se crea variable que contiene el id con tipo de dato string
+	espacioFisicoPadre := c.Ctx.Input.Param(":espacio_fisico")
+	EFPadreint, _ := strconv.Atoi(espacioFisicoPadre)
+	l, err := models.GetEspaciosFisicosHijosById(EFPadreint)
+	if err != nil {
+		beego.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
+
+	} else {
+
+		c.Data["json"] = map[string]interface{}{"Body": l, "Type": "success"}
+	}
+
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// GetEspaciosFisicosPadresById ...
+// @Title GetEspaciosFisicosPadresById
+// @Description A partir de una espacio_fisico dado, se obtienen todos sus predecesores en una estructura de árbol.
+// @Param	espacio_fisico	path 	string	true		"Id de la espacio_fisico"
+// @Success 200 {object} models.EspafioFisicoPadreHijo
+// @Failure 404 :espacio_fisico is empty
+// @router /get_espacios_fisicos_padres_by_id/:espacio_fisico [get]
+func (c *EspacioFisicoV2Controller) GetEspaciosFisicosPadresById() {
+	//Se crea variable que contiene el id con tipo de dato string
+	espacioFisicoHijo := c.Ctx.Input.Param(":espacio_fisico")
+	EFHijoint, _ := strconv.Atoi(espacioFisicoHijo)
+	l, err := models.GetEspaciosFisicosPadresById(EFHijoint)
+	if err != nil {
+		beego.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
+
+	} else {
+
+		c.Data["json"] = map[string]interface{}{"Body": l, "Type": "success"}
+	}
+
+	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }

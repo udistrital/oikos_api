@@ -5,7 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-
+	"fmt"
 	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
@@ -24,6 +24,7 @@ func (c *DependenciaPadreV2Controller) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+
 }
 
 // Post ...
@@ -195,3 +196,66 @@ func (c *DependenciaPadreV2Controller) Delete() {
 	}
 	c.ServeJSON()
 }
+
+
+// FacultadesConProyectos ...
+// @Title FacultadesConProyectos
+// @Description Lista las facultades con sus respectivos proyectos curriculares
+// @Success 200 {object} models.DependenciaPadre
+// @Failure 403
+// @router /FacultadesConProyectos [get]
+func (c *DependenciaPadreV2Controller) FacultadesConProyectosV2() {
+	//Construcción Json menus
+	l := models.Facultades()
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// ArbolDependencias ...
+// @Title ArbolDependencias
+// @Description ArbolDependencias
+// @Success 200 {object} models.Tree
+// @Failure 403
+// @router /ArbolDependencias [get]
+func (c *DependenciaPadreV2Controller) ArbolDependenciasV2() {
+	//Construcción Json menus
+	l := models.ConstruirDependenciasPadre()
+	fmt.Println("Este es el resultado de la consulta")
+	fmt.Println(l)
+
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+
+// TRDependenciaPadre ...
+// @Title TRDependenciaPadre
+// @Description Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.
+// @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadreV2 content"
+// @Success 201 {int} models.DependenciaPadreV2
+// @Failure 400 the request contains incorrect syntax
+// @router /tr_dependencia_padre [post]
+func (c *DependenciaPadreV2Controller) TRDependenciaPadreV2() {
+	var v models.DependenciaPadreV2
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		
+		if _, err := models.TRDependenciaPadre(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = v
+		} else {
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
+		}
+	} else {
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
+	}
+	c.ServeJSON()
+}
+
