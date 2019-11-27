@@ -36,6 +36,15 @@ func (c *AsignacionEspacioFisicoDependenciaController) Post() {
 	var v models.AsignacionEspacioFisicoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
+		var act bool;
+		if (v.Estado == "Activo"){
+			act = true
+		}else if (v.Estado == "Inactivo"){
+			act = false
+		}else{
+			act = true
+		}
+
 		dc,_ := strconv.Atoi(v.DocumentoSoporte)
 		ef := &models.EspacioFisicoV2 {
 			Id: v.EspacioFisicoId.Id,
@@ -52,7 +61,7 @@ func (c *AsignacionEspacioFisicoDependenciaController) Post() {
 					FechaInicio:  v.FechaInicio,
 					FechaFin: v.FechaFin,
 					DocumentoSoporte: dc, 
-	  /*GetEstado*/ Activo : true ,
+	  				Activo : act ,
 					FechaCreacion  : time.Now(),
 					FechaModificacion  : time.Now(),
 					
@@ -104,10 +113,18 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
 			Id: v.DependenciaId.Id,
 		}
 
+		var act string;
+				if (v.Activo == true){
+					act = "Activo"
+				}else {
+					act = "Inactivo"
+				}
+			
+
 		temp := models.AsignacionEspacioFisicoDependencia {
 					
 			  Id: v.Id,
-/*GetEstado*/ Estado: "ACTIVO",
+			 Estado: act,
 			  FechaInicio:  v.FechaInicio,
 			  FechaFin: v.FechaFin,
 			  DocumentoSoporte: dc, 
@@ -192,12 +209,42 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 			for _, i := range l {
 				field, _ := i.(models.AsignacionEspacioFisicoDependenciaV2)
 				dc := strconv.Itoa(field.DocumentoSoporte)
+
+				tef := &models.TipoEspacioFisico {
+					Id: field.EspacioFisicoId.TipoEspacioFisicoId.Id,
+					Nombre: field.EspacioFisicoId.TipoEspacioFisicoId.Nombre, 
+					Descripcion: field.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
+					CodigoAbreviacion: field.EspacioFisicoId.TipoEspacioFisicoId.CodigoAbreviacion,
+					Activo: field.EspacioFisicoId.TipoEspacioFisicoId.Activo,
+					FechaCreacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
+					FechaModificacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,	
+				}
+
+				var act string;
+				if (field.EspacioFisicoId.Activo == true){
+					act = "Activo"
+				}else {
+					act = "Inactivo"
+				}
+			
+				
 				ef := &models.EspacioFisico {
 					Id: field.EspacioFisicoId.Id,
+					Nombre: field.EspacioFisicoId.Nombre,
+					Descripcion: field.EspacioFisicoId.Descripcion,
+					Codigo: field.EspacioFisicoId.CodigoAbreviacion,
+					Estado:act,
+					TipoEspacio : tef,
 				}
+
 				d := &models.Dependencia {
 					Id: field.DependenciaId.Id,
+					Nombre: field.DependenciaId.Nombre,      		  
+					TelefonoDependencia: field.DependenciaId.TelefonoDependencia,
+					CorreoElectronico: field.DependenciaId.CorreoElectronico, 
+					       
 				}
+
 				x := models.AsignacionEspacioFisicoDependencia {
 					Id: field.Id,
 					Estado: "TRUE",
