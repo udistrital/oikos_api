@@ -124,7 +124,7 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
 		temp := models.AsignacionEspacioFisicoDependencia {
 					
 			  Id: v.Id,
-			 Estado: act,
+			  Estado: act,
 			  FechaInicio:  v.FechaInicio,
 			  FechaFin: v.FechaFin,
 			  DocumentoSoporte: dc, 
