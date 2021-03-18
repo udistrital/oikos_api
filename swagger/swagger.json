@@ -451,7 +451,7 @@
                     "dependencia"
                 ],
                 "description": "A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.",
-                "operationId": "DependenciaController.GetDependenciasHijasById",
+                "operationId": "DependenciaV2Controller.GetDependenciasHijasById",
                 "parameters": [
                     {
                         "in": "path",
@@ -481,7 +481,7 @@
                     "dependencia"
                 ],
                 "description": "A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.",
-                "operationId": "DependenciaController.GetDependenciasPadresById",
+                "operationId": "DependenciaV2Controller.GetDependenciasPadresById",
                 "parameters": [
                     {
                         "in": "path",
@@ -510,7 +510,7 @@
                     "dependencia"
                 ],
                 "description": "Get curricular projects by faculty and academic level",
-                "operationId": "DependenciaController.ProyectosPorFacultadNivelAcademico",
+                "operationId": "DependenciaV2Controller.ProyectosPorFacultadNivelAcademico",
                 "parameters": [
                     {
                         "in": "path",
@@ -540,7 +540,7 @@
                     "dependencia"
                 ],
                 "description": "Get curricular projects by faculty",
-                "operationId": "DependenciaController.ProyectosPorFacultad",
+                "operationId": "DependenciaV2Controller.ProyectosPorFacultad",
                 "parameters": [
                     {
                         "in": "path",
@@ -750,7 +750,7 @@
                     "dependencia_padre"
                 ],
                 "description": "ArbolDependencias",
-                "operationId": "DependenciaPadreController.ArbolDependencias",
+                "operationId": "DependenciaPadreV2Controller.ArbolDependencias",
                 "responses": {
                     "200": {
                         "description": "",
@@ -770,7 +770,7 @@
                     "dependencia_padre"
                 ],
                 "description": "Lista las facultades con sus respectivos proyectos curriculares",
-                "operationId": "DependenciaPadreController.FacultadesConProyectos",
+                "operationId": "DependenciaPadreV2Controller.FacultadesConProyectos",
                 "responses": {
                     "200": {
                         "description": "",
@@ -790,7 +790,7 @@
                     "dependencia_padre"
                 ],
                 "description": "Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.",
-                "operationId": "DependenciaPadreController.TRDependenciaPadre",
+                "operationId": "DependenciaPadreV2Controller.TRDependenciaPadre",
                 "parameters": [
                     {
                         "in": "body",
@@ -1164,7 +1164,7 @@
                     "espacio_fisico"
                 ],
                 "description": "Función para cargar los espacios físicos huerfanos",
-                "operationId": "EspacioFisicoController.EspaciosHuerfanos",
+                "operationId": "EspacioFisicoV2Controller.EspaciosHuerfanos",
                 "parameters": [
                     {
                         "in": "path",
@@ -1193,7 +1193,7 @@
                     "espacio_fisico"
                 ],
                 "description": "A partir de un espacio físico dado, se obtienen los hijas de él en una estructura de árbol.",
-                "operationId": "EspacioFisicoController.GetEspaciosFisicosHijosById",
+                "operationId": "EspacioFisicoV2Controller.GetEspaciosFisicosHijosById",
                 "parameters": [
                     {
                         "in": "path",
@@ -1223,7 +1223,7 @@
                     "espacio_fisico"
                 ],
                 "description": "A partir de una espacio_fisico dado, se obtienen todos sus predecesores en una estructura de árbol.",
-                "operationId": "EspacioFisicoController.GetEspaciosFisicosPadresById",
+                "operationId": "EspacioFisicoV2Controller.GetEspaciosFisicosPadresById",
                 "parameters": [
                     {
                         "in": "path",
@@ -1237,7 +1237,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/.EspafioFisicoPadreHijo"
+                            "$ref": "#/definitions/models.EspafioFisicoPadreHijo"
                         }
                     },
                     "404": {
@@ -2425,10 +2425,8 @@
         }
     },
     "definitions": {
-        ".EspafioFisicoPadreHijo": {
-            "type": "object"
-        },
-        ".Tree": {
+        "78780.\u003cnil\u003e.Tree": {
+            "title": "Tree",
             "type": "object"
         },
         "models.AsignacionEspacioFisicoDependencia": {
@@ -2449,11 +2447,11 @@
                 },
                 "FechaFin": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaInicio": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2480,19 +2478,19 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaFin": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaInicio": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2515,11 +2513,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2545,11 +2543,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2594,11 +2592,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Hija": {
                     "$ref": "#/definitions/models.Dependencia"
@@ -2648,11 +2646,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "HijaId": {
                     "$ref": "#/definitions/models.DependenciaV2"
@@ -2678,11 +2676,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2705,11 +2703,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2738,11 +2736,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2771,11 +2769,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2804,19 +2802,19 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaFin": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaInicio": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2842,19 +2840,19 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaFin": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaInicio": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2871,11 +2869,11 @@
             "properties": {
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Hijo": {
                     "$ref": "#/definitions/models.EspacioFisico"
@@ -2922,11 +2920,11 @@
             "properties": {
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "HijoId": {
                     "$ref": "#/definitions/models.EspacioFisicoV2"
@@ -2955,11 +2953,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2968,10 +2966,22 @@
                 "Nombre": {
                     "type": "string"
                 },
+                "TipoEdificacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "TipoEspacioFisicoId": {
                     "$ref": "#/definitions/models.TipoEspacioFisicoV2"
+                },
+                "TipoTerrenoId": {
+                    "type": "integer",
+                    "format": "int64"
                 }
             }
+        },
+        "models.EspafioFisicoPadreHijo": {
+            "title": "EspafioFisicoPadreHijo",
+            "type": "object"
         },
         "models.TipoDependencia": {
             "title": "TipoDependencia",
@@ -2988,11 +2998,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3018,11 +3028,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3048,11 +3058,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3078,11 +3088,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3108,11 +3118,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3135,11 +3145,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3162,11 +3172,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3192,11 +3202,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3219,7 +3229,7 @@
                     "type": "string"
                 },
                 "Opciones": {
-                    "$ref": "#/definitions/78653.\u003cnil\u003e.Tree"
+                    "$ref": "#/definitions/78780.\u003cnil\u003e.Tree"
                 }
             }
         }
