@@ -79,7 +79,7 @@ Pruebas unitarias
 
 
 ## Modelo de Datos
-[Modelo de Datos Relacional](/sql/esquema_oikos_final.png)
+[Modelo de Datos Relacional](/sql/esquema_oikos_v3.png)
 
 ## Licencia
 
