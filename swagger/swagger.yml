@@ -362,7 +362,7 @@ paths:
       - dependencia
       description: A partir de una dependencia dada, se obtienen las hijas de ella
         en una estructura de árbol.
-      operationId: DependenciaController.GetDependenciasHijasById
+      operationId: DependenciaV2Controller.GetDependenciasHijasById
       parameters:
       - in: path
         name: dependencia
@@ -383,7 +383,7 @@ paths:
       - dependencia
       description: A partir de una dependencia dada, se obtienen todos sus predecesores
         en una estructura de árbol.
-      operationId: DependenciaController.GetDependenciasPadresById
+      operationId: DependenciaV2Controller.GetDependenciasPadresById
       parameters:
       - in: path
         name: dependencia
@@ -402,7 +402,7 @@ paths:
       tags:
       - dependencia
       description: Get curricular projects by faculty and academic level
-      operationId: DependenciaController.ProyectosPorFacultadNivelAcademico
+      operationId: DependenciaV2Controller.ProyectosPorFacultadNivelAcademico
       parameters:
       - in: path
         name: id_facultad
@@ -422,7 +422,7 @@ paths:
       tags:
       - dependencia
       description: Get curricular projects by faculty
-      operationId: DependenciaController.ProyectosPorFacultad
+      operationId: DependenciaV2Controller.ProyectosPorFacultad
       parameters:
       - in: path
         name: id_facultad
@@ -562,7 +562,7 @@ paths:
       tags:
       - dependencia_padre
       description: ArbolDependencias
-      operationId: DependenciaPadreController.ArbolDependencias
+      operationId: DependenciaPadreV2Controller.ArbolDependencias
       responses:
         "200":
           description: ""
@@ -575,7 +575,7 @@ paths:
       tags:
       - dependencia_padre
       description: Lista las facultades con sus respectivos proyectos curriculares
-      operationId: DependenciaPadreController.FacultadesConProyectos
+      operationId: DependenciaPadreV2Controller.FacultadesConProyectos
       responses:
         "200":
           description: ""
@@ -590,7 +590,7 @@ paths:
       description: Transacción que inserta una dependencia y le asocia un padre, al
         insertar en la tabla dependencia_padre. Se verifica que el padre exista y
         si no, se reversa la inserción de la dependencia.
-      operationId: DependenciaPadreController.TRDependenciaPadre
+      operationId: DependenciaPadreV2Controller.TRDependenciaPadre
       parameters:
       - in: body
         name: body
@@ -838,7 +838,7 @@ paths:
       tags:
       - espacio_fisico
       description: Función para cargar los espacios físicos huerfanos
-      operationId: EspacioFisicoController.EspaciosHuerfanos
+      operationId: EspacioFisicoV2Controller.EspaciosHuerfanos
       parameters:
       - in: path
         name: id
@@ -858,7 +858,7 @@ paths:
       - espacio_fisico
       description: A partir de un espacio físico dado, se obtienen los hijas de él
         en una estructura de árbol.
-      operationId: EspacioFisicoController.GetEspaciosFisicosHijosById
+      operationId: EspacioFisicoV2Controller.GetEspaciosFisicosHijosById
       parameters:
       - in: path
         name: espacio_fisico
@@ -879,7 +879,7 @@ paths:
       - espacio_fisico
       description: A partir de una espacio_fisico dado, se obtienen todos sus predecesores
         en una estructura de árbol.
-      operationId: EspacioFisicoController.GetEspaciosFisicosPadresById
+      operationId: EspacioFisicoV2Controller.GetEspaciosFisicosPadresById
       parameters:
       - in: path
         name: espacio_fisico
@@ -890,7 +890,7 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/.EspafioFisicoPadreHijo'
+            $ref: '#/definitions/models.EspafioFisicoPadreHijo'
         "404":
           description: :espacio_fisico is empty
   /espacio_fisico_campo/:
@@ -1618,9 +1618,8 @@ paths:
         "404":
           description: not found resource
 definitions:
-  .EspafioFisicoPadreHijo:
-    type: object
-  .Tree:
+  78780.<nil>.Tree:
+    title: Tree
     type: object
   models.AsignacionEspacioFisicoDependencia:
     title: AsignacionEspacioFisicoDependencia
@@ -1636,10 +1635,10 @@ definitions:
         type: string
       FechaFin:
         type: string
-        format: string
+        format: datetime
       FechaInicio:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1658,16 +1657,16 @@ definitions:
         $ref: '#/definitions/models.EspacioFisicoV2'
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaFin:
         type: string
-        format: string
+        format: datetime
       FechaInicio:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1683,10 +1682,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1704,10 +1703,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1738,10 +1737,10 @@ definitions:
         type: boolean
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Hija:
         $ref: '#/definitions/models.Dependencia'
       Id:
@@ -1776,10 +1775,10 @@ definitions:
         type: boolean
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       HijaId:
         $ref: '#/definitions/models.DependenciaV2'
       Id:
@@ -1797,10 +1796,10 @@ definitions:
         $ref: '#/definitions/models.Dependencia'
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1816,10 +1815,10 @@ definitions:
         $ref: '#/definitions/models.DependenciaV2'
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1839,10 +1838,10 @@ definitions:
           $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1862,10 +1861,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1885,16 +1884,16 @@ definitions:
         $ref: '#/definitions/models.EspacioFisico'
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaFin:
         type: string
-        format: string
+        format: datetime
       FechaInicio:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1912,16 +1911,16 @@ definitions:
         $ref: '#/definitions/models.EspacioFisicoV2'
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaFin:
         type: string
-        format: string
+        format: datetime
       FechaInicio:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -1933,10 +1932,10 @@ definitions:
     properties:
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Hijo:
         $ref: '#/definitions/models.EspacioFisico'
       Id:
@@ -1969,10 +1968,10 @@ definitions:
     properties:
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       HijoId:
         $ref: '#/definitions/models.EspacioFisicoV2'
       Id:
@@ -1992,17 +1991,26 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
       Nombre:
         type: string
+      TipoEdificacionId:
+        type: integer
+        format: int64
       TipoEspacioFisicoId:
         $ref: '#/definitions/models.TipoEspacioFisicoV2'
+      TipoTerrenoId:
+        type: integer
+        format: int64
+  models.EspafioFisicoPadreHijo:
+    title: EspafioFisicoPadreHijo
+    type: object
   models.TipoDependencia:
     title: TipoDependencia
     type: object
@@ -2015,10 +2023,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -2036,10 +2044,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -2057,10 +2065,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -2078,10 +2086,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -2099,10 +2107,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -2118,10 +2126,10 @@ definitions:
         $ref: '#/definitions/models.EspacioFisico'
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -2137,10 +2145,10 @@ definitions:
         $ref: '#/definitions/models.EspacioFisicoV2'
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -2158,10 +2166,10 @@ definitions:
         type: string
       FechaCreacion:
         type: string
-        format: string
+        format: datetime
       FechaModificacion:
         type: string
-        format: string
+        format: datetime
       Id:
         type: integer
         format: int64
@@ -2177,7 +2185,7 @@ definitions:
       Nombre:
         type: string
       Opciones:
-        $ref: '#/definitions/78653.<nil>.Tree'
+        $ref: '#/definitions/78780.<nil>.Tree'
 tags:
 - name: tipo_uso
   description: |

@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+CAUTION: Do not modify this file unless you know what you are doing.
+         Unexpected results may occur if the code is changed deliberately.
+-->
+<dbmodel pgmodeler-ver="0.9.1" last-position="226,74" last-zoom="1"
+	 default-schema="public" default-owner="postgres">
+<role name="desarrollooas"
+      superuser="true"
+      createdb="true"
+      replication="true"
+      createrole="true"
+      inherit="true"
+      login="true"
+      encrypted="true"
+      password="********">
+</role>
+
+<database name="bd_oas" encoding="UTF8" lc-collate="en_US.UTF-8" lc-ctype="en_US.UTF-8" is-template="false" allow-conns="true">
+	<role name="postgres"/>
+	<tablespace name="pg_default"/>
+</database>
+
+<schema name="public" rect-visible="true" fill-color="#e1e1e1" sql-disabled="true">
+</schema>
+
+<schema name="oikos" rect-visible="true" fill-color="#888a85">
+	<role name="desarrollooas"/>
+</schema>
+
+<sequence name="tipo_espacio_fisico_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="tipo_espacio_fisico">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla que contiene los tipos de espacios fisicos existentes.]]></comment>
+	<position x="180" y="460"/>
+	<column name="id" not-null="true" sequence="oikos.tipo_espacio_fisico_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de cada tipo de espacio fisico que pertenece a la Universidad Distr]]></comment>
+	</column>
+	<column name="nombre" not-null="true">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Nombre del tipo de espacio fisico perteneciente a la Universidad Distrital]]></comment>
+	</column>
+	<column name="descripcion">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Campo en el que se puede registrar una descripcion de la informacion de tipo_espacio_fisico.]]></comment>
+	</column>
+	<column name="codigo_abreviacion">
+		<type name="character varying" length="20"/>
+		<comment><![CDATA[Código de abreviación, sigla, acrónimo u otra representación corta del registro si se requiere.]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_tipo_espacio_fisico" type="pk-constr" table="oikos.tipo_espacio_fisico">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="espacio_fisico_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="espacio_fisico">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla de Rompimiento que reune los atributos de un espacio fisico]]></comment>
+	<position x="680" y="380"/>
+	<column name="id" not-null="true" sequence="oikos.espacio_fisico_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador del espacio fisico especifico de la Universidad Distrital.]]></comment>
+	</column>
+	<column name="nombre" not-null="true">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Nombre perteneciente al espacio físico]]></comment>
+	</column>
+	<column name="descripcion">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Campo en el que se puede registrar una descripcion de la informacion de espacio_fisico.]]></comment>
+	</column>
+	<column name="codigo_abreviacion">
+		<type name="character varying" length="20"/>
+		<comment><![CDATA[Código de abreviación, sigla, acrónimo u otra representación corta del registro si se requiere.]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="tipo_espacio_fisico_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Llave foranea que contiene el identificador del tipo de espacio fisico de la entidad tipo_espacio_fisico]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<column name="tipo_edificacion_id">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Hace referencia al id al tipo de edificación en el api parametros_crud]]></comment>
+	</column>
+	<column name="tipo_terreno_id">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Hace referencia al id al tipo de terreno en el api parametros_crud]]></comment>
+	</column>
+	<constraint name="pk_espacio_fisico" type="pk-constr" table="oikos.espacio_fisico">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="tipo_uso_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="tipo_uso">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla quie contiene los diversos usos que puede tener un espacio fisico.]]></comment>
+	<position x="700" y="120"/>
+	<column name="id" not-null="true" sequence="oikos.tipo_uso_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador del tipo de uso de espacios fisicos.]]></comment>
+	</column>
+	<column name="nombre" not-null="true">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Nombre del uso que se le va a dar al espacio fisico.]]></comment>
+	</column>
+	<column name="descripcion">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Campo en el que se puede registrar una descripcion de la informacion de tipo_uso.]]></comment>
+	</column>
+	<column name="codigo_abreviacion">
+		<type name="character varying" length="20"/>
+		<comment><![CDATA[Código de abreviación, sigla, acrónimo u otra representación corta del registro si se requiere.]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_tipo_uso" type="pk-constr" table="oikos.tipo_uso">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="tipo_uso_espacio_fisico_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="tipo_uso_espacio_fisico">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla de rompimiento entre tipo_espacio_fisico y espacio_fisico]]></comment>
+	<position x="1220" y="100"/>
+	<column name="id" not-null="true" sequence="oikos.tipo_uso_espacio_fisico_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la tabla ]]></comment>
+	</column>
+	<column name="tipo_uso_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Campo que contiene el identificador del espacio fisico]]></comment>
+	</column>
+	<column name="espacio_fisico_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Campo para el id del espacio fisico]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_tipo_uso_espacio_fisico" type="pk-constr" table="oikos.tipo_uso_espacio_fisico">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="espacio_fisico_padre_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="espacio_fisico_padre">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Contiene las relaciones de los espacios fisicos.]]></comment>
+	<position x="1220" y="700"/>
+	<column name="id" not-null="true" sequence="oikos.espacio_fisico_padre_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la tabla.]]></comment>
+	</column>
+	<column name="padre_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador del espacio fisico padre.]]></comment>
+	</column>
+	<column name="hijo_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador del espacio fisico hijo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_espacio_fisico_padre" type="pk-constr" table="oikos.espacio_fisico_padre">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_hijo_id_espacio_fisico_padre" type="uq-constr" table="oikos.espacio_fisico_padre">
+		<columns names="hijo_id" ref-type="src-columns"/>
+		<comment><![CDATA[Restringe que el arbol no se vuelva un grafo.]]></comment>
+	</constraint>
+	<constraint name="uq_hijo_id_padre_id_espacio_fisico_padre" type="uq-constr" table="oikos.espacio_fisico_padre">
+		<columns names="padre_id,hijo_id" ref-type="src-columns"/>
+		<comment><![CDATA[Restriccion para que solo pueda existir una unica relacion entre un padre y un hijo.]]></comment>
+	</constraint>
+</table>
+
+<sequence name="tipo_dependencia_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="tipo_dependencia">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla que contiene los distintos tipos de dependencia que hay en la Universidad Distrital.]]></comment>
+	<position x="1840" y="840"/>
+	<column name="id" not-null="true" sequence="oikos.tipo_dependencia_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la tabla.]]></comment>
+	</column>
+	<column name="nombre" not-null="true">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Campo que contiene el tipo de dependencia.]]></comment>
+	</column>
+	<column name="descripcion">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Campo en el que se puede registrar una descripcion de la informacion de tipo_espacio_fisico.]]></comment>
+	</column>
+	<column name="codigo_abreviacion">
+		<type name="character varying" length="20"/>
+		<comment><![CDATA[Código de abreviación, sigla, acrónimo u otra representación corta del registro si se requiere.]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_tipo_dependencia" type="pk-constr" table="oikos.tipo_dependencia">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="dependencia_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="dependencia">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla que contiene las dependencias de la Universidad Distrital.]]></comment>
+	<position x="1840" y="380"/>
+	<column name="id" not-null="true" sequence="oikos.dependencia_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la dependencia.]]></comment>
+	</column>
+	<column name="nombre" not-null="true">
+		<type name="character varying" length="130"/>
+		<comment><![CDATA[Nombre de la dependencia perteneciente a la Universidad Distrital.]]></comment>
+	</column>
+	<column name="telefono_dependencia" not-null="true">
+		<type name="character varying" length="500"/>
+		<comment><![CDATA[Indica el numero de telefono de la dependencia.]]></comment>
+	</column>
+	<column name="correo_electronico">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Correo electrónico asociado a la dependencia.]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_dependencia" type="pk-constr" table="oikos.dependencia">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="dependencia_tipo_dependencia_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="dependencia_tipo_dependencia">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla de rompimiento entre tipo_dependencia y dependencia.]]></comment>
+	<position x="1840" y="620"/>
+	<column name="id" not-null="true" sequence="oikos.dependencia_tipo_dependencia_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la tabla.]]></comment>
+	</column>
+	<column name="tipo_dependencia_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Campo que contiene el identificador del tipo dependencia.]]></comment>
+	</column>
+	<column name="dependencia_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Campo para el id de la dependencia.]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_dependencia_tipo_dependencia" type="pk-constr" table="oikos.dependencia_tipo_dependencia">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="dependencia_padre_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="dependencia_padre">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla que contiene las dependencias de la Universidad Distrital]]></comment>
+	<position x="1840" y="80"/>
+	<column name="id" not-null="true" sequence="oikos.dependencia_padre_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la dependencia.]]></comment>
+	</column>
+	<column name="padre_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Id dependencia padre]]></comment>
+	</column>
+	<column name="hija_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador dependencia hija (si la hay)]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_dependencia_padre" type="pk-constr" table="oikos.dependencia_padre">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_hija_id_dependencia_padre" type="uq-constr" table="oikos.dependencia_padre">
+		<columns names="hija_id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_hija_id_padre_id_dependencia_padre" type="uq-constr" table="oikos.dependencia_padre">
+		<columns names="padre_id,hija_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="asignacion_espacio_fisico_dependencia_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="asignacion_espacio_fisico_dependencia">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla de rompimiento que reune los atributos necesarios para la asignacion de un espacio fisico.]]></comment>
+	<position x="1220" y="360"/>
+	<column name="id" not-null="true" sequence="oikos.asignacion_espacio_fisico_dependencia_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la asignacion del espacio fisico]]></comment>
+	</column>
+	<column name="espacio_fisico_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Campo que contiene el id, de la llave foranea]]></comment>
+	</column>
+	<column name="dependencia_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador que contiene el id de dependencia]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_inicio" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha de inicio de la asignacion.]]></comment>
+	</column>
+	<column name="fecha_fin">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha en la que finaliza la asignacion.]]></comment>
+	</column>
+	<column name="documento_soporte">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Documento que soporta la asignacion del espacio fisico.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_asignacion_espacio_fisico_dependencia" type="pk-constr" table="oikos.asignacion_espacio_fisico_dependencia">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="campo_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="campo">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla de los campos o atributos que se necesiten en un espacio fisico.]]></comment>
+	<position x="200" y="720"/>
+	<column name="id" not-null="true" sequence="oikos.campo_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la tabla.]]></comment>
+	</column>
+	<column name="nombre" not-null="true">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Nombre del nuevo campo que se requiere para espacios fisicos.]]></comment>
+	</column>
+	<column name="descripcion">
+		<type name="character varying" length="100"/>
+		<comment><![CDATA[Campo en el que se puede registrar una descripcion de la informacion del nuevo campo.]]></comment>
+	</column>
+	<column name="codigo_abreviacion">
+		<type name="character varying" length="20"/>
+		<comment><![CDATA[Código de abreviación, sigla, acrónimo u otra representación corta del registro si se requiere.]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_campo" type="pk-constr" table="oikos.campo">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<sequence name="espacio_fisico_campo_id_seq"
+	 start="1" increment="1"
+	 min-value="1" max-value="2147483647"
+	 cache="1" cycle="false">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+</sequence>
+
+<table name="espacio_fisico_campo">
+	<schema name="oikos"/>
+	<role name="desarrollooas"/>
+	<comment><![CDATA[Tabla de rompimiento entre campo y espacio_fisico.]]></comment>
+	<position x="680" y="680"/>
+	<column name="id" not-null="true" sequence="oikos.espacio_fisico_campo_id_seq">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la asignacion del espacio fisico.]]></comment>
+	</column>
+	<column name="valor" not-null="true">
+		<type name="character varying" length="50"/>
+		<comment><![CDATA[Valor del nuevo campo para el espacio fisico.]]></comment>
+	</column>
+	<column name="espacio_fisico_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la tabla espacio fisico.]]></comment>
+	</column>
+	<column name="campo_id" not-null="true">
+		<type name="integer" length="0"/>
+		<comment><![CDATA[Identificador de la tabla campo]]></comment>
+	</column>
+	<column name="activo" not-null="true">
+		<type name="boolean" length="0"/>
+		<comment><![CDATA[Valor booleano para indicar si el registro esta activo o inactivo.]]></comment>
+	</column>
+	<column name="fecha_inicio" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha de inicio de la asignacion.]]></comment>
+	</column>
+	<column name="fecha_fin">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha en la que finaliza la asignacion.]]></comment>
+	</column>
+	<column name="fecha_creacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la creación del registro en la BD.]]></comment>
+	</column>
+	<column name="fecha_modificacion" not-null="true">
+		<type name="timestamp" length="0"/>
+		<comment><![CDATA[Fecha y hora de la ultima modificación del registro en la BD.]]></comment>
+	</column>
+	<constraint name="pk_espacio_fisico_campo" type="pk-constr" table="oikos.espacio_fisico_campo">
+		<columns names="id" ref-type="src-columns"/>
+	</constraint>
+	<constraint name="uq_campo" type="uq-constr" table="oikos.espacio_fisico_campo">
+		<columns names="campo_id,espacio_fisico_id" ref-type="src-columns"/>
+	</constraint>
+</table>
+
+<constraint name="fk_tipo_espacio_fisico_espacio_fisico" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.tipo_espacio_fisico" table="oikos.espacio_fisico">
+	<columns names="tipo_espacio_fisico_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_tipo_uso_tipo_uso_espacio_fisico" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.tipo_uso" table="oikos.tipo_uso_espacio_fisico">
+	<columns names="tipo_uso_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_espacio_fisico_tipo_uso_espacio_fisico" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.espacio_fisico" table="oikos.tipo_uso_espacio_fisico">
+	<columns names="espacio_fisico_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_espacio_fisico_espacio_fisico_padre" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.espacio_fisico" table="oikos.espacio_fisico_padre">
+	<columns names="padre_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_espacio_fisico_espacio_fisico_hijo" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.espacio_fisico" table="oikos.espacio_fisico_padre">
+	<columns names="hijo_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_tipo_dependencia_dependencia_tipo_dependencia" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.tipo_dependencia" table="oikos.dependencia_tipo_dependencia">
+	<columns names="tipo_dependencia_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_dependencia_dependencia_tipo_dependencia" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.dependencia" table="oikos.dependencia_tipo_dependencia">
+	<columns names="dependencia_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_dependencia_dependencia_padre" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.dependencia" table="oikos.dependencia_padre">
+	<columns names="padre_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_dependencia_dependencia_hija" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.dependencia" table="oikos.dependencia_padre">
+	<columns names="hija_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_espacio_fisico_asignacion_espacio_fisico_dependencia" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.espacio_fisico" table="oikos.asignacion_espacio_fisico_dependencia">
+	<columns names="espacio_fisico_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_dependencia_asignacion_espacio_fisico_dependencia" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.dependencia" table="oikos.asignacion_espacio_fisico_dependencia">
+	<columns names="dependencia_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_espacio_fisico_espacio_fisico_campo" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.espacio_fisico" table="oikos.espacio_fisico_campo">
+	<columns names="espacio_fisico_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<constraint name="fk_campo_espacio_fisico_campo" type="fk-constr" comparison-type="MATCH SIMPLE"
+	 upd-action="NO ACTION" del-action="NO ACTION" ref-table="oikos.campo" table="oikos.espacio_fisico_campo">
+	<columns names="campo_id" ref-type="src-columns"/>
+	<columns names="id" ref-type="dst-columns"/>
+</constraint>
+
+<relationship name="rel_espacio_fisico_tipo_espacio_fisico" type="relfk"
+	 custom-color="#3997d0"
+	 src-table="oikos.espacio_fisico"
+	 dst-table="oikos.tipo_espacio_fisico" reference-fk="fk_tipo_espacio_fisico_espacio_fisico"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-64.8189" y="-61.7607"/>
+	</label>
+</relationship>
+
+<relationship name="rel_tipo_uso_espacio_fisico_tipo_uso" type="relfk"
+	 custom-color="#1ec823"
+	 src-table="oikos.tipo_uso_espacio_fisico"
+	 dst-table="oikos.tipo_uso" reference-fk="fk_tipo_uso_tipo_uso_espacio_fisico"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-57.3189" y="-61.7607"/>
+	</label>
+</relationship>
+
+<relationship name="rel_tipo_uso_espacio_fisico_espacio_fisico" type="relfk"
+	 custom-color="#e25dbb"
+	 src-table="oikos.tipo_uso_espacio_fisico"
+	 dst-table="oikos.espacio_fisico" reference-fk="fk_espacio_fisico_tipo_uso_espacio_fisico"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="0" y="0"/>
+	</label>
+</relationship>
+
+<relationship name="rel_espacio_fisico_padre_espacio_fisico" type="relfk"
+	 custom-color="#4ab58a"
+	 src-table="oikos.espacio_fisico_padre"
+	 dst-table="oikos.espacio_fisico" reference-fk="fk_espacio_fisico_espacio_fisico_padre"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="58.7984" y="44.4893"/>
+	</label>
+</relationship>
+
+<relationship name="rel_espacio_fisico_padre_espacio_fisico1" type="relfk"
+	 custom-color="#33e74f"
+	 src-table="oikos.espacio_fisico_padre"
+	 dst-table="oikos.espacio_fisico" reference-fk="fk_espacio_fisico_espacio_fisico_hijo"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="62.2984" y="44.4893"/>
+	</label>
+</relationship>
+
+<relationship name="rel_dependencia_tipo_dependencia_tipo_dependencia" type="relfk"
+	 custom-color="#b2e319"
+	 src-table="oikos.dependencia_tipo_dependencia"
+	 dst-table="oikos.tipo_dependencia" reference-fk="fk_tipo_dependencia_dependencia_tipo_dependencia"
+	 src-required="false" dst-required="false">
+	<label ref-type="dst-label">
+		<position x="-19.8575" y="-1.275"/>
+	</label>
+	<label ref-type="name-label">
+		<position x="10.3947" y="18.2393"/>
+	</label>
+</relationship>
+
+<relationship name="rel_dependencia_tipo_dependencia_dependencia" type="relfk"
+	 custom-color="#fc4cef"
+	 src-table="oikos.dependencia_tipo_dependencia"
+	 dst-table="oikos.dependencia" reference-fk="fk_dependencia_dependencia_tipo_dependencia"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-3.10533" y="40.7393"/>
+	</label>
+</relationship>
+
+<relationship name="rel_dependencia_padre_dependencia" type="relfk"
+	 custom-color="#c94eda"
+	 src-table="oikos.dependencia_padre"
+	 dst-table="oikos.dependencia" reference-fk="fk_dependencia_dependencia_padre"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_dependencia_padre_dependencia1" type="relfk"
+	 custom-color="#f7cc05"
+	 src-table="oikos.dependencia_padre"
+	 dst-table="oikos.dependencia" reference-fk="fk_dependencia_dependencia_hija"
+	 src-required="false" dst-required="false"/>
+
+<relationship name="rel_asignacion_espacio_fisico_dependencia_espacio_fisico" type="relfk"
+	 custom-color="#4a87dc"
+	 src-table="oikos.asignacion_espacio_fisico_dependencia"
+	 dst-table="oikos.espacio_fisico" reference-fk="fk_espacio_fisico_asignacion_espacio_fisico_dependencia"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-99.7016" y="-61.7607"/>
+	</label>
+</relationship>
+
+<relationship name="rel_asignacion_espacio_fisico_dependencia_dependencia" type="relfk"
+	 custom-color="#ebf0a1"
+	 src-table="oikos.asignacion_espacio_fisico_dependencia"
+	 dst-table="oikos.dependencia" reference-fk="fk_dependencia_asignacion_espacio_fisico_dependencia"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-84.5766" y="-89.2607"/>
+	</label>
+</relationship>
+
+<relationship name="rel_espacio_fisico_campo_espacio_fisico" type="relfk"
+	 custom-color="#13e1a5"
+	 src-table="oikos.espacio_fisico_campo"
+	 dst-table="oikos.espacio_fisico" reference-fk="fk_espacio_fisico_espacio_fisico_campo"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="11.8947" y="20.7393"/>
+	</label>
+</relationship>
+
+<relationship name="rel_espacio_fisico_campo_campo" type="relfk"
+	 custom-color="#c316d9"
+	 src-table="oikos.espacio_fisico_campo"
+	 dst-table="oikos.campo" reference-fk="fk_campo_espacio_fisico_campo"
+	 src-required="false" dst-required="false">
+	<label ref-type="name-label">
+		<position x="-56.3189" y="-66.7607"/>
+	</label>
+</relationship>
+
+</dbmodel>
