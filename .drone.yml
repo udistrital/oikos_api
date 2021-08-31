@@ -18,23 +18,17 @@ pipeline:
       branch: [master, develop]
             
   # build and push docker image to docker hub
-  - name: publish_dockerhub
-  image: plugins/docker
-  settings:
-    username:
-      from_secret: DOCKER_USERNAME
-    password:
-      from_secret: DOCKER_PASSWORD
+  publish_dockerhub:
+    image: plugins/docker
     repo: oas0/${DRONE_REPO##udistrital/}
-    tags:
+    secrets: [ docker_username, docker_password ]
+    tag:
       - ${DRONE_COMMIT:0:7}
       - latest
-  when:
-    branch:
-    - release/*
-    - master
+    when:
+      branch: [master, develop]
 
-- name: update_aws_ecs
+ update_aws_ecs
   image: golang:1.9
   environment:
     AWS_ACCESS_KEY_ID:
