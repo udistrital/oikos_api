@@ -2,33 +2,49 @@ workspace:
   base: /go
   path: src/github.com/udistrital/${DRONE_REPO##udistrital/}
   when:
-    branch: [master, develop]
-    
-pipeline:
+      branch:
+      - develop
+      - release/*
+      - master
 
-  # build and test the go program
-  go:
-    image: golang:1.14
-    commands:
-     - go mod init
-     - go get -t
-     - GOOS=linux GOARCH=amd64 go build -o main
-     
-    when:
-      branch: [master, develop]
-            
-  # build and push docker image to docker hub
-  publish_dockerhub:
-    image: plugins/docker
+kind: pipeline
+name: oas_api_ci
+
+steps:
+
+- name: go_build
+  image: golang:1.14
+  commands:
+  - go mod init
+  - go get -t
+  - GOOS=linux GOARCH=amd64 go build -o main
+  when:
+    branch:
+    - develop
+    - release/*
+    - master
+    event:
+    - push
+
+
+
+- name: publish_dockerhub
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DOCKER_USERNAME
+    password:
+      from_secret: DOCKER_PASSWORD
     repo: oas0/${DRONE_REPO##udistrital/}
-    secrets: [ docker_username, docker_password ]
-    tag:
+    tags:
       - ${DRONE_COMMIT:0:7}
       - latest
-    when:
-      branch: [master, develop]
-  
-  name: update_aws_ecs
+  when:
+    branch:
+    - release/*
+    - master
+
+- name: update_aws_ecs
   image: golang:1.9
   environment:
     AWS_ACCESS_KEY_ID:
@@ -61,23 +77,39 @@ pipeline:
     - release/*
     - master
     event:
-    - push	
-  
-     
-  #Notify results to telegram
-  #telegram_token is the bot token and telegram_to is the group id that start with "-" character
-  notify_telegram:
-    image: appleboy/drone-telegram    
-    secrets: [ telegram_token, telegram_to ]
+    - push
+
+- name: notify_telegram
+  image: appleboy/drone-telegram
+  settings:
+    token:
+      from_secret: telegram_token
+    to:
+      from_secret: telegram_to
     format: html
     message: >
       {{#success build.status}}
-        <code>{{repo.owner}}/{{repo.name}}</code> <a href="{{build.link}}">SUCCESS</a> 
-        <code>{{commit.branch}}</code>@<a href="{{commit.link}}">{{truncate commit.sha 7}}</a>
+        ✅ <a href="{{build.link}}">SUCCESS</a> <b>Build #{{build.number}}</b>
+        <b>type: </b><code>{{ build.event }}</code>
+        <b>Repo: </b><code>{{repo.name}}</code>
+        <b>Branch: </b><code>{{commit.branch}}</code>
+        <b>Commit: </b><a href="{{commit.link}}">{{truncate commit.sha 7}}</a>
+        <b>Autor: </b>{{commit.author}} <code>&#128526 </code>
       {{else}}
-        <code>{{repo.owner}}/{{repo.name}}</code> <a href="{{build.link}}">FAILURE</a>
-        <code>{{commit.branch}}</code>@<a href="{{commit.link}}">{{truncate commit.sha 7}}</a>
+        ❌ <a href="{{build.link}}">FAILURE</a> <b>Build #{{build.number}}</b>
+        <b>type: </b><code>{{ build.event }}</code>
+        <b>Repo: </b><code>{{repo.name}}</code>
+        <b>Branch: </b><code>{{commit.branch}}</code>
+        <b>Commit: </b><a href="{{commit.link}}">{{truncate commit.sha 7}}</a>
+        <b>Autor: </b>{{commit.author}} <code>&#128549 </code>
       {{/success}}
-    when:
-      status: [success, failure]
-      branch: [master, develop]
+  when:
+    branch:
+    - develop
+    - release/*
+    - master
+    event:
+    - push
+    status:
+    - failure
+    - success
