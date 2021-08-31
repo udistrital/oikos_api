@@ -8,10 +8,12 @@ pipeline:
 
   # build and test the go program
   go:
-    image: golang:1.13
+    image: golang:1.14
     commands:
+     - go mod init
      - go get -t
      - GOOS=linux GOARCH=amd64 go build -o main
+     
     when:
       branch: [master, develop]
             
