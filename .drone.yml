@@ -27,8 +27,8 @@ pipeline:
       - latest
     when:
       branch: [master, develop]
-
- update_aws_ecs
+  
+  name: update_aws_ecs
   image: golang:1.9
   environment:
     AWS_ACCESS_KEY_ID:
@@ -61,7 +61,8 @@ pipeline:
     - release/*
     - master
     event:
-    - push
+    - push	
+  
      
   #Notify results to telegram
   #telegram_token is the bot token and telegram_to is the group id that start with "-" character
