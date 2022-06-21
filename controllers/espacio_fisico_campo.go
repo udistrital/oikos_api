@@ -31,7 +31,7 @@ func (c *EspacioFisicoCampoController) URLMapping() {
 // @Title Post
 // @Description create EspacioFisicoCampo
 // @Param	body		body 	models.EspacioFisicoCampo	true		"body for EspacioFisicoCampo content"
-// @Success 201 {int} models.EspacioFisicoCampo
+// @Success 201 {object} models.EspacioFisicoCampo
 // @Failure 403 body is empty
 // @router / [post]
 func (c *EspacioFisicoCampoController) Post() {
@@ -78,7 +78,7 @@ func (c *EspacioFisicoCampoController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get EspacioFisicoCampo by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.EspacioFisicoCampo
 // @Failure 403 :id is empty
 // @router /:id [get]
@@ -150,9 +150,9 @@ func (c *EspacioFisicoCampoController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.EspacioFisicoCampo
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.EspacioFisicoCampo
 // @Failure 403
 // @router / [get]
 func (c *EspacioFisicoCampoController) GetAll() {
@@ -271,9 +271,9 @@ func (c *EspacioFisicoCampoController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the EspacioFisicoCampo
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.EspacioFisicoCampo	true		"body for EspacioFisicoCampo content"
-// @Success 200 {object} models.EspacioFisicoCampo
+// @Param	id		path 	int	true		"The id you want to update"
+// @Param	body		body 	models.EspacioFisicoCampoV2	true		"body for EspacioFisicoCampo content"
+// @Success 200 {object} models.EspacioFisicoCampoV2
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *EspacioFisicoCampoController) Put() {
@@ -309,8 +309,8 @@ func (c *EspacioFisicoCampoController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the EspacioFisicoCampo
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {opbject} models.Deleted
 // @Failure 403 id is empty
 // @router /:id [delete]
 func (c *EspacioFisicoCampoController) Delete() {

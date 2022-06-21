@@ -31,7 +31,7 @@ func (c *TipoUsoEspacioFisicoController) URLMapping() {
 // @Title Post
 // @Description create TipoUsoEspacioFisico
 // @Param	body		body 	models.TipoUsoEspacioFisico	true		"body for TipoUsoEspacioFisico content"
-// @Success 201 {int} models.TipoUsoEspacioFisico
+// @Success 201 {object} models.TipoUsoEspacioFisico
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *TipoUsoEspacioFisicoController) Post() {
@@ -77,7 +77,7 @@ func (c *TipoUsoEspacioFisicoController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get TipoUsoEspacioFisico by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.TipoUsoEspacioFisico
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -147,9 +147,9 @@ func (c *TipoUsoEspacioFisicoController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.TipoUsoEspacioFisico
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.TipoUsoEspacioFisico
 // @Failure 404 not found resource
 // @router / [get]
 func (c *TipoUsoEspacioFisicoController) GetAll() {
@@ -271,9 +271,9 @@ func (c *TipoUsoEspacioFisicoController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the TipoUsoEspacioFisico
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.TipoUsoEspacioFisico	true		"body for TipoUsoEspacioFisico content"
-// @Success 200 {object} models.TipoUsoEspacioFisico
+// @Param	id		path 	int	true		"The id you want to update"
+// @Param	body		body 	models.TipoUsoEspacioFisicoV2	true		"body for TipoUsoEspacioFisico content"
+// @Success 200 {object} models.TipoUsoEspacioFisicoV2
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *TipoUsoEspacioFisicoController) Put() {
@@ -310,8 +310,8 @@ func (c *TipoUsoEspacioFisicoController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the TipoUsoEspacioFisico
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *TipoUsoEspacioFisicoController) Delete() {

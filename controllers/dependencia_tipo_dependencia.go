@@ -31,7 +31,7 @@ func (c *DependenciaTipoDependenciaController) URLMapping() {
 // @Title Post
 // @Description create DependenciaTipoDependencia
 // @Param	body		body 	models.DependenciaTipoDependencia	true		"body for DependenciaTipoDependencia content"
-// @Success 201 {int} models.DependenciaTipoDependencia
+// @Success 201 {object} models.DependenciaTipoDependencia
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *DependenciaTipoDependenciaController) Post() {
@@ -78,7 +78,7 @@ func (c *DependenciaTipoDependenciaController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get DependenciaTipoDependencia by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.DependenciaTipoDependencia
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -133,9 +133,9 @@ func (c *DependenciaTipoDependenciaController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.DependenciaTipoDependencia
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.DependenciaTipoDependencia
 // @Failure 404 not found resource
 // @router / [get]
 func (c *DependenciaTipoDependenciaController) GetAll() {
@@ -235,9 +235,9 @@ func (c *DependenciaTipoDependenciaController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the DependenciaTipoDependencia
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.DependenciaTipoDependencia	true		"body for DependenciaTipoDependencia content"
-// @Success 200 {object} models.DependenciaTipoDependencia
+// @Param	id		path 	int	true		"The id you want to update"
+// @Param	body		body 	models.DependenciaTipoDependenciaV2	true		"body for DependenciaTipoDependencia content"
+// @Success 200 {object} models.DependenciaTipoDependenciaV2
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *DependenciaTipoDependenciaController) Put() {
@@ -273,8 +273,8 @@ func (c *DependenciaTipoDependenciaController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the DependenciaTipoDependencia
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *DependenciaTipoDependenciaController) Delete() {

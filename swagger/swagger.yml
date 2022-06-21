@@ -32,22 +32,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
         "404":
           description: not found resource
     post:
@@ -64,7 +67,9 @@ paths:
           $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
       responses:
         "201":
-          description: '{int} models.AsignacionEspacioFisicoDependenciaV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.AsignacionEspacioFisicoDependenciaV2'
         "400":
           description: the request contains incorrect syntax
   /asignacion_espacio_fisico_dependencia/{id}:
@@ -78,7 +83,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -96,7 +102,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for AsignacionEspacioFisicoDependencia content
@@ -120,10 +127,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /campo/:
@@ -147,22 +157,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.CampoV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.CampoV2'
         "404":
           description: not found resource
     post:
@@ -179,7 +192,9 @@ paths:
           $ref: '#/definitions/models.CampoV2'
       responses:
         "201":
-          description: '{int} models.CampoV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.CampoV2'
         "400":
           description: the request contains incorrect syntax
   /campo/{id}:
@@ -193,7 +208,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -211,7 +227,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for Campo content
@@ -235,10 +252,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /dependencia/:
@@ -262,22 +282,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.DependenciaV2'
         "404":
           description: not found resource
     post:
@@ -294,7 +317,9 @@ paths:
           $ref: '#/definitions/models.DependenciaV2'
       responses:
         "201":
-          description: '{int} models.DependenciaV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DependenciaV2'
         "400":
           description: the request contains incorrect syntax
   /dependencia/{id}:
@@ -308,7 +333,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -326,7 +352,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for Dependencia content
@@ -350,18 +377,18 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: '{models} models.Deleted'
         "404":
           description: not found resource
   /dependencia/get_dependencias_hijas_by_id/{dependencia}:
     get:
       tags:
       - dependencia
-      description: A partir de una dependencia dada, se obtienen las hijas de ella
-        en una estructura de árbol.
+      description: A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.
       operationId: DependenciaV2Controller.GetDependenciasHijasById
       parameters:
       - in: path
@@ -374,27 +401,29 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadre'
+            $ref: '#/definitions/models.DependenciaPadreHijo'
         "403":
           description: :dependencia_padre is empty
   /dependencia/get_dependencias_padres_by_id/{dependencia}:
     get:
       tags:
       - dependencia
-      description: A partir de una dependencia dada, se obtienen todos sus predecesores
-        en una estructura de árbol.
+      description: A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.
       operationId: DependenciaV2Controller.GetDependenciasPadresById
       parameters:
       - in: path
         name: dependencia
         description: Id de la dependencia
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadre'
+            type: array
+            items:
+              $ref: '#/definitions/models.DependenciaPadreHijo'
         "404":
           description: :dependencia is empty
   /dependencia/proyectosPorFacultad/{id_facultad}:
@@ -414,7 +443,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Dependencia'
+            type: array
+            items:
+              $ref: '#/definitions/models.ProyectosCurriculares'
         "403":
           description: :id_facultad is empty
   /dependencia/proyectosPorFacultad/{id_facultad}/{nivel_academico}:
@@ -439,7 +470,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Dependencia'
+            type: array
+            items:
+              $ref: '#/definitions/models.ProyectosCurriculares'
         "403":
           description: :id_facultad is empty
   /dependencia_padre/:
@@ -463,22 +496,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadreV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.DependenciaPadreV2'
         "404":
           description: not found resource
     post:
@@ -495,7 +531,9 @@ paths:
           $ref: '#/definitions/models.DependenciaPadreV2'
       responses:
         "201":
-          description: '{int} models.DependenciaPadreV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DependenciaPadreV2'
         "400":
           description: the request contains incorrect syntax
   /dependencia_padre/{id}:
@@ -509,7 +547,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -527,7 +566,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for DependenciaPadre content
@@ -551,10 +591,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /dependencia_padre/ArbolDependencias:
@@ -567,7 +610,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.Tree'
+            type: array
+            items:
+              $ref: '#/definitions/models.TreeDependencia'
         "403":
           description: ""
   /dependencia_padre/FacultadesConProyectos:
@@ -580,16 +625,16 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadre'
+            type: array
+            items:
+              $ref: '#/definitions/models.Tree'
         "403":
           description: ""
   /dependencia_padre/tr_dependencia_padre:
     post:
       tags:
       - dependencia_padre
-      description: Transacción que inserta una dependencia y le asocia un padre, al
-        insertar en la tabla dependencia_padre. Se verifica que el padre exista y
-        si no, se reversa la inserción de la dependencia.
+      description: Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.
       operationId: DependenciaPadreV2Controller.TRDependenciaPadre
       parameters:
       - in: body
@@ -600,7 +645,9 @@ paths:
           $ref: '#/definitions/models.DependenciaPadreV2'
       responses:
         "201":
-          description: '{int} models.DependenciaPadreV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DependenciaPadreV2'
         "400":
           description: the request contains incorrect syntax
   /dependencia_tipo_dependencia/:
@@ -624,22 +671,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
         "404":
           description: not found resource
     post:
@@ -656,7 +706,9 @@ paths:
           $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
       responses:
         "201":
-          description: '{int} models.DependenciaTipoDependenciaV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.DependenciaTipoDependenciaV2'
         "400":
           description: the request contains incorrect syntax
   /dependencia_tipo_dependencia/{id}:
@@ -670,7 +722,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -688,7 +741,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for DependenciaTipoDependencia content
@@ -712,10 +766,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /espacio_fisico/:
@@ -739,22 +796,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.EspacioFisicoV2'
         "404":
           description: not found resource
     post:
@@ -771,7 +831,9 @@ paths:
           $ref: '#/definitions/models.EspacioFisicoV2'
       responses:
         "201":
-          description: '{int} models.EspacioFisicoV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.EspacioFisicoV2'
         "400":
           description: the request contains incorrect syntax
   /espacio_fisico/{id}:
@@ -785,7 +847,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -803,7 +866,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for EspacioFisico content
@@ -827,10 +891,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /espacio_fisico/EspaciosHuerfanos/{id}:
@@ -844,20 +911,22 @@ paths:
         name: id
         description: Id del espacio físico
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisico'
+            type: array
+            items:
+              $ref: '#/definitions/models.EspacioFisico'
         "403":
           description: id is empty
   /espacio_fisico/get_espacios_fisicos_hijos_by_id/{espacio_fisico}:
     get:
       tags:
       - espacio_fisico
-      description: A partir de un espacio físico dado, se obtienen los hijas de él
-        en una estructura de árbol.
+      description: A partir de un espacio físico dado, se obtienen los hijas de él en una estructura de árbol.
       operationId: EspacioFisicoV2Controller.GetEspaciosFisicosHijosById
       parameters:
       - in: path
@@ -877,8 +946,7 @@ paths:
     get:
       tags:
       - espacio_fisico
-      description: A partir de una espacio_fisico dado, se obtienen todos sus predecesores
-        en una estructura de árbol.
+      description: A partir de una espacio_fisico dado, se obtienen todos sus predecesores en una estructura de árbol.
       operationId: EspacioFisicoV2Controller.GetEspaciosFisicosPadresById
       parameters:
       - in: path
@@ -890,7 +958,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspafioFisicoPadreHijo'
+            type: array
+            items:
+              $ref: '#/definitions/models.EspafioFisicoPadreHijo'
         "404":
           description: :espacio_fisico is empty
   /espacio_fisico_campo/:
@@ -914,22 +984,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoCampoV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.EspacioFisicoCampoV2'
         "404":
           description: not found resource
     post:
@@ -946,7 +1019,9 @@ paths:
           $ref: '#/definitions/models.EspacioFisicoCampoV2'
       responses:
         "201":
-          description: '{int} models.EspacioFisicoCampoV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.EspacioFisicoCampoV2'
         "400":
           description: the request contains incorrect syntax
   /espacio_fisico_campo/{id}:
@@ -960,7 +1035,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -978,7 +1054,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for EspacioFisicoCampo content
@@ -1002,10 +1079,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /espacio_fisico_padre/:
@@ -1029,8 +1109,7 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
@@ -1044,7 +1123,9 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.EspacioFisicoPadreV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.EspacioFisicoPadreV2'
         "404":
           description: not found resource
     post:
@@ -1061,7 +1142,9 @@ paths:
           $ref: '#/definitions/models.EspacioFisicoPadreV2'
       responses:
         "201":
-          description: '{int} models.EspacioFisicoPadreV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.EspacioFisicoPadreV2'
         "400":
           description: the request contains incorrect syntax
   /espacio_fisico_padre/{id}:
@@ -1075,7 +1158,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -1093,7 +1177,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for EspacioFisicoPadre content
@@ -1117,10 +1202,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /proyecto_curricular/get_all_proyectos_by_facultad_id/{id_facultad}:
@@ -1140,21 +1228,24 @@ paths:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadreHijo'
+            type: array
+            items:
+              $ref: '#/definitions/models.DependenciaPadreHijo'
         "403":
           description: ""
   /proyecto_curricular/get_all_proyectos_by_facultades:
     get:
       tags:
       - proyecto_curricular
-      description: Obtener una lista de todas las facultades y sus respectivos proyectos
-        curriculares
+      description: Obtener una lista de todas las facultades y sus respectivos proyectos curriculares
       operationId: ProyectoCurricularController.GetAllProyectosByFacultades
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.DependenciaPadreHijo'
+            type: array
+            items:
+              $ref: '#/definitions/models.DependenciaPadreHijo'
         "403":
           description: ""
   /tipo_dependencia/:
@@ -1178,22 +1269,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoDependenciaV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.TipoDependenciaV2'
         "404":
           description: not found resource
     post:
@@ -1210,7 +1304,9 @@ paths:
           $ref: '#/definitions/models.TipoDependenciaV2'
       responses:
         "201":
-          description: '{int} models.TipoDependenciaV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.TipoDependenciaV2'
         "400":
           description: the request contains incorrect syntax
   /tipo_dependencia/{id}:
@@ -1224,7 +1320,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -1242,7 +1339,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for TipoDependencia content
@@ -1266,10 +1364,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /tipo_espacio_fisico/:
@@ -1293,22 +1394,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoEspacioFisicoV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.TipoEspacioFisicoV2'
         "404":
           description: not found resource
     post:
@@ -1325,7 +1429,9 @@ paths:
           $ref: '#/definitions/models.TipoEspacioFisicoV2'
       responses:
         "201":
-          description: '{int} models.TipoEspacioFisicoV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.TipoEspacioFisicoV2'
         "400":
           description: the request contains incorrect syntax
   /tipo_espacio_fisico/{id}:
@@ -1339,7 +1445,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -1357,7 +1464,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for TipoEspacioFisico content
@@ -1381,10 +1489,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /tipo_uso/:
@@ -1408,22 +1519,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoUsoV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.TipoUsoV2'
         "404":
           description: not found resource
     post:
@@ -1440,7 +1554,9 @@ paths:
           $ref: '#/definitions/models.TipoUsoV2'
       responses:
         "201":
-          description: '{int} models.TipoUsoV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.TipoUsoV2'
         "400":
           description: the request contains incorrect syntax
   /tipo_uso/{id}:
@@ -1454,7 +1570,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -1472,7 +1589,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for TipoUso content
@@ -1496,10 +1614,13 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
   /tipo_uso_espacio_fisico/:
@@ -1523,22 +1644,25 @@ paths:
         type: string
       - in: query
         name: order
-        description: Order corresponding to each sortby field, if single value, apply
-          to all sortby fields. e.g. desc,asc ...
+        description: Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...
         type: string
       - in: query
         name: limit
         description: Limit the size of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       - in: query
         name: offset
         description: Start position of result set. Must be an integer
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
           schema:
-            $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
+            type: array
+            items:
+              $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
         "404":
           description: not found resource
     post:
@@ -1555,7 +1679,9 @@ paths:
           $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
       responses:
         "201":
-          description: '{int} models.TipoUsoEspacioFisicoV2'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.TipoUsoEspacioFisicoV2'
         "400":
           description: the request contains incorrect syntax
   /tipo_uso_espacio_fisico/{id}:
@@ -1569,7 +1695,8 @@ paths:
         name: id
         description: The key for staticblock
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
           description: ""
@@ -1587,7 +1714,8 @@ paths:
         name: id
         description: The id you want to update
         required: true
-        type: string
+        type: integer
+        format: int64
       - in: body
         name: body
         description: body for TipoUsoEspacioFisico content
@@ -1611,14 +1739,20 @@ paths:
         name: id
         description: The id you want to delete
         required: true
-        type: string
+        type: integer
+        format: int64
       responses:
         "200":
-          description: '{string} delete success!'
+          description: ""
+          schema:
+            $ref: '#/definitions/models.Deleted'
         "404":
           description: not found resource
 definitions:
-  78780.<nil>.Tree:
+  22527.<nil>.TreeDependencia:
+    title: TreeDependencia
+    type: object
+  78841.<nil>.Tree:
     title: Tree
     type: object
   models.AsignacionEspacioFisicoDependencia:
@@ -1712,6 +1846,13 @@ definitions:
         format: int64
       Nombre:
         type: string
+  models.Deleted:
+    title: Deleted
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
   models.Dependencia:
     title: Dependencia
     type: object
@@ -2011,6 +2152,15 @@ definitions:
   models.EspafioFisicoPadreHijo:
     title: EspafioFisicoPadreHijo
     type: object
+  models.ProyectosCurriculares:
+    title: ProyectosCurriculares
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
   models.TipoDependencia:
     title: TipoDependencia
     type: object
@@ -2185,7 +2335,18 @@ definitions:
       Nombre:
         type: string
       Opciones:
-        $ref: '#/definitions/78780.<nil>.Tree'
+        $ref: '#/definitions/78841.<nil>.Tree'
+  models.TreeDependencia:
+    title: TreeDependencia
+    type: object
+    properties:
+      Id:
+        type: integer
+        format: int64
+      Nombre:
+        type: string
+      Opciones:
+        $ref: '#/definitions/22527.<nil>.TreeDependencia'
 tags:
 - name: tipo_uso
   description: |

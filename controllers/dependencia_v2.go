@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -31,7 +30,7 @@ func (c *DependenciaV2Controller) URLMapping() {
 // @Title Post
 // @Description create Dependencia
 // @Param	body		body 	models.DependenciaV2	true		"body for Dependencia content"
-// @Success 201 {int} models.DependenciaV2
+// @Success 201 {object} models.DependenciaV2
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *DependenciaV2Controller) Post() {
@@ -58,7 +57,7 @@ func (c *DependenciaV2Controller) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get Dependencia by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.DependenciaV2
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -84,9 +83,9 @@ func (c *DependenciaV2Controller) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.DependenciaV2
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.DependenciaV2
 // @Failure 404 not found resource
 // @router / [get]
 func (c *DependenciaV2Controller) GetAll() {
@@ -149,7 +148,7 @@ func (c *DependenciaV2Controller) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the Dependencia
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.DependenciaV2	true		"body for Dependencia content"
 // @Success 200 {object} models.DependenciaV2
 // @Failure 400 the request contains incorrect syntax
@@ -179,8 +178,8 @@ func (c *DependenciaV2Controller) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the Dependencia
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {models} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *DependenciaV2Controller) Delete() {
@@ -202,7 +201,7 @@ func (c *DependenciaV2Controller) Delete() {
 // @Description Get curricular projects by faculty
 // @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
 // @Param	nivel_academico		path 	string	true		"El nivel académico a consultar de acuerdo a la facultad"
-// @Success 200 {object} models.Dependencia
+// @Success 200 {object} []models.ProyectosCurriculares
 // @Failure 403 :id_facultad is empty
 // @router /proyectosPorFacultad/:id_facultad/:nivel_academico [get]
 func (c *DependenciaV2Controller) ProyectosPorFacultad() {
@@ -214,9 +213,6 @@ func (c *DependenciaV2Controller) ProyectosPorFacultad() {
 
 	//Construcción Json menus
 	l := models.ProyectosPorFacultad(id_facultad, nivel_academico)
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
@@ -226,7 +222,7 @@ func (c *DependenciaV2Controller) ProyectosPorFacultad() {
 // @Title ProyectosPorFacultadNivelAcademico
 // @Description Get curricular projects by faculty and academic level
 // @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
-// @Success 200 {object} models.Dependencia
+// @Success 200 {object} []models.ProyectosCurriculares
 // @Failure 403 :id_facultad is empty
 // @router /proyectosPorFacultad/:id_facultad [get]
 func (c *DependenciaV2Controller) ProyectosPorFacultadNivelAcademico() {
@@ -237,9 +233,6 @@ func (c *DependenciaV2Controller) ProyectosPorFacultadNivelAcademico() {
 
 	//Construcción Json menus
 	l := models.ProyectosPorFacultad(id_facultad, "undefined")
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
@@ -249,7 +242,7 @@ func (c *DependenciaV2Controller) ProyectosPorFacultadNivelAcademico() {
 // @Title GetDependenciasHijasById
 // @Description A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.
 // @Param	dependencia	path 	int	true		"Id de la dependencia"
-// @Success 200 {object} models.DependenciaPadre
+// @Success 200 {object} models.DependenciaPadreHijo
 // @Failure 403 :dependencia_padre is empty
 // @router /get_dependencias_hijas_by_id/:dependencia [get]
 func (c *DependenciaV2Controller) GetDependenciasHijasById() {
@@ -275,8 +268,8 @@ func (c *DependenciaV2Controller) GetDependenciasHijasById() {
 // GetDependenciasPadresById ...
 // @Title GetDependenciasPadresById
 // @Description A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.
-// @Param	dependencia	path 	string	true		"Id de la dependencia"
-// @Success 200 {object} models.DependenciaPadre
+// @Param	dependencia	path 	int	true		"Id de la dependencia"
+// @Success 200 {object} []models.DependenciaPadreHijo
 // @Failure 404 :dependencia is empty
 // @router /get_dependencias_padres_by_id/:dependencia [get]
 func (c *DependenciaV2Controller) GetDependenciasPadresById() {

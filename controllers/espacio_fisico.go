@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -33,7 +32,7 @@ func (c *EspacioFisicoController) URLMapping() {
 // @Title Post
 // @Description create EspacioFisico
 // @Param	body		body 	models.EspacioFisico	true		"body for EspacioFisico content"
-// @Success 201 {int} models.EspacioFisico
+// @Success 201 {object} models.EspacioFisico
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *EspacioFisicoController) Post() {
@@ -87,7 +86,7 @@ func (c *EspacioFisicoController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get EspacioFisico by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.EspacioFisico
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -145,9 +144,9 @@ func (c *EspacioFisicoController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.EspacioFisico
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.EspacioFisico
 // @Failure 404 not found resource
 // @router / [get]
 func (c *EspacioFisicoController) GetAll() {
@@ -254,7 +253,7 @@ func (c *EspacioFisicoController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the EspacioFisico
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.EspacioFisico	true		"body for EspacioFisico content"
 // @Success 200 {object} models.EspacioFisico
 // @Failure 400 the request contains incorrect syntax
@@ -302,8 +301,8 @@ func (c *EspacioFisicoController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the EspacioFisico
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *EspacioFisicoController) Delete() {
@@ -324,12 +323,11 @@ func (c *EspacioFisicoController) Delete() {
 // @Title EspaciosHuerfanos
 // @Description Función para cargar los espacios físicos huerfanos
 // @Param	id		path 	string	true		"Id del espacio físico"
-// @Success 200 {object} models.EspacioFisico
+// @Success 200 {object} []models.EspacioFisico
 // @Failure 403 id is empty
 // @router /EspaciosHuerfanos/:id [get]
 //Función para cargar los espacios físicos huerfanos
 func (c *EspacioFisicoController) EspaciosHuerfanos() {
-	fmt.Println("tipo ", c.Ctx.Input.Param(":id"))
 	tipo := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(tipo)
 	//perfiles := ("Admin_Arka")
@@ -337,9 +335,6 @@ func (c *EspacioFisicoController) EspaciosHuerfanos() {
 
 	//Construcción Json Menús Huerfanos
 	l := models.EspacioFisicosHuerfanos(id)
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
@@ -375,8 +370,8 @@ func (c *EspacioFisicoController) GetEspaciosFisicosHijosById() {
 // GetEspaciosFisicosPadresById ...
 // @Title GetEspaciosFisicosPadresById
 // @Description A partir de una espacio_fisico dado, se obtienen todos sus predecesores en una estructura de árbol.
-// @Param	espacio_fisico	path 	string	true		"Id de la espacio_fisico"
-// @Success 200 {object} models.EspafioFisicoPadreHijo
+// @Param	espacio_fisico	path 	int	true		"Id de la espacio_fisico"
+// @Success 200 {object} []models.EspafioFisicoPadreHijo
 // @Failure 404 :espacio_fisico is empty
 // @router /get_espacios_fisicos_padres_by_id/:espacio_fisico [get]
 func (c *EspacioFisicoController) GetEspaciosFisicosPadresById() {

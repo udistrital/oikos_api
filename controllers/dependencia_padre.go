@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -34,7 +33,7 @@ func (c *DependenciaPadreController) URLMapping() {
 // @Title Post
 // @Description create DependenciaPadre
 // @Param	body		body 	models.DependenciaPadre	true		"body for DependenciaPadre content"
-// @Success 201 {int} models.DependenciaPadre
+// @Success 201 {object} models.DependenciaPadre
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *DependenciaPadreController) Post() {
@@ -81,7 +80,7 @@ func (c *DependenciaPadreController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get DependenciaPadre by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.DependenciaPadre
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -132,9 +131,9 @@ func (c *DependenciaPadreController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.DependenciaPadre
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.DependenciaPadre
 // @Failure 404 not found resource
 // @router / [get]
 func (c *DependenciaPadreController) GetAll() {
@@ -233,7 +232,7 @@ func (c *DependenciaPadreController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the DependenciaPadre
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.DependenciaPadre	true		"body for DependenciaPadre content"
 // @Success 200 {object} models.DependenciaPadre
 // @Failure 400 the request contains incorrect syntax
@@ -279,8 +278,8 @@ func (c *DependenciaPadreController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the DependenciaPadre
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *DependenciaPadreController) Delete() {
@@ -300,7 +299,7 @@ func (c *DependenciaPadreController) Delete() {
 // FacultadesConProyectos ...
 // @Title FacultadesConProyectos
 // @Description Lista las facultades con sus respectivos proyectos curriculares
-// @Success 200 {object} models.DependenciaPadre
+// @Success 200 {object} []models.Tree
 // @Failure 403
 // @router /FacultadesConProyectos [get]
 func (c *DependenciaPadreController) FacultadesConProyectos() {
@@ -314,15 +313,12 @@ func (c *DependenciaPadreController) FacultadesConProyectos() {
 // ArbolDependencias ...
 // @Title ArbolDependencias
 // @Description ArbolDependencias
-// @Success 200 {object} models.Tree
+// @Success 200 {object} []models.TreeDependencia
 // @Failure 403
 // @router /ArbolDependencias [get]
 func (c *DependenciaPadreController) ArbolDependencias() {
 	//Construcción Json menus
 	l := models.ConstruirDependenciasPadre()
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
@@ -332,7 +328,7 @@ func (c *DependenciaPadreController) ArbolDependencias() {
 // @Title TRDependenciaPadre
 // @Description Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.
 // @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadreV2 content"
-// @Success 201 {int} models.DependenciaPadreV2
+// @Success 201 {object} models.DependenciaPadreV2
 // @Failure 400 the request contains incorrect syntax
 // @router /tr_dependencia_padre [post]
 func (c *DependenciaPadreController) TRDependenciaPadre() {

@@ -30,7 +30,7 @@ func (c *CampoV2Controller) URLMapping() {
 // @Title Post
 // @Description create Campo
 // @Param	body		body 	models.CampoV2	true		"body for Campo content"
-// @Success 201 {int} models.CampoV2
+// @Success 201 {object} models.CampoV2
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *CampoV2Controller) Post() {
@@ -57,7 +57,7 @@ func (c *CampoV2Controller) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get Campo by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.CampoV2
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -83,9 +83,9 @@ func (c *CampoV2Controller) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.CampoV2
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.CampoV2
 // @Failure 404 not found resource
 // @router / [get]
 func (c *CampoV2Controller) GetAll() {
@@ -148,7 +148,7 @@ func (c *CampoV2Controller) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the Campo
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.CampoV2	true		"body for Campo content"
 // @Success 200 {object} models.CampoV2
 // @Failure 400 the request contains incorrect syntax
@@ -178,8 +178,8 @@ func (c *CampoV2Controller) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the Campo
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *CampoV2Controller) Delete() {
