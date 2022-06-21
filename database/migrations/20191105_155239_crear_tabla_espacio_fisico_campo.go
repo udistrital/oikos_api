@@ -19,9 +19,7 @@ func init() {
 
 // Run the migrations
 func (m *CrearTablaEspacioFisicoCampo_20191105_155239) Up() {
-	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE TABLE oikos.espacio_fisico_campo ( id serial NOT NULL, valor character varying(50) NOT NULL, espacio_fisico_id integer NOT NULL, campo_id integer NOT NULL, activo boolean NOT NULL, fecha_inicio TIMESTAMP NOT NULL, fecha_fin TIMESTAMP, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_espacio_fisico_campo PRIMARY KEY (id), CONSTRAINT fk_espacio_fisico_espacio_fisico_campo FOREIGN KEY (espacio_fisico_id) REFERENCES oikos.espacio_fisico(id), CONSTRAINT fk_campo_espacio_fisico_campo FOREIGN KEY (campo_id) REFERENCES oikos.campo(id), CONSTRAINT UQ_CAMPO UNIQUE (campo_id, espacio_fisico_id) );")
-	m.SQL("ALTER TABLE oikos.espacio_fisico_campo OWNER TO desarrollooas;")
 	m.SQL("COMMENT ON TABLE oikos.espacio_fisico_campo IS 'Tabla de rompimiento entre campo y espacio_fisico.';")
 	m.SQL("COMMENT ON COLUMN oikos.espacio_fisico_campo.id IS 'Identificador de la asignacion del espacio fisico.';")
 	m.SQL("COMMENT ON COLUMN oikos.espacio_fisico_campo.valor IS 'Valor del nuevo campo para el espacio fisico.';")
@@ -32,11 +30,10 @@ func (m *CrearTablaEspacioFisicoCampo_20191105_155239) Up() {
 	m.SQL("COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_fin IS 'Fecha en la que finaliza la asignacion.';")
 	m.SQL("COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';")
 	m.SQL("COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';")
-	
+
 }
 
 // Reverse the migrations
 func (m *CrearTablaEspacioFisicoCampo_20191105_155239) Down() {
-	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DROP TABLE IF EXISTS oikos.espacio_fisico_campo")
 }

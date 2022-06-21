@@ -12,16 +12,14 @@ type CrearTablaEspacioFisico_20191105_155060 struct {
 // DO NOT MODIFY
 func init() {
 	m := &CrearTablaEspacioFisico_20191105_155060{}
-	m.Created = "20191105_155060"
+	m.Created = "20191105_155059"
 
 	migration.Register("CrearTablaEspacioFisico_20191105_155060", m)
 }
 
 // Run the migrations
 func (m *CrearTablaEspacioFisico_20191105_155060) Up() {
-	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE TABLE IF NOT EXISTS oikos.espacio_fisico ( id serial NOT NULL, nombre character varying(100) NOT NULL, descripcion character varying(100), codigo_abreviacion character varying(20), activo boolean NOT NULL, tipo_espacio_fisico_id integer NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_espacio_fisico PRIMARY KEY (id), CONSTRAINT fk_tipo_espacio_fisico_espacio_fisico FOREIGN KEY (tipo_espacio_fisico_id) REFERENCES oikos.tipo_espacio_fisico(id) );")
-	m.SQL("ALTER TABLE oikos.espacio_fisico OWNER TO desarrollooas;")
 	m.SQL("COMMENT ON TABLE oikos.espacio_fisico IS 'Tabla de Rompimiento que reune los atributos de un espacio fisico';")
 	m.SQL("COMMENT ON COLUMN oikos.espacio_fisico.id IS 'Identificador del espacio fisico especifico de la Universidad Distrital.';")
 	m.SQL("COMMENT ON COLUMN oikos.espacio_fisico.nombre IS 'Nombre perteneciente al espacio físico';")
@@ -36,6 +34,5 @@ func (m *CrearTablaEspacioFisico_20191105_155060) Up() {
 
 // Reverse the migrations
 func (m *CrearTablaEspacioFisico_20191105_155060) Down() {
-	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DROP TABLE IF EXISTS oikos.espacio_fisico")
 }

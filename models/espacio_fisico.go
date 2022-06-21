@@ -1,39 +1,41 @@
 package models
 
 import (
+	"container/list"
 	"errors"
 	"fmt"
 	"reflect"
 	"strings"
 	"time"
+
 	"github.com/astaxie/beego/orm"
-	"container/list"
 )
 
 var elementMapEF = make(map[int]EspacioFisicoPadreHijo)
 var lef = list.New()
 
 type EspacioFisico struct {
-	Id         		    int                `orm:"column(id);pk;auto"`
-	Nombre      		string             `orm:"column(nombre)"`
-	Descripcion      	string             `orm:"column(descripcion);null"`
-	Codigo      		string             `orm:"column(codigo)"`
-	Estado      		string             `orm:"column(estado)"`
-	FechaCreacion       time.Time          `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion   time.Time           `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-	TipoEspacio        *TipoEspacioFisico   `orm:"column(tipo_espacio);rel(fk)"`
-
+	Id                int                `orm:"column(id);pk;auto"`
+	Nombre            string             `orm:"column(nombre)"`
+	Descripcion       string             `orm:"column(descripcion);null"`
+	Codigo            string             `orm:"column(codigo)"`
+	Estado            string             `orm:"column(estado)"`
+	FechaCreacion     time.Time          `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time          `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	TipoEspacio       *TipoEspacioFisico `orm:"column(tipo_espacio);rel(fk)"`
 }
 
 type EspacioFisicoV2 struct {
-	Id                  int                `orm:"column(id);pk;auto"`
-	Nombre              string             `orm:"column(nombre)"`
-	Descripcion         string             `orm:"column(descripcion);null"`
-	CodigoAbreviacion   string             `orm:"column(codigo_abreviacion);null"`
-	Activo              bool               `orm:"column(activo)"`
+	Id                  int                  `orm:"column(id);pk;auto"`
+	Nombre              string               `orm:"column(nombre)"`
+	Descripcion         string               `orm:"column(descripcion);null"`
+	CodigoAbreviacion   string               `orm:"column(codigo_abreviacion);null"`
+	Activo              bool                 `orm:"column(activo)"`
+	TipoTerrenoId       int                  `orm:"column(tipo_terreno_id)"`
+	TipoEdificacionId   int                  `orm:"column(tipo_edificacion_id)"`
 	TipoEspacioFisicoId *TipoEspacioFisicoV2 `orm:"column(tipo_espacio_fisico_id);rel(fk)"`
-	FechaCreacion       time.Time          `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion   time.Time          `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	FechaCreacion       time.Time            `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion   time.Time            `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
 func (t *EspacioFisicoV2) TableName() string {
@@ -186,17 +188,17 @@ func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
 	return espaciosHuerfanos
 }
 
-func buscarEF(ef int)(padre EspacioFisicoPadreHijo){
-	
-	var x EspacioFisicoPadreHijo
-	for _,element := range elementMapEF{
+func buscarEF(ef int) (padre EspacioFisicoPadreHijo) {
 
-		if(ef == element.Id){
+	var x EspacioFisicoPadreHijo
+	for _, element := range elementMapEF {
+
+		if ef == element.Id {
 			x.Id = element.Id
 			x.Nombre = element.Nombre
 			x.Padre = element.Padre
 			x.Hijo = element.Hijo
-		
+
 		}
 	}
 
@@ -204,30 +206,29 @@ func buscarEF(ef int)(padre EspacioFisicoPadreHijo){
 }
 
 //Funcion recursiva que busca los espacios fisicos hijos a partir de un id del espacio físico padre
-func getEspacioFisicoHijos(Padre *EspacioFisicoPadreHijo,padre int)(ef []EspacioFisicoPadreHijo){ 
-		
-	for _,element := range elementMapEF{
-				
-		if(padre == element.Padre){
+func getEspacioFisicoHijos(Padre *EspacioFisicoPadreHijo, padre int) (ef []EspacioFisicoPadreHijo) {
+
+	for _, element := range elementMapEF {
+
+		if padre == element.Padre {
 			var x EspacioFisicoPadreHijo
 			x.Id = element.Id
 			x.Nombre = element.Nombre
 			x.Padre = element.Padre
 			j := &x
-			x.Opciones = getEspacioFisicoHijos(j,element.Id)
-			Padre.Opciones = append(Padre.Opciones,x)
-	
+			x.Opciones = getEspacioFisicoHijos(j, element.Id)
+			Padre.Opciones = append(Padre.Opciones, x)
+
 		}
-	   
+
 	}
 
 	return Padre.Opciones
 
 }
 
-func GetEspaciosFisicosHijosById(espacioFisicoPadre int)(espaciosFisicos *EspacioFisicoPadreHijo, e error){
-	
-		
+func GetEspaciosFisicosHijosById(espacioFisicoPadre int) (espaciosFisicos *EspacioFisicoPadreHijo, e error) {
+
 	var espaciosFisicosHijos []EspacioFisicoPadreHijo
 
 	qb, _ := orm.NewQueryBuilder("mysql")
@@ -243,30 +244,26 @@ func GetEspaciosFisicosHijosById(espacioFisicoPadre int)(espaciosFisicos *Espaci
 	sql := qb.String()
 
 	o := orm.NewOrm()
-	_,err:=o.Raw(sql).QueryRows(&espaciosFisicosHijos)
+	_, err := o.Raw(sql).QueryRows(&espaciosFisicosHijos)
 
 	//TO MAP
-	for _, s := range espaciosFisicosHijos {  
-		elementMapEF[s.Id] = s 
+	for _, s := range espaciosFisicosHijos {
+		elementMapEF[s.Id] = s
 	}
-	
-	c:= buscarEF(espacioFisicoPadre)
+
+	c := buscarEF(espacioFisicoPadre)
 	Cabeza := &c
-	getEspacioFisicoHijos(Cabeza,espacioFisicoPadre)
-	 
+	getEspacioFisicoHijos(Cabeza, espacioFisicoPadre)
 
 	return Cabeza, err
 }
 
+func getEspaciosFisicosPadres(Hijo EspacioFisicoPadreHijo) (ef EspacioFisicoPadreHijo) {
 
-
-func getEspaciosFisicosPadres(Hijo EspacioFisicoPadreHijo)(ef EspacioFisicoPadreHijo){ 
-	
-	
 	var x EspacioFisicoPadreHijo
-	for _,element := range elementMapEF{
+	for _, element := range elementMapEF {
 
-		if(Hijo.Padre == element.Hijo){
+		if Hijo.Padre == element.Hijo {
 			x.Id = element.Id
 			x.Nombre = element.Nombre
 			x.Padre = element.Padre
@@ -276,13 +273,13 @@ func getEspaciosFisicosPadres(Hijo EspacioFisicoPadreHijo)(ef EspacioFisicoPadre
 			getEspaciosFisicosPadres(x)
 		}
 	}
-	
+
 	return x
-	
+
 }
 
-func GetEspaciosFisicosPadresById(espacioFisicoHijo int)(espaciosFisicos []EspacioFisicoPadreHijo, e error){
-		
+func GetEspaciosFisicosPadresById(espacioFisicoHijo int) (espaciosFisicos []EspacioFisicoPadreHijo, e error) {
+
 	var espacioFisicoPadres []EspacioFisicoPadreHijo
 	var listaEspaciosFisicos []EspacioFisicoPadreHijo
 	lef.Init()
@@ -300,38 +297,32 @@ func GetEspaciosFisicosPadresById(espacioFisicoHijo int)(espaciosFisicos []Espac
 	sql := qb.String()
 
 	o := orm.NewOrm()
-	_,err:=o.Raw(sql).QueryRows(&espacioFisicoPadres)
-
+	_, err := o.Raw(sql).QueryRows(&espacioFisicoPadres)
 
 	//TO MAP
-	for _, s := range espacioFisicoPadres {  
-		elementMapEF[s.Id] = s 
+	for _, s := range espacioFisicoPadres {
+		elementMapEF[s.Id] = s
 	}
 
-	   
-	 //Obtener informacion sobre espacio físico que se busca
-	 var Cola EspacioFisicoPadreHijo
-	 Cola.Id = elementMapEF[espacioFisicoHijo].Id;
-	 Cola.Nombre = elementMapEF[espacioFisicoHijo].Nombre
-	 Cola.Padre = elementMapEF[espacioFisicoHijo].Padre;
-	 Cola.Hijo = elementMapEF[espacioFisicoHijo].Hijo;
-	
-	
-	 if (Cola.Hijo != 0){
+	//Obtener informacion sobre espacio físico que se busca
+	var Cola EspacioFisicoPadreHijo
+	Cola.Id = elementMapEF[espacioFisicoHijo].Id
+	Cola.Nombre = elementMapEF[espacioFisicoHijo].Nombre
+	Cola.Padre = elementMapEF[espacioFisicoHijo].Padre
+	Cola.Hijo = elementMapEF[espacioFisicoHijo].Hijo
+
+	if Cola.Hijo != 0 {
 		getEspaciosFisicosPadres(Cola)
 		lef.PushBack(Cola)
-   
+
 		//Buscar cabeza de la lista
 		p := buscarEF(lef.Front().Value.(EspacioFisicoPadreHijo).Padre)
 		lef.PushFront(p)
-   
-		for temp := lef.Front(); temp != nil; temp = temp.Next() {
-			listaEspaciosFisicos = append(listaEspaciosFisicos,temp.Value.(EspacioFisicoPadreHijo))
-	   }
-	 }
-	
 
-	
+		for temp := lef.Front(); temp != nil; temp = temp.Next() {
+			listaEspaciosFisicos = append(listaEspaciosFisicos, temp.Value.(EspacioFisicoPadreHijo))
+		}
+	}
 
 	return listaEspaciosFisicos, err
 }

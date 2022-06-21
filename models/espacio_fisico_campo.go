@@ -6,32 +6,32 @@ import (
 	"reflect"
 	"strings"
 	"time"
+
 	"github.com/astaxie/beego/orm"
 )
 
 type EspacioFisicoCampo struct {
-	Id            int            `orm:"column(id);pk;auto"`
-	Valor         string         `orm:"column(valor)"`
-	EspacioFisico   *EspacioFisico `orm:"column(espacio_fisico);rel(fk)"`
-	Campo            *Campo         `orm:"column(campo);rel(fk)"`
-	FechaInicio      time.Time          `orm:"column(fecha_inicio);type(timestamp without time zone)"`
-	FechaFin         time.Time          `orm:"column(fecha_fin);type(timestamp without time zone)"`
-	Activo            bool              `orm:"column(activo)"`
-	FechaCreacion     time.Time         `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time         `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-
+	Id                int            `orm:"column(id);pk;auto"`
+	Valor             string         `orm:"column(valor)"`
+	EspacioFisico     *EspacioFisico `orm:"column(espacio_fisico);rel(fk)"`
+	Campo             *Campo         `orm:"column(campo);rel(fk)"`
+	FechaInicio       time.Time      `orm:"column(fecha_inicio);type(timestamp without time zone)"`
+	FechaFin          time.Time      `orm:"column(fecha_fin);type(timestamp without time zone)"`
+	Activo            bool           `orm:"column(activo)"`
+	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
 type EspacioFisicoCampoV2 struct {
-	Id                int            `orm:"column(id);pk;auto"`
-	Valor             string         `orm:"column(valor)"`
+	Id                int              `orm:"column(id);pk;auto"`
+	Valor             string           `orm:"column(valor)"`
 	EspacioFisicoId   *EspacioFisicoV2 `orm:"column(espacio_fisico_id);rel(fk)"`
 	CampoId           *CampoV2         `orm:"column(campo_id);rel(fk)"`
-	Activo            bool           `orm:"column(activo)"`
-	FechaInicio       time.Time      `orm:"column(fecha_inicio);type(timestamp without time zone)"`
-	FechaFin          time.Time      `orm:"column(fecha_fin);type(timestamp without time zone);null"`
-	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Activo            bool             `orm:"column(activo)"`
+	FechaInicio       time.Time        `orm:"column(fecha_inicio);type(timestamp without time zone)"`
+	FechaFin          time.Time        `orm:"column(fecha_fin);type(timestamp without time zone);null"`
+	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
 func (t *EspacioFisicoCampoV2) TableName() string {

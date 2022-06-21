@@ -19,9 +19,7 @@ func init() {
 
 // Run the migrations
 func (m *CrearTablaTipoDependencia_20191105_155142) Up() {
-	// use m.SQL("CREATE TABLE ...") to make schema update
 	m.SQL("CREATE TABLE IF NOT EXISTS oikos.tipo_dependencia ( id serial NOT NULL, nombre character varying(100) NOT NULL, descripcion character varying(100), codigo_abreviacion character varying(20), activo boolean NOT NULL, fecha_creacion TIMESTAMP NOT NULL, fecha_modificacion TIMESTAMP NOT NULL, CONSTRAINT pk_tipo_dependencia PRIMARY KEY (id) );")
-	m.SQL("ALTER TABLE oikos.tipo_dependencia OWNER TO desarrollooas;")
 	m.SQL("COMMENT ON TABLE oikos.tipo_dependencia IS 'Tabla que contiene los distintos tipos de dependencia que hay en la Universidad Distrital.';")
 	m.SQL("COMMENT ON COLUMN oikos.tipo_dependencia.id IS 'Identificador de la tabla.';")
 	m.SQL("COMMENT ON COLUMN oikos.tipo_dependencia.nombre IS 'Campo que contiene el tipo de dependencia.';")
@@ -30,11 +28,10 @@ func (m *CrearTablaTipoDependencia_20191105_155142) Up() {
 	m.SQL("COMMENT ON COLUMN oikos.tipo_dependencia.activo IS 'Valor booleano para indicar si el registro esta activo o inactivo.';")
 	m.SQL("COMMENT ON COLUMN oikos.tipo_dependencia.fecha_creacion IS 'Fecha y hora de la creación del registro en la BD.';")
 	m.SQL("COMMENT ON COLUMN oikos.tipo_dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';")
-	
+
 }
 
 // Reverse the migrations
 func (m *CrearTablaTipoDependencia_20191105_155142) Down() {
-	// use m.SQL("DROP TABLE ...") to reverse schema update
 	m.SQL("DROP TABLE IF EXISTS oikos.tipo_dependencia")
 }

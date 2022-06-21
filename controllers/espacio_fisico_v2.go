@@ -5,11 +5,11 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"fmt"
-	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // EspacioFisicoV2Controller operations for EspacioFisico
@@ -30,7 +30,7 @@ func (c *EspacioFisicoV2Controller) URLMapping() {
 // @Title Post
 // @Description create EspacioFisico
 // @Param	body		body 	models.EspacioFisicoV2	true		"body for EspacioFisico content"
-// @Success 201 {int} models.EspacioFisicoV2
+// @Success 201 {object} models.EspacioFisicoV2
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *EspacioFisicoV2Controller) Post() {
@@ -57,7 +57,7 @@ func (c *EspacioFisicoV2Controller) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get EspacioFisico by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.EspacioFisicoV2
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -83,9 +83,9 @@ func (c *EspacioFisicoV2Controller) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.EspacioFisicoV2
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.EspacioFisicoV2
 // @Failure 404 not found resource
 // @router / [get]
 func (c *EspacioFisicoV2Controller) GetAll() {
@@ -148,7 +148,7 @@ func (c *EspacioFisicoV2Controller) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the EspacioFisico
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.EspacioFisicoV2	true		"body for EspacioFisico content"
 // @Success 200 {object} models.EspacioFisicoV2
 // @Failure 400 the request contains incorrect syntax
@@ -178,8 +178,8 @@ func (c *EspacioFisicoV2Controller) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the EspacioFisico
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *EspacioFisicoV2Controller) Delete() {
@@ -199,13 +199,12 @@ func (c *EspacioFisicoV2Controller) Delete() {
 // EspaciosHuerfanos ...
 // @Title EspaciosHuerfanos
 // @Description Función para cargar los espacios físicos huerfanos
-// @Param	id		path 	string	true		"Id del espacio físico"
-// @Success 200 {object} models.EspacioFisico
+// @Param	id		path 	int	true		"Id del espacio físico"
+// @Success 200 {object} []models.EspacioFisico
 // @Failure 403 id is empty
 // @router /EspaciosHuerfanos/:id [get]
 //Función para cargar los espacios físicos huerfanos
 func (c *EspacioFisicoV2Controller) EspaciosHuerfanos() {
-	fmt.Println("tipo ", c.Ctx.Input.Param(":id"))
 	tipo := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(tipo)
 	//perfiles := ("Admin_Arka")
@@ -213,9 +212,6 @@ func (c *EspacioFisicoV2Controller) EspaciosHuerfanos() {
 
 	//Construcción Json Menús Huerfanos
 	l := models.EspacioFisicosHuerfanos(id)
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
@@ -252,7 +248,7 @@ func (c *EspacioFisicoV2Controller) GetEspaciosFisicosHijosById() {
 // @Title GetEspaciosFisicosPadresById
 // @Description A partir de una espacio_fisico dado, se obtienen todos sus predecesores en una estructura de árbol.
 // @Param	espacio_fisico	path 	string	true		"Id de la espacio_fisico"
-// @Success 200 {object} models.EspafioFisicoPadreHijo
+// @Success 200 {object} []models.EspafioFisicoPadreHijo
 // @Failure 404 :espacio_fisico is empty
 // @router /get_espacios_fisicos_padres_by_id/:espacio_fisico [get]
 func (c *EspacioFisicoV2Controller) GetEspaciosFisicosPadresById() {

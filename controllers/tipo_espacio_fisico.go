@@ -6,9 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/udistrital/oikos_api/models"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // TipoEspacioFisicoController oprations for TipoEspacioFisico
@@ -29,27 +31,26 @@ func (c *TipoEspacioFisicoController) URLMapping() {
 // @Title Post
 // @Description create TipoEspacioFisico
 // @Param	body		body 	models.TipoEspacioFisico	true		"body for TipoEspacioFisico content"
-// @Success 201 {int} models.TipoEspacioFisico
+// @Success 201 {object} models.TipoEspacioFisico
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *TipoEspacioFisicoController) Post() {
 	var v models.TipoEspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		
-				temp := models.TipoEspacioFisicoV2 {
-					Id: v.Id,
-					Nombre: v.Nombre,      		  
-					Descripcion: "Descripción",
-					CodigoAbreviacion: "TU_"+v.Nombre,
-					Activo : true,
-					FechaCreacion  : time.Now(),
-					FechaModificacion  : time.Now(),
-					
-				}
-				//-------------- Temporal: Cambio por transición ------- //
+
+		temp := models.TipoEspacioFisicoV2{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       "Descripción",
+			CodigoAbreviacion: "TU_" + v.Nombre,
+			Activo:            true,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
+		}
+		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddTipoEspacioFisico(&temp); err == nil {
-		//if _, err := models.AddTipoEspacioFisico(&v); err == nil {
+			//if _, err := models.AddTipoEspacioFisico(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -70,7 +71,7 @@ func (c *TipoEspacioFisicoController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get TipoEspacioFisico by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.TipoEspacioFisico
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -85,15 +86,15 @@ func (c *TipoEspacioFisicoController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-	
-		temp := models.TipoEspacioFisico {
-					Id: v.Id,
-					Nombre: v.Nombre, 
-					Descripcion: v.Descripcion,
-					CodigoAbreviacion: v.CodigoAbreviacion,
-					Activo: v.Activo,
-					FechaCreacion: v.FechaCreacion,
-					FechaModificacion: v.FechaModificacion,	     		  
+
+		temp := models.TipoEspacioFisico{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       v.Descripcion,
+			CodigoAbreviacion: v.CodigoAbreviacion,
+			Activo:            v.Activo,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,
 		}
 		c.Data["json"] = temp
 		//-------------- Temporal: Cambio por transición ------- //
@@ -109,9 +110,9 @@ func (c *TipoEspacioFisicoController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.TipoEspacioFisico
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.TipoEspacioFisico
 // @Failure 404 not found resource
 // @router / [get]
 func (c *TipoEspacioFisicoController) GetAll() {
@@ -166,24 +167,24 @@ func (c *TipoEspacioFisicoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
+		} else {
 			//-------------- Temporal: Cambio por transición ------- //
 			var temp []models.TipoEspacioFisico
 			for _, i := range l {
 				field, _ := i.(models.TipoEspacioFisicoV2)
-				x := models.TipoEspacioFisico {
-					Id: field.Id,
-					Nombre: field.Nombre,      
-					Descripcion: field.Descripcion,
+				x := models.TipoEspacioFisico{
+					Id:                field.Id,
+					Nombre:            field.Nombre,
+					Descripcion:       field.Descripcion,
 					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo: field.Activo,
-					FechaCreacion: field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,		  
+					Activo:            field.Activo,
+					FechaCreacion:     field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,
 				}
 
-				temp = append(temp,x)
+				temp = append(temp, x)
 			}
-				
+
 			c.Data["json"] = temp
 		}
 
@@ -197,7 +198,7 @@ func (c *TipoEspacioFisicoController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the TipoEspacioFisico
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.TipoEspacioFisico	true		"body for TipoEspacioFisico content"
 // @Success 200 {object} models.TipoEspacioFisico
 // @Failure 400 the request contains incorrect syntax
@@ -210,13 +211,13 @@ func (c *TipoEspacioFisicoController) Put() {
 	v := models.TipoEspacioFisico{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		v2 := models.TipoEspacioFisicoV2{
-			Id: id,
-			Nombre: v.Nombre,
-			Descripcion: infoDep.Descripcion,
+			Id:                id,
+			Nombre:            v.Nombre,
+			Descripcion:       infoDep.Descripcion,
 			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo : infoDep.Activo,
-			FechaCreacion : infoDep.FechaCreacion,
-			FechaModificacion  : time.Now(),
+			Activo:            infoDep.Activo,
+			FechaCreacion:     infoDep.FechaCreacion,
+			FechaModificacion: time.Now(),
 		}
 
 		if err := models.UpdateTipoEspacioFisicoById(&v2); err == nil {
@@ -239,8 +240,8 @@ func (c *TipoEspacioFisicoController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the TipoEspacioFisico
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *TipoEspacioFisicoController) Delete() {

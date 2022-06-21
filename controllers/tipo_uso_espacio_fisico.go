@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // TipoUsoEspacioFisicoController oprations for TipoUsoEspacioFisico
@@ -30,33 +31,32 @@ func (c *TipoUsoEspacioFisicoController) URLMapping() {
 // @Title Post
 // @Description create TipoUsoEspacioFisico
 // @Param	body		body 	models.TipoUsoEspacioFisico	true		"body for TipoUsoEspacioFisico content"
-// @Success 201 {int} models.TipoUsoEspacioFisico
+// @Success 201 {object} models.TipoUsoEspacioFisico
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *TipoUsoEspacioFisicoController) Post() {
 	var v models.TipoUsoEspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		ef := &models.EspacioFisicoV2 {
+		ef := &models.EspacioFisicoV2{
 			Id: v.EspacioFisicoId.Id,
 		}
 
-		tu := &models.TipoUsoV2 {
+		tu := &models.TipoUsoV2{
 			Id: v.TipoUsoId.Id,
 		}
 
-		temp := models.TipoUsoEspacioFisicoV2 {
-			Id: v.Id,
-			TipoUsoId: tu,
-			EspacioFisicoId: ef,
-			Activo : true,
-			FechaCreacion  : time.Now(),
-			FechaModificacion  : time.Now(),
-			
+		temp := models.TipoUsoEspacioFisicoV2{
+			Id:                v.Id,
+			TipoUsoId:         tu,
+			EspacioFisicoId:   ef,
+			Activo:            true,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
 		}
 		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddTipoUsoEspacioFisico(&temp); err == nil {
-	//	if _, err := models.AddTipoUsoEspacioFisico(&v); err == nil {
+			//	if _, err := models.AddTipoUsoEspacioFisico(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -77,7 +77,7 @@ func (c *TipoUsoEspacioFisicoController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get TipoUsoEspacioFisico by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.TipoUsoEspacioFisico
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -92,46 +92,45 @@ func (c *TipoUsoEspacioFisicoController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		te := &models.TipoEspacioFisico {
-			Id: v.EspacioFisicoId.TipoEspacioFisicoId.Id,
-			Nombre: v.EspacioFisicoId.TipoEspacioFisicoId.Nombre, 
-			Descripcion: v.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
+		te := &models.TipoEspacioFisico{
+			Id:                v.EspacioFisicoId.TipoEspacioFisicoId.Id,
+			Nombre:            v.EspacioFisicoId.TipoEspacioFisicoId.Nombre,
+			Descripcion:       v.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
 			CodigoAbreviacion: v.EspacioFisicoId.TipoEspacioFisicoId.CodigoAbreviacion,
-			Activo: v.EspacioFisicoId.TipoEspacioFisicoId.Activo,
-			FechaCreacion: v.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
-			FechaModificacion: v.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,	     		  
+			Activo:            v.EspacioFisicoId.TipoEspacioFisicoId.Activo,
+			FechaCreacion:     v.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
+			FechaModificacion: v.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,
 		}
 
-		ef := &models.EspacioFisico {
-			Id: v.EspacioFisicoId.Id,
-			Nombre: v.EspacioFisicoId.Nombre,   
-			Codigo: v.EspacioFisicoId.CodigoAbreviacion,
-			Estado: "ACTIVO",  //v.Activo
-			Descripcion:  v.EspacioFisicoId.Descripcion,    
-			FechaCreacion :  v.EspacioFisicoId.FechaCreacion,   
-			FechaModificacion :  v.EspacioFisicoId.FechaModificacion,		
-			TipoEspacio : te,	
-			//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
+		ef := &models.EspacioFisico{
+			Id:                v.EspacioFisicoId.Id,
+			Nombre:            v.EspacioFisicoId.Nombre,
+			Codigo:            v.EspacioFisicoId.CodigoAbreviacion,
+			Estado:            "ACTIVO", //v.Activo
+			Descripcion:       v.EspacioFisicoId.Descripcion,
+			FechaCreacion:     v.EspacioFisicoId.FechaCreacion,
+			FechaModificacion: v.EspacioFisicoId.FechaModificacion,
+			TipoEspacio:       te,
+			//DependenciaTipoDependencia: field.DependenciaTipoDependencia,
 		}
 
-		tu := &models.TipoUso {
-			Id: v.TipoUsoId .Id,
-			Nombre: v.TipoUsoId.Nombre,      
-			Descripcion: v.TipoUsoId.Descripcion,
+		tu := &models.TipoUso{
+			Id:                v.TipoUsoId.Id,
+			Nombre:            v.TipoUsoId.Nombre,
+			Descripcion:       v.TipoUsoId.Descripcion,
 			CodigoAbreviacion: v.TipoUsoId.CodigoAbreviacion,
-			Activo: v.TipoUsoId.Activo,
-			FechaCreacion: v.TipoUsoId.FechaCreacion,
-			FechaModificacion: v.TipoUsoId.FechaModificacion,		
+			Activo:            v.TipoUsoId.Activo,
+			FechaCreacion:     v.TipoUsoId.FechaCreacion,
+			FechaModificacion: v.TipoUsoId.FechaModificacion,
 		}
 
-		temp := models.TipoUsoEspacioFisico {
-			Id: v.Id,
-			TipoUsoId : tu,
-			EspacioFisicoId : ef,
-			Activo : true,
-			FechaCreacion  : v.FechaCreacion,
-			FechaModificacion  : v.FechaModificacion,
-			
+		temp := models.TipoUsoEspacioFisico{
+			Id:                v.Id,
+			TipoUsoId:         tu,
+			EspacioFisicoId:   ef,
+			Activo:            true,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,
 		}
 
 		c.Data["json"] = map[string]interface{}{"Status": "200", "Body": temp, "Type": "success"}
@@ -148,9 +147,9 @@ func (c *TipoUsoEspacioFisicoController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.TipoUsoEspacioFisico
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.TipoUsoEspacioFisico
 // @Failure 404 not found resource
 // @router / [get]
 func (c *TipoUsoEspacioFisicoController) GetAll() {
@@ -205,62 +204,61 @@ func (c *TipoUsoEspacioFisicoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
-		//-------------- Temporal: Cambio por transición ------- //
+		} else {
+			//-------------- Temporal: Cambio por transición ------- //
 			var temp []models.TipoUsoEspacioFisico
-			var act string;
+			var act string
 			for _, i := range l {
 				field, _ := i.(models.TipoUsoEspacioFisicoV2)
-				
-				te := &models.TipoEspacioFisico {
-					Id: field.EspacioFisicoId.TipoEspacioFisicoId.Id,
-					Nombre: field.EspacioFisicoId.TipoEspacioFisicoId.Nombre, 
-					Descripcion: field.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
+
+				te := &models.TipoEspacioFisico{
+					Id:                field.EspacioFisicoId.TipoEspacioFisicoId.Id,
+					Nombre:            field.EspacioFisicoId.TipoEspacioFisicoId.Nombre,
+					Descripcion:       field.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
 					CodigoAbreviacion: field.EspacioFisicoId.TipoEspacioFisicoId.CodigoAbreviacion,
-					Activo: field.EspacioFisicoId.TipoEspacioFisicoId.Activo,
-					FechaCreacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
-					FechaModificacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,	     		  
+					Activo:            field.EspacioFisicoId.TipoEspacioFisicoId.Activo,
+					FechaCreacion:     field.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
+					FechaModificacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,
 				}
-				
-				if (field.EspacioFisicoId.Activo == true){
+
+				if field.EspacioFisicoId.Activo == true {
 					act = "Activo"
-				}else {
+				} else {
 					act = "Inactivo"
 				}
 
-				ef := &models.EspacioFisico {
-					Id: field.EspacioFisicoId.Id,
-					Nombre: field.EspacioFisicoId.Nombre,   
-					Codigo: field.EspacioFisicoId.CodigoAbreviacion,
-					Estado: act,  //field.Activo
-					Descripcion:  field.EspacioFisicoId.Descripcion,    
-					FechaCreacion :  field.EspacioFisicoId.FechaCreacion,   
-					FechaModificacion :  field.EspacioFisicoId.FechaModificacion,		
-					TipoEspacio : te,	
-					//DependenciaTipoDependencia: field.DependenciaTipoDependencia,       
-				}
-		
-				tu := &models.TipoUso {
-					Id: field.TipoUsoId .Id,
-					Nombre: field.TipoUsoId.Nombre,      
-					Descripcion: field.TipoUsoId.Descripcion,
-					CodigoAbreviacion: field.TipoUsoId.CodigoAbreviacion,
-					Activo: field.TipoUsoId.Activo,
-					FechaCreacion: field.TipoUsoId.FechaCreacion,
-					FechaModificacion: field.TipoUsoId.FechaModificacion,		
-				}
-		
-				x := models.TipoUsoEspacioFisico {
-					Id: field.Id,
-					TipoUsoId : tu,
-					EspacioFisicoId : ef,
-					Activo : true,
-					FechaCreacion  : field.FechaCreacion,
-					FechaModificacion  : field.FechaModificacion,
-					
+				ef := &models.EspacioFisico{
+					Id:                field.EspacioFisicoId.Id,
+					Nombre:            field.EspacioFisicoId.Nombre,
+					Codigo:            field.EspacioFisicoId.CodigoAbreviacion,
+					Estado:            act, //field.Activo
+					Descripcion:       field.EspacioFisicoId.Descripcion,
+					FechaCreacion:     field.EspacioFisicoId.FechaCreacion,
+					FechaModificacion: field.EspacioFisicoId.FechaModificacion,
+					TipoEspacio:       te,
+					//DependenciaTipoDependencia: field.DependenciaTipoDependencia,
 				}
 
-				temp = append(temp,x)
+				tu := &models.TipoUso{
+					Id:                field.TipoUsoId.Id,
+					Nombre:            field.TipoUsoId.Nombre,
+					Descripcion:       field.TipoUsoId.Descripcion,
+					CodigoAbreviacion: field.TipoUsoId.CodigoAbreviacion,
+					Activo:            field.TipoUsoId.Activo,
+					FechaCreacion:     field.TipoUsoId.FechaCreacion,
+					FechaModificacion: field.TipoUsoId.FechaModificacion,
+				}
+
+				x := models.TipoUsoEspacioFisico{
+					Id:                field.Id,
+					TipoUsoId:         tu,
+					EspacioFisicoId:   ef,
+					Activo:            true,
+					FechaCreacion:     field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,
+				}
+
+				temp = append(temp, x)
 			}
 			c.Data["json"] = temp
 		}
@@ -273,9 +271,9 @@ func (c *TipoUsoEspacioFisicoController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the TipoUsoEspacioFisico
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.TipoUsoEspacioFisico	true		"body for TipoUsoEspacioFisico content"
-// @Success 200 {object} models.TipoUsoEspacioFisico
+// @Param	id		path 	int	true		"The id you want to update"
+// @Param	body		body 	models.TipoUsoEspacioFisicoV2	true		"body for TipoUsoEspacioFisico content"
+// @Success 200 {object} models.TipoUsoEspacioFisicoV2
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *TipoUsoEspacioFisicoController) Put() {
@@ -284,10 +282,10 @@ func (c *TipoUsoEspacioFisicoController) Put() {
 	//-------------- Temporal: Cambio por transición ------- //
 	infoDep, _ := models.GetTipoUsoEspacioFisicoById(id)
 	v := models.TipoUsoEspacioFisicoV2{
-		Id: id,
-		Activo : infoDep.Activo,
-		FechaCreacion : infoDep.FechaCreacion,
-		FechaModificacion  : time.Now(),
+		Id:                id,
+		Activo:            infoDep.Activo,
+		FechaCreacion:     infoDep.FechaCreacion,
+		FechaModificacion: time.Now(),
 	}
 
 	//v := models.TipoUsoEspacioFisico{Id: id}
@@ -312,8 +310,8 @@ func (c *TipoUsoEspacioFisicoController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the TipoUsoEspacioFisico
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *TipoUsoEspacioFisicoController) Delete() {

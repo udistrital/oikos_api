@@ -30,7 +30,7 @@ func (c *EspacioFisicoCampoV2Controller) URLMapping() {
 // @Title Post
 // @Description create EspacioFisicoCampo
 // @Param	body		body 	models.EspacioFisicoCampoV2	true		"body for EspacioFisicoCampo content"
-// @Success 201 {int} models.EspacioFisicoCampoV2
+// @Success 201 {object} models.EspacioFisicoCampoV2
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *EspacioFisicoCampoV2Controller) Post() {
@@ -57,7 +57,7 @@ func (c *EspacioFisicoCampoV2Controller) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get EspacioFisicoCampo by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.EspacioFisicoCampoV2
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -83,9 +83,9 @@ func (c *EspacioFisicoCampoV2Controller) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.EspacioFisicoCampoV2
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.EspacioFisicoCampoV2
 // @Failure 404 not found resource
 // @router / [get]
 func (c *EspacioFisicoCampoV2Controller) GetAll() {
@@ -148,7 +148,7 @@ func (c *EspacioFisicoCampoV2Controller) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the EspacioFisicoCampo
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.EspacioFisicoCampoV2	true		"body for EspacioFisicoCampo content"
 // @Success 200 {object} models.EspacioFisicoCampoV2
 // @Failure 400 the request contains incorrect syntax
@@ -178,8 +178,8 @@ func (c *EspacioFisicoCampoV2Controller) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the EspacioFisicoCampo
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *EspacioFisicoCampoV2Controller) Delete() {

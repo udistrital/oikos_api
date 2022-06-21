@@ -51,20 +51,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.AsignacionEspacioFisicoDependenciaV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.AsignacionEspacioFisicoDependenciaV2"
+                            }
                         }
                     },
                     "404": {
@@ -91,7 +96,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.AsignacionEspacioFisicoDependenciaV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.AsignacionEspacioFisicoDependenciaV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -112,7 +120,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -139,7 +148,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -175,12 +185,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -224,20 +238,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.CampoV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.CampoV2"
+                            }
                         }
                     },
                     "404": {
@@ -264,7 +283,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.CampoV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.CampoV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -285,7 +307,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -312,7 +335,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -348,12 +372,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -397,20 +425,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.DependenciaV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.DependenciaV2"
+                            }
                         }
                     },
                     "404": {
@@ -437,7 +470,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.DependenciaV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.DependenciaV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -451,7 +487,7 @@
                     "dependencia"
                 ],
                 "description": "A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.",
-                "operationId": "DependenciaController.GetDependenciasHijasById",
+                "operationId": "DependenciaV2Controller.GetDependenciasHijasById",
                 "parameters": [
                     {
                         "in": "path",
@@ -466,7 +502,7 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.DependenciaPadre"
+                            "$ref": "#/definitions/models.DependenciaPadreHijo"
                         }
                     },
                     "403": {
@@ -481,21 +517,25 @@
                     "dependencia"
                 ],
                 "description": "A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.",
-                "operationId": "DependenciaController.GetDependenciasPadresById",
+                "operationId": "DependenciaV2Controller.GetDependenciasPadresById",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "dependencia",
                         "description": "Id de la dependencia",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.DependenciaPadre"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.DependenciaPadreHijo"
+                            }
                         }
                     },
                     "404": {
@@ -510,7 +550,7 @@
                     "dependencia"
                 ],
                 "description": "Get curricular projects by faculty and academic level",
-                "operationId": "DependenciaController.ProyectosPorFacultadNivelAcademico",
+                "operationId": "DependenciaV2Controller.ProyectosPorFacultadNivelAcademico",
                 "parameters": [
                     {
                         "in": "path",
@@ -525,7 +565,10 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Dependencia"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ProyectosCurriculares"
+                            }
                         }
                     },
                     "403": {
@@ -540,7 +583,7 @@
                     "dependencia"
                 ],
                 "description": "Get curricular projects by faculty",
-                "operationId": "DependenciaController.ProyectosPorFacultad",
+                "operationId": "DependenciaV2Controller.ProyectosPorFacultad",
                 "parameters": [
                     {
                         "in": "path",
@@ -562,7 +605,10 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Dependencia"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.ProyectosCurriculares"
+                            }
                         }
                     },
                     "403": {
@@ -584,7 +630,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -611,7 +658,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -647,12 +695,13 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "{models} models.Deleted"
                     },
                     "404": {
                         "description": "not found resource"
@@ -696,20 +745,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.DependenciaPadreV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.DependenciaPadreV2"
+                            }
                         }
                     },
                     "404": {
@@ -736,7 +790,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.DependenciaPadreV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.DependenciaPadreV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -750,12 +807,15 @@
                     "dependencia_padre"
                 ],
                 "description": "ArbolDependencias",
-                "operationId": "DependenciaPadreController.ArbolDependencias",
+                "operationId": "DependenciaPadreV2Controller.ArbolDependencias",
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.Tree"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.TreeDependencia"
+                            }
                         }
                     },
                     "403": {
@@ -770,12 +830,15 @@
                     "dependencia_padre"
                 ],
                 "description": "Lista las facultades con sus respectivos proyectos curriculares",
-                "operationId": "DependenciaPadreController.FacultadesConProyectos",
+                "operationId": "DependenciaPadreV2Controller.FacultadesConProyectos",
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.DependenciaPadre"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Tree"
+                            }
                         }
                     },
                     "403": {
@@ -790,7 +853,7 @@
                     "dependencia_padre"
                 ],
                 "description": "Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.",
-                "operationId": "DependenciaPadreController.TRDependenciaPadre",
+                "operationId": "DependenciaPadreV2Controller.TRDependenciaPadre",
                 "parameters": [
                     {
                         "in": "body",
@@ -804,7 +867,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.DependenciaPadreV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.DependenciaPadreV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -825,7 +891,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -852,7 +919,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -888,12 +956,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -937,20 +1009,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.DependenciaTipoDependenciaV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.DependenciaTipoDependenciaV2"
+                            }
                         }
                     },
                     "404": {
@@ -977,7 +1054,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.DependenciaTipoDependenciaV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.DependenciaTipoDependenciaV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -998,7 +1078,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -1025,7 +1106,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -1061,12 +1143,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -1110,20 +1196,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.EspacioFisicoV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.EspacioFisicoV2"
+                            }
                         }
                     },
                     "404": {
@@ -1150,7 +1241,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.EspacioFisicoV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.EspacioFisicoV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -1164,21 +1258,25 @@
                     "espacio_fisico"
                 ],
                 "description": "Función para cargar los espacios físicos huerfanos",
-                "operationId": "EspacioFisicoController.EspaciosHuerfanos",
+                "operationId": "EspacioFisicoV2Controller.EspaciosHuerfanos",
                 "parameters": [
                     {
                         "in": "path",
                         "name": "id",
                         "description": "Id del espacio físico",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.EspacioFisico"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.EspacioFisico"
+                            }
                         }
                     },
                     "403": {
@@ -1193,7 +1291,7 @@
                     "espacio_fisico"
                 ],
                 "description": "A partir de un espacio físico dado, se obtienen los hijas de él en una estructura de árbol.",
-                "operationId": "EspacioFisicoController.GetEspaciosFisicosHijosById",
+                "operationId": "EspacioFisicoV2Controller.GetEspaciosFisicosHijosById",
                 "parameters": [
                     {
                         "in": "path",
@@ -1223,7 +1321,7 @@
                     "espacio_fisico"
                 ],
                 "description": "A partir de una espacio_fisico dado, se obtienen todos sus predecesores en una estructura de árbol.",
-                "operationId": "EspacioFisicoController.GetEspaciosFisicosPadresById",
+                "operationId": "EspacioFisicoV2Controller.GetEspaciosFisicosPadresById",
                 "parameters": [
                     {
                         "in": "path",
@@ -1237,7 +1335,10 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/.EspafioFisicoPadreHijo"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.EspafioFisicoPadreHijo"
+                            }
                         }
                     },
                     "404": {
@@ -1259,7 +1360,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -1286,7 +1388,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -1322,12 +1425,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -1371,20 +1478,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.EspacioFisicoCampoV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.EspacioFisicoCampoV2"
+                            }
                         }
                     },
                     "404": {
@@ -1411,7 +1523,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.EspacioFisicoCampoV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.EspacioFisicoCampoV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -1432,7 +1547,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -1459,7 +1575,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -1495,12 +1612,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -1557,7 +1678,10 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.EspacioFisicoPadreV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.EspacioFisicoPadreV2"
+                            }
                         }
                     },
                     "404": {
@@ -1584,7 +1708,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.EspacioFisicoPadreV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.EspacioFisicoPadreV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -1605,7 +1732,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -1632,7 +1760,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -1668,12 +1797,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -1702,7 +1835,10 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.DependenciaPadreHijo"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.DependenciaPadreHijo"
+                            }
                         }
                     },
                     "403": {
@@ -1722,7 +1858,10 @@
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.DependenciaPadreHijo"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.DependenciaPadreHijo"
+                            }
                         }
                     },
                     "403": {
@@ -1767,20 +1906,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.TipoDependenciaV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.TipoDependenciaV2"
+                            }
                         }
                     },
                     "404": {
@@ -1807,7 +1951,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.TipoDependenciaV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.TipoDependenciaV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -1828,7 +1975,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -1855,7 +2003,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -1891,12 +2040,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -1940,20 +2093,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.TipoEspacioFisicoV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.TipoEspacioFisicoV2"
+                            }
                         }
                     },
                     "404": {
@@ -1980,7 +2138,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.TipoEspacioFisicoV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.TipoEspacioFisicoV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -2001,7 +2162,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -2028,7 +2190,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -2064,12 +2227,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -2113,20 +2280,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.TipoUsoV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.TipoUsoV2"
+                            }
                         }
                     },
                     "404": {
@@ -2153,7 +2325,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.TipoUsoV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.TipoUsoV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -2174,7 +2349,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -2201,7 +2377,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -2237,12 +2414,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -2286,20 +2467,25 @@
                         "in": "query",
                         "name": "limit",
                         "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "query",
                         "name": "offset",
                         "description": "Start position of result set. Must be an integer",
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "",
                         "schema": {
-                            "$ref": "#/definitions/models.TipoUsoEspacioFisicoV2"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.TipoUsoEspacioFisicoV2"
+                            }
                         }
                     },
                     "404": {
@@ -2326,7 +2512,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "{int} models.TipoUsoEspacioFisicoV2"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.TipoUsoEspacioFisicoV2"
+                        }
                     },
                     "400": {
                         "description": "the request contains incorrect syntax"
@@ -2347,7 +2536,8 @@
                         "name": "id",
                         "description": "The key for staticblock",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
@@ -2374,7 +2564,8 @@
                         "name": "id",
                         "description": "The id you want to update",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     },
                     {
                         "in": "body",
@@ -2410,12 +2601,16 @@
                         "name": "id",
                         "description": "The id you want to delete",
                         "required": true,
-                        "type": "string"
+                        "type": "integer",
+                        "format": "int64"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "{string} delete success!"
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Deleted"
+                        }
                     },
                     "404": {
                         "description": "not found resource"
@@ -2425,10 +2620,12 @@
         }
     },
     "definitions": {
-        ".EspafioFisicoPadreHijo": {
+        "22527.\u003cnil\u003e.TreeDependencia": {
+            "title": "TreeDependencia",
             "type": "object"
         },
-        ".Tree": {
+        "78841.\u003cnil\u003e.Tree": {
+            "title": "Tree",
             "type": "object"
         },
         "models.AsignacionEspacioFisicoDependencia": {
@@ -2449,11 +2646,11 @@
                 },
                 "FechaFin": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaInicio": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2480,19 +2677,19 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaFin": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaInicio": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2515,11 +2712,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2545,11 +2742,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2557,6 +2754,16 @@
                 },
                 "Nombre": {
                     "type": "string"
+                }
+            }
+        },
+        "models.Deleted": {
+            "title": "Deleted",
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
                 }
             }
         },
@@ -2594,11 +2801,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Hija": {
                     "$ref": "#/definitions/models.Dependencia"
@@ -2648,11 +2855,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "HijaId": {
                     "$ref": "#/definitions/models.DependenciaV2"
@@ -2678,11 +2885,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2705,11 +2912,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2738,11 +2945,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2771,11 +2978,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2804,19 +3011,19 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaFin": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaInicio": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2842,19 +3049,19 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaFin": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaInicio": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2871,11 +3078,11 @@
             "properties": {
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Hijo": {
                     "$ref": "#/definitions/models.EspacioFisico"
@@ -2922,11 +3129,11 @@
             "properties": {
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "HijoId": {
                     "$ref": "#/definitions/models.EspacioFisicoV2"
@@ -2955,11 +3162,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2968,8 +3175,33 @@
                 "Nombre": {
                     "type": "string"
                 },
+                "TipoEdificacionId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "TipoEspacioFisicoId": {
                     "$ref": "#/definitions/models.TipoEspacioFisicoV2"
+                },
+                "TipoTerrenoId": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.EspafioFisicoPadreHijo": {
+            "title": "EspafioFisicoPadreHijo",
+            "type": "object"
+        },
+        "models.ProyectosCurriculares": {
+            "title": "ProyectosCurriculares",
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Nombre": {
+                    "type": "string"
                 }
             }
         },
@@ -2988,11 +3220,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3018,11 +3250,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3048,11 +3280,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3078,11 +3310,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3108,11 +3340,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3135,11 +3367,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3162,11 +3394,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3192,11 +3424,11 @@
                 },
                 "FechaCreacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "FechaModificacion": {
                     "type": "string",
-                    "format": "string"
+                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3219,7 +3451,23 @@
                     "type": "string"
                 },
                 "Opciones": {
-                    "$ref": "#/definitions/78653.\u003cnil\u003e.Tree"
+                    "$ref": "#/definitions/78841.\u003cnil\u003e.Tree"
+                }
+            }
+        },
+        "models.TreeDependencia": {
+            "title": "TreeDependencia",
+            "type": "object",
+            "properties": {
+                "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Nombre": {
+                    "type": "string"
+                },
+                "Opciones": {
+                    "$ref": "#/definitions/22527.\u003cnil\u003e.TreeDependencia"
                 }
             }
         }

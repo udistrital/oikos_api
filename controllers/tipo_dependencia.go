@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // TipoDependenciaController oprations for TipoDependencia
@@ -30,26 +31,25 @@ func (c *TipoDependenciaController) URLMapping() {
 // @Title Post
 // @Description create TipoDependencia
 // @Param	body		body 	models.TipoDependencia	true		"body for TipoDependencia content"
-// @Success 201 {int} models.TipoDependencia
+// @Success 201 {object} models.TipoDependencia
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *TipoDependenciaController) Post() {
 	var v models.TipoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		temp := models.TipoDependenciaV2 {
-			Id: v.Id,
-			Nombre: v.Nombre,      		  
-			Descripcion: "Descripción",
-			CodigoAbreviacion: "TU_"+v.Nombre,
-			Activo : true,
-			FechaCreacion  : time.Now(),
-			FechaModificacion  : time.Now(),
-			
+		temp := models.TipoDependenciaV2{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       "Descripción",
+			CodigoAbreviacion: "TU_" + v.Nombre,
+			Activo:            true,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
 		}
 		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddTipoDependencia(&temp); err == nil {
-		//if _, err := models.AddTipoDependencia(&v); err == nil {
+			//if _, err := models.AddTipoDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -70,7 +70,7 @@ func (c *TipoDependenciaController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get TipoDependencia by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.TipoDependencia
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -84,16 +84,16 @@ func (c *TipoDependenciaController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-	//-------------- Temporal: Cambio por transición ------- //
-	
-		temp := models.TipoDependencia {
-			Id: v.Id,
-			Nombre: v.Nombre, 
-			Descripcion: v.Descripcion,
+		//-------------- Temporal: Cambio por transición ------- //
+
+		temp := models.TipoDependencia{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       v.Descripcion,
 			CodigoAbreviacion: v.CodigoAbreviacion,
-			Activo: v.Activo,
-			FechaCreacion: v.FechaCreacion,
-			FechaModificacion: v.FechaModificacion,	     		  
+			Activo:            v.Activo,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,
 		}
 		c.Data["json"] = temp
 		//-------------- Temporal: Cambio por transición ------- //
@@ -109,9 +109,9 @@ func (c *TipoDependenciaController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.TipoDependencia
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.TipoDependencia
 // @Failure 404 not found resource
 // @router / [get]
 func (c *TipoDependenciaController) GetAll() {
@@ -166,26 +166,26 @@ func (c *TipoDependenciaController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
-		//-------------- Temporal: Cambio por transición ------- //
+		} else {
+			//-------------- Temporal: Cambio por transición ------- //
 			var temp []models.TipoDependencia
 			for _, i := range l {
 				field, _ := i.(models.TipoDependenciaV2)
-				x := models.TipoDependencia {
-					Id: field.Id,
-					Nombre: field.Nombre,      
-					Descripcion: field.Descripcion,
+				x := models.TipoDependencia{
+					Id:                field.Id,
+					Nombre:            field.Nombre,
+					Descripcion:       field.Descripcion,
 					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo: field.Activo,
-					FechaCreacion: field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,		  
+					Activo:            field.Activo,
+					FechaCreacion:     field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,
 				}
 
-				temp = append(temp,x)
+				temp = append(temp, x)
 			}
 			c.Data["json"] = temp
 		}
-		
+
 		//-------------- Temporal: Cambio por transición ------- //
 		//c.Data["json"] = l
 	}
@@ -195,7 +195,7 @@ func (c *TipoDependenciaController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the TipoDependencia
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.TipoDependencia	true		"body for TipoDependencia content"
 // @Success 200 {object} models.TipoDependencia
 // @Failure 400 the request contains incorrect syntax
@@ -208,13 +208,13 @@ func (c *TipoDependenciaController) Put() {
 	v := models.TipoDependencia{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		v2 := models.TipoDependenciaV2{
-			Id: id,
-			Nombre: v.Nombre,
-			Descripcion: infoDep.Descripcion,
+			Id:                id,
+			Nombre:            v.Nombre,
+			Descripcion:       infoDep.Descripcion,
 			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo : infoDep.Activo,
-			FechaCreacion : infoDep.FechaCreacion,
-			FechaModificacion  : time.Now(),
+			Activo:            infoDep.Activo,
+			FechaCreacion:     infoDep.FechaCreacion,
+			FechaModificacion: time.Now(),
 		}
 		if err := models.UpdateTipoDependenciaById(&v2); err == nil {
 			c.Data["json"] = v
@@ -236,8 +236,8 @@ func (c *TipoDependenciaController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the TipoDependencia
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *TipoDependenciaController) Delete() {

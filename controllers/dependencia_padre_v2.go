@@ -5,11 +5,11 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"fmt"
-	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // DependenciaPadreV2Controller operations for DependenciaPadre
@@ -31,7 +31,7 @@ func (c *DependenciaPadreV2Controller) URLMapping() {
 // @Title Post
 // @Description create DependenciaPadre
 // @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadre content"
-// @Success 201 {int} models.DependenciaPadreV2
+// @Success 201 {object} models.DependenciaPadreV2
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
 func (c *DependenciaPadreV2Controller) Post() {
@@ -58,7 +58,7 @@ func (c *DependenciaPadreV2Controller) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get DependenciaPadre by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.DependenciaPadreV2
 // @Failure 404 not found resource
 // @router /:id [get]
@@ -84,9 +84,9 @@ func (c *DependenciaPadreV2Controller) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.DependenciaPadreV2
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.DependenciaPadreV2
 // @Failure 404 not found resource
 // @router / [get]
 func (c *DependenciaPadreV2Controller) GetAll() {
@@ -149,7 +149,7 @@ func (c *DependenciaPadreV2Controller) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the DependenciaPadre
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadre content"
 // @Success 200 {object} models.DependenciaPadreV2
 // @Failure 400 the request contains incorrect syntax
@@ -179,8 +179,8 @@ func (c *DependenciaPadreV2Controller) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the DependenciaPadre
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *DependenciaPadreV2Controller) Delete() {
@@ -197,11 +197,10 @@ func (c *DependenciaPadreV2Controller) Delete() {
 	c.ServeJSON()
 }
 
-
 // FacultadesConProyectos ...
 // @Title FacultadesConProyectos
 // @Description Lista las facultades con sus respectivos proyectos curriculares
-// @Success 200 {object} models.DependenciaPadre
+// @Success 200 {object} []models.Tree
 // @Failure 403
 // @router /FacultadesConProyectos [get]
 func (c *DependenciaPadreV2Controller) FacultadesConProyectosV2() {
@@ -215,32 +214,28 @@ func (c *DependenciaPadreV2Controller) FacultadesConProyectosV2() {
 // ArbolDependencias ...
 // @Title ArbolDependencias
 // @Description ArbolDependencias
-// @Success 200 {object} models.Tree
+// @Success 200 {object} []models.TreeDependencia
 // @Failure 403
 // @router /ArbolDependencias [get]
 func (c *DependenciaPadreV2Controller) ArbolDependenciasV2() {
 	//Construcción Json menus
 	l := models.ConstruirDependenciasPadre()
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }
 
-
 // TRDependenciaPadre ...
 // @Title TRDependenciaPadre
 // @Description Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.
 // @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadreV2 content"
-// @Success 201 {int} models.DependenciaPadreV2
+// @Success 201 {object} models.DependenciaPadreV2
 // @Failure 400 the request contains incorrect syntax
 // @router /tr_dependencia_padre [post]
 func (c *DependenciaPadreV2Controller) TRDependenciaPadreV2() {
 	var v models.DependenciaPadreV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		
+
 		if _, err := models.TRDependenciaPadre(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
@@ -258,4 +253,3 @@ func (c *DependenciaPadreV2Controller) TRDependenciaPadreV2() {
 	}
 	c.ServeJSON()
 }
-

@@ -6,24 +6,24 @@ import (
 	"reflect"
 	"strings"
 	"time"
+
 	"github.com/astaxie/beego/orm"
 )
 
 type EspacioFisicoPadre struct {
-	Id    int            `orm:"column(id);pk;auto"`
-	Padre *EspacioFisico `orm:"column(padre);rel(fk)"`
-	Hijo  *EspacioFisico `orm:"column(hijo);rel(fk)"`
-	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-
+	Id                int            `orm:"column(id);pk;auto"`
+	Padre             *EspacioFisico `orm:"column(padre);rel(fk)"`
+	Hijo              *EspacioFisico `orm:"column(hijo);rel(fk)"`
+	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
 type EspacioFisicoPadreV2 struct {
-	Id                int            `orm:"column(id);pk;auto"`
+	Id                int              `orm:"column(id);pk;auto"`
 	PadreId           *EspacioFisicoV2 `orm:"column(padre_id);rel(fk)"`
 	HijoId            *EspacioFisicoV2 `orm:"column(hijo_id);rel(fk)"`
-	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
 func (t *EspacioFisicoPadreV2) TableName() string {
