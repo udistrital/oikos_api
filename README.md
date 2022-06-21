@@ -79,7 +79,9 @@ Pruebas unitarias
 
 
 ## Modelo de Datos
-[Modelo de Datos Relacional](/sql/esquema_oikos_v3.png)
+
+[SVG](database/oikos.svg) -
+[PGmodeler](database/oikos.dbm)
 
 ## Licencia
 
