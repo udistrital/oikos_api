@@ -4,18 +4,6 @@
 -- Project Site: pgmodeler.io
 -- Model Author: ---
 
--- object: desarrollooas | type: ROLE --
--- DROP ROLE IF EXISTS desarrollooas;
-CREATE ROLE desarrollooas WITH 
-	SUPERUSER
-	CREATEDB
-	CREATEROLE
-	INHERIT
-	LOGIN
-	REPLICATION
-	ENCRYPTED PASSWORD '********';
--- ddl-end --
-
 
 -- Database creation must be done outside a multicommand file.
 -- These commands were put in this file only as a convenience.
@@ -34,7 +22,6 @@ CREATE ROLE desarrollooas WITH
 -- DROP SCHEMA IF EXISTS oikos CASCADE;
 CREATE SCHEMA oikos;
 -- ddl-end --
-ALTER SCHEMA oikos OWNER TO desarrollooas;
 -- ddl-end --
 
 SET search_path TO pg_catalog,public,oikos;
@@ -51,7 +38,6 @@ CREATE SEQUENCE oikos.tipo_espacio_fisico_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.tipo_espacio_fisico_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.tipo_espacio_fisico | type: TABLE --
@@ -84,7 +70,6 @@ COMMENT ON COLUMN oikos.tipo_espacio_fisico.fecha_creacion IS 'Fecha y hora de l
 -- ddl-end --
 COMMENT ON COLUMN oikos.tipo_espacio_fisico.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.tipo_espacio_fisico OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.espacio_fisico_id_seq | type: SEQUENCE --
@@ -98,7 +83,6 @@ CREATE SEQUENCE oikos.espacio_fisico_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.espacio_fisico_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.espacio_fisico | type: TABLE --
@@ -115,7 +99,6 @@ CREATE TABLE oikos.espacio_fisico(
 	tipo_edificacion_id integer,
 	tipo_terreno_id integer,
 	CONSTRAINT pk_espacio_fisico PRIMARY KEY (id)
-
 );
 -- ddl-end --
 COMMENT ON TABLE oikos.espacio_fisico IS 'Tabla de Rompimiento que reune los atributos de un espacio fisico';
@@ -140,7 +123,6 @@ COMMENT ON COLUMN oikos.espacio_fisico.tipo_edificacion_id IS 'Hace referencia a
 -- ddl-end --
 COMMENT ON COLUMN oikos.espacio_fisico.tipo_terreno_id IS 'Hace referencia al id al tipo de terreno en el api parametros_crud';
 -- ddl-end --
-ALTER TABLE oikos.espacio_fisico OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.tipo_uso_id_seq | type: SEQUENCE --
@@ -154,7 +136,6 @@ CREATE SEQUENCE oikos.tipo_uso_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.tipo_uso_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.tipo_uso | type: TABLE --
@@ -187,7 +168,6 @@ COMMENT ON COLUMN oikos.tipo_uso.fecha_creacion IS 'Fecha y hora de la creación
 -- ddl-end --
 COMMENT ON COLUMN oikos.tipo_uso.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.tipo_uso OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.tipo_uso_espacio_fisico_id_seq | type: SEQUENCE --
@@ -201,7 +181,6 @@ CREATE SEQUENCE oikos.tipo_uso_espacio_fisico_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.tipo_uso_espacio_fisico_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.tipo_uso_espacio_fisico | type: TABLE --
@@ -231,7 +210,6 @@ COMMENT ON COLUMN oikos.tipo_uso_espacio_fisico.fecha_creacion IS 'Fecha y hora 
 -- ddl-end --
 COMMENT ON COLUMN oikos.tipo_uso_espacio_fisico.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.tipo_uso_espacio_fisico OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.espacio_fisico_padre_id_seq | type: SEQUENCE --
@@ -245,7 +223,6 @@ CREATE SEQUENCE oikos.espacio_fisico_padre_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.espacio_fisico_padre_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.espacio_fisico_padre | type: TABLE --
@@ -278,7 +255,6 @@ COMMENT ON CONSTRAINT uq_hijo_id_espacio_fisico_padre ON oikos.espacio_fisico_pa
 -- ddl-end --
 COMMENT ON CONSTRAINT uq_hijo_id_padre_id_espacio_fisico_padre ON oikos.espacio_fisico_padre  IS 'Restriccion para que solo pueda existir una unica relacion entre un padre y un hijo.';
 -- ddl-end --
-ALTER TABLE oikos.espacio_fisico_padre OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.tipo_dependencia_id_seq | type: SEQUENCE --
@@ -292,7 +268,6 @@ CREATE SEQUENCE oikos.tipo_dependencia_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.tipo_dependencia_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.tipo_dependencia | type: TABLE --
@@ -325,7 +300,6 @@ COMMENT ON COLUMN oikos.tipo_dependencia.fecha_creacion IS 'Fecha y hora de la c
 -- ddl-end --
 COMMENT ON COLUMN oikos.tipo_dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.tipo_dependencia OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.dependencia_id_seq | type: SEQUENCE --
@@ -339,7 +313,6 @@ CREATE SEQUENCE oikos.dependencia_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.dependencia_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.dependencia | type: TABLE --
@@ -372,7 +345,6 @@ COMMENT ON COLUMN oikos.dependencia.fecha_creacion IS 'Fecha y hora de la creaci
 -- ddl-end --
 COMMENT ON COLUMN oikos.dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.dependencia OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.dependencia_tipo_dependencia_id_seq | type: SEQUENCE --
@@ -386,7 +358,6 @@ CREATE SEQUENCE oikos.dependencia_tipo_dependencia_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.dependencia_tipo_dependencia_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.dependencia_tipo_dependencia | type: TABLE --
@@ -416,7 +387,6 @@ COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.fecha_creacion IS 'Fecha y 
 -- ddl-end --
 COMMENT ON COLUMN oikos.dependencia_tipo_dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.dependencia_tipo_dependencia OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.dependencia_padre_id_seq | type: SEQUENCE --
@@ -430,7 +400,6 @@ CREATE SEQUENCE oikos.dependencia_padre_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.dependencia_padre_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.dependencia_padre | type: TABLE --
@@ -462,7 +431,6 @@ COMMENT ON COLUMN oikos.dependencia_padre.fecha_creacion IS 'Fecha y hora de la 
 -- ddl-end --
 COMMENT ON COLUMN oikos.dependencia_padre.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.dependencia_padre OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.asignacion_espacio_fisico_dependencia_id_seq | type: SEQUENCE --
@@ -476,7 +444,6 @@ CREATE SEQUENCE oikos.asignacion_espacio_fisico_dependencia_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.asignacion_espacio_fisico_dependencia_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.asignacion_espacio_fisico_dependencia | type: TABLE --
@@ -515,7 +482,6 @@ COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_creacion IS 
 -- ddl-end --
 COMMENT ON COLUMN oikos.asignacion_espacio_fisico_dependencia.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.asignacion_espacio_fisico_dependencia OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.campo_id_seq | type: SEQUENCE --
@@ -529,7 +495,6 @@ CREATE SEQUENCE oikos.campo_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.campo_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.campo | type: TABLE --
@@ -562,7 +527,6 @@ COMMENT ON COLUMN oikos.campo.fecha_creacion IS 'Fecha y hora de la creación de
 -- ddl-end --
 COMMENT ON COLUMN oikos.campo.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.campo OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.espacio_fisico_campo_id_seq | type: SEQUENCE --
@@ -576,7 +540,6 @@ CREATE SEQUENCE oikos.espacio_fisico_campo_id_seq
 	NO CYCLE
 	OWNED BY NONE;
 -- ddl-end --
-ALTER SEQUENCE oikos.espacio_fisico_campo_id_seq OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: oikos.espacio_fisico_campo | type: TABLE --
@@ -616,7 +579,6 @@ COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_creacion IS 'Fecha y hora de 
 -- ddl-end --
 COMMENT ON COLUMN oikos.espacio_fisico_campo.fecha_modificacion IS 'Fecha y hora de la ultima modificación del registro en la BD.';
 -- ddl-end --
-ALTER TABLE oikos.espacio_fisico_campo OWNER TO desarrollooas;
 -- ddl-end --
 
 -- object: fk_tipo_espacio_fisico_espacio_fisico | type: CONSTRAINT --
@@ -709,5 +671,3 @@ ALTER TABLE oikos.espacio_fisico_campo ADD CONSTRAINT fk_campo_espacio_fisico_ca
 REFERENCES oikos.campo (id) MATCH SIMPLE
 ON DELETE NO ACTION ON UPDATE NO ACTION;
 -- ddl-end --
-
-
