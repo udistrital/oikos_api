@@ -1,14 +1,11 @@
 package controllers
 
 import (
-	//"encoding/json"
-	//"errors"
-	//"fmt"
 	"strconv"
-	//"strings"
-	"github.com/udistrital/oikos_api/models"
+
 	"github.com/astaxie/beego"
-	//"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // ProyectoCurricularController oprations for Facultad
@@ -26,7 +23,7 @@ func (c *ProyectoCurricularController) URLMapping() {
 // @Title GetAllProyectosByFacultades
 // @Description Obtener una lista de todas las facultades y sus respectivos proyectos curriculares
 // @Success 200 {object} models.DependenciaPadreHijo
-// @Failure 403 
+// @Failure 403
 // @router /get_all_proyectos_by_facultades [get]
 func (c *ProyectoCurricularController) GetAllProyectosByFacultades() {
 	l, err := models.GetAllProyectosByFacultades()
@@ -50,7 +47,7 @@ func (c *ProyectoCurricularController) GetAllProyectosByFacultades() {
 // @Description Se obtienen los proyectos curriculares, dado un id de una facultad
 // @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
 // @Success 200 {object} models.DependenciaPadreHijo
-// @Failure 403 
+// @Failure 403
 // @router /get_all_proyectos_by_facultad_id/:id_facultad [get]
 func (c *ProyectoCurricularController) GetAllProyectosByFacultadId() {
 	idStr := c.Ctx.Input.Param(":id_facultad")

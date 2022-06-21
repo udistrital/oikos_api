@@ -7,10 +7,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"github.com/udistrital/oikos_api/models"
 
+	"github.com/udistrital/oikos_api/models"
 )
 
 // EspacioFisicoController oprations for EspacioFisico
@@ -39,33 +40,33 @@ func (c *EspacioFisicoController) Post() {
 	var v models.EspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		var act bool;
-		if (v.Estado == "Activo"){
+		var act bool
+		if v.Estado == "Activo" {
 			act = true
-		}else if (v.Estado == "Inactivo"){
+		} else if v.Estado == "Inactivo" {
 			act = false
-		}else{
+		} else {
 			act = true
 		}
 
-		te := &models.TipoEspacioFisicoV2 {
+		te := &models.TipoEspacioFisicoV2{
 			Id: v.TipoEspacio.Id,
 		}
 
-		temp := models.EspacioFisicoV2 {
-			Id  :   v.Id,          
-			Nombre:  v.Nombre,    
-			Descripcion:  "Descripción - " +v.Nombre,    
-			CodigoAbreviacion : v.Codigo,
-			Activo   : act,
-			FechaCreacion :  time.Now(),   
-			FechaModificacion :  time.Now(),		
-			TipoEspacioFisicoId : te,	      
+		temp := models.EspacioFisicoV2{
+			Id:                  v.Id,
+			Nombre:              v.Nombre,
+			Descripcion:         "Descripción - " + v.Nombre,
+			CodigoAbreviacion:   v.Codigo,
+			Activo:              act,
+			FechaCreacion:       time.Now(),
+			FechaModificacion:   time.Now(),
+			TipoEspacioFisicoId: te,
 		}
 
 		if _, err := models.AddEspacioFisico(&temp); err == nil {
 
-		//if _, err := models.AddEspacioFisico(&v); err == nil {
+			//if _, err := models.AddEspacioFisico(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -101,38 +102,38 @@ func (c *EspacioFisicoController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var act string;
-		if (v.Activo == true){
+		var act string
+		if v.Activo == true {
 			act = "Activo"
-		}else {
+		} else {
 			act = "Inactivo"
 		}
 
-		te := &models.TipoEspacioFisico {
-				Id: v.TipoEspacioFisicoId.Id,
-				Nombre: v.TipoEspacioFisicoId.Nombre, 
-				Descripcion: v.TipoEspacioFisicoId.Descripcion,
-				CodigoAbreviacion: v.TipoEspacioFisicoId.CodigoAbreviacion,
-				Activo: v.TipoEspacioFisicoId.Activo,
-				FechaCreacion: v.TipoEspacioFisicoId.FechaCreacion,
-				FechaModificacion: v.TipoEspacioFisicoId.FechaModificacion,	     		  
+		te := &models.TipoEspacioFisico{
+			Id:                v.TipoEspacioFisicoId.Id,
+			Nombre:            v.TipoEspacioFisicoId.Nombre,
+			Descripcion:       v.TipoEspacioFisicoId.Descripcion,
+			CodigoAbreviacion: v.TipoEspacioFisicoId.CodigoAbreviacion,
+			Activo:            v.TipoEspacioFisicoId.Activo,
+			FechaCreacion:     v.TipoEspacioFisicoId.FechaCreacion,
+			FechaModificacion: v.TipoEspacioFisicoId.FechaModificacion,
 		}
 
-		temp := models.EspacioFisico {
-			Id: v.Id,
-			Nombre: v.Nombre,   
-			Codigo: v.CodigoAbreviacion,
-			Estado: act,
-			Descripcion:  v.Descripcion,    
-			FechaCreacion :  v.FechaCreacion,   
-			FechaModificacion :  v.FechaModificacion,		
-			TipoEspacio : te,	
-			//espacio_fisicoTipoespacio_fisico: field.espacio_fisicoTipoespacio_fisico,       
+		temp := models.EspacioFisico{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Codigo:            v.CodigoAbreviacion,
+			Estado:            act,
+			Descripcion:       v.Descripcion,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,
+			TipoEspacio:       te,
+			//espacio_fisicoTipoespacio_fisico: field.espacio_fisicoTipoespacio_fisico,
 		}
 
-	c.Data["json"] = temp
-	//-------------- Temporal: Cambio por transición ------- //
-	//c.Data["json"] = v
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -187,13 +188,12 @@ func (c *EspacioFisicoController) GetAll() {
 				return
 			}
 			k, v := kv[0], kv[1]
-			if (k == "TipoEspacio.Id"){
+			if k == "TipoEspacio.Id" {
 				query["TipoEspacioFisicoId.Id"] = v
-			}else{
+			} else {
 				query[k] = v
 			}
-			
-			
+
 		}
 	}
 
@@ -207,46 +207,45 @@ func (c *EspacioFisicoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
+		} else {
 			var temp []models.EspacioFisico
 			for _, i := range l {
 				field, _ := i.(models.EspacioFisicoV2)
-				var act string;
-				if (field.Activo == true){
+				var act string
+				if field.Activo == true {
 					act = "Activo"
-				}else {
+				} else {
 					act = "Inactivo"
 				}
-			
 
-				te := &models.TipoEspacioFisico {
-					Id: field.TipoEspacioFisicoId.Id,
-					Nombre: field.TipoEspacioFisicoId.Nombre, 
-					Descripcion: field.TipoEspacioFisicoId.Descripcion,
+				te := &models.TipoEspacioFisico{
+					Id:                field.TipoEspacioFisicoId.Id,
+					Nombre:            field.TipoEspacioFisicoId.Nombre,
+					Descripcion:       field.TipoEspacioFisicoId.Descripcion,
 					CodigoAbreviacion: field.TipoEspacioFisicoId.CodigoAbreviacion,
-					Activo: field.TipoEspacioFisicoId.Activo,
-					FechaCreacion: field.TipoEspacioFisicoId.FechaCreacion,
-					FechaModificacion: field.TipoEspacioFisicoId.FechaModificacion,	     		  
-				}
-				
-				x := models.EspacioFisico {
-					Id: field.Id,
-					Nombre: field.Nombre,   
-					Codigo: field.CodigoAbreviacion,
-					Estado: act, 
-					Descripcion:  field.Descripcion,    
-					FechaCreacion :  field.FechaCreacion,   
-					FechaModificacion :  field.FechaModificacion,		
-					TipoEspacio : te,	
-					//espacio_fisicoTipoespacio_fisico: field.espacio_fisicoTipoespacio_fisico,       
+					Activo:            field.TipoEspacioFisicoId.Activo,
+					FechaCreacion:     field.TipoEspacioFisicoId.FechaCreacion,
+					FechaModificacion: field.TipoEspacioFisicoId.FechaModificacion,
 				}
 
-				temp = append(temp,x)
+				x := models.EspacioFisico{
+					Id:                field.Id,
+					Nombre:            field.Nombre,
+					Codigo:            field.CodigoAbreviacion,
+					Estado:            act,
+					Descripcion:       field.Descripcion,
+					FechaCreacion:     field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,
+					TipoEspacio:       te,
+					//espacio_fisicoTipoespacio_fisico: field.espacio_fisicoTipoespacio_fisico,
+				}
+
+				temp = append(temp, x)
 			}
-		c.Data["json"] = temp
+			c.Data["json"] = temp
 		}
 		//-------------- Temporal: Cambio por transición ------- //
-			
+
 		//c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -273,16 +272,16 @@ func (c *EspacioFisicoController) Put() {
 		}
 
 		v2 := models.EspacioFisicoV2{
-			Id: id,
-			Nombre: v.Nombre,
-			Descripcion: v.Descripcion,
-			CodigoAbreviacion: v.Codigo,
-			Activo : infoDep.Activo,
-			FechaCreacion : infoDep.FechaCreacion,
-			FechaModificacion  : time.Now(),
+			Id:                  id,
+			Nombre:              v.Nombre,
+			Descripcion:         v.Descripcion,
+			CodigoAbreviacion:   v.Codigo,
+			Activo:              infoDep.Activo,
+			FechaCreacion:       infoDep.FechaCreacion,
+			FechaModificacion:   time.Now(),
 			TipoEspacioFisicoId: tef,
 		}
-	
+
 		if err := models.UpdateEspacioFisicoById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {

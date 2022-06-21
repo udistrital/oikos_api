@@ -7,29 +7,27 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/astaxie/beego/orm"
 )
 
 type DependenciaPadre struct {
-	Id    int          `orm:"column(id);pk;auto"`
-	Padre *Dependencia `orm:"column(padre);rel(fk)"`
-	Hija  *Dependencia `orm:"column(hija);rel(fk)"`
-	Activo           		   bool      `orm:"column(activo)"`
-	FechaCreacion     		   time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion          time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-
-}
-
-type DependenciaPadreV2 struct {
 	Id                int          `orm:"column(id);pk;auto"`
-	PadreId           *DependenciaV2 `orm:"column(padre_id);rel(fk)"`
-	HijaId            *DependenciaV2 `orm:"column(hija_id);rel(fk)"`
+	Padre             *Dependencia `orm:"column(padre);rel(fk)"`
+	Hija              *Dependencia `orm:"column(hija);rel(fk)"`
 	Activo            bool         `orm:"column(activo)"`
 	FechaCreacion     time.Time    `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	FechaModificacion time.Time    `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
-
+type DependenciaPadreV2 struct {
+	Id                int            `orm:"column(id);pk;auto"`
+	PadreId           *DependenciaV2 `orm:"column(padre_id);rel(fk)"`
+	HijaId            *DependenciaV2 `orm:"column(hija_id);rel(fk)"`
+	Activo            bool           `orm:"column(activo)"`
+	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
 
 //Estructura para construir el arbol de dependencia
 type TreeDependencia struct {
@@ -62,7 +60,7 @@ func GetDependenciaPadreById(id int) (v *DependenciaPadreV2, err error) {
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
-	
+
 	return nil, err
 }
 
@@ -172,57 +170,57 @@ func DeleteDependenciaPadre(id int) (err error) {
 
 //Función que busca las dependencias de tipo facultad
 func Facultades() (facultad []Tree) {
-	
-		//Declaración objeto ORM
-		o := orm.NewOrm()
-	
-		//Arreglo que tendra las facultades encontradas
-		var facultades []Tree
-	
-		_, err := o.Raw(`SELECT dh.id AS id, dh.nombre AS nombre
+
+	//Declaración objeto ORM
+	o := orm.NewOrm()
+
+	//Arreglo que tendra las facultades encontradas
+	var facultades []Tree
+
+	_, err := o.Raw(`SELECT dh.id AS id, dh.nombre AS nombre
 											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
 						 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
 											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 											 WHERE dtd.tipo_dependencia_id = 2`).QueryRows(&facultades)
-	
-		if err == nil {
-		
-			//For para que recorra los Ids en busca de hijos
-			for i := 0; i < len(facultades); i++ {
-				//Me verifica que los Id tengan hijos
-				ProyectosCurricularesPorFacultad(&facultades[i])
-			}
+
+	if err == nil {
+
+		//For para que recorra los Ids en busca de hijos
+		for i := 0; i < len(facultades); i++ {
+			//Me verifica que los Id tengan hijos
+			ProyectosCurricularesPorFacultad(&facultades[i])
 		}
-		return facultades
 	}
-	
-	//Función que busca las dependencias de tipo facultad
-	func ProyectosCurricularesPorFacultad(Facultad *Tree) (proyectos []Tree) {
-	
-		//Declaración objeto ORM
-		o := orm.NewOrm()
-	
-		//Conversión de entero a string
-		padre := strconv.Itoa(Facultad.Id)
-	
-		//Arreglo que tendra las facultades encontradas
-		var proyectos_curriculares []Tree
-	
-		_, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre_id, dep.hija_id
+	return facultades
+}
+
+//Función que busca las dependencias de tipo facultad
+func ProyectosCurricularesPorFacultad(Facultad *Tree) (proyectos []Tree) {
+
+	//Declaración objeto ORM
+	o := orm.NewOrm()
+
+	//Conversión de entero a string
+	padre := strconv.Itoa(Facultad.Id)
+
+	//Arreglo que tendra las facultades encontradas
+	var proyectos_curriculares []Tree
+
+	_, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre_id, dep.hija_id
 											 FROM oikos.dependencia AS de
 											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija_id
 											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dep.hija_id = dtd.dependencia_id
 											 WHERE dep.padre_id =` + padre + ` AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`).QueryRows(&proyectos_curriculares)
-	
-		if err == nil {
-				
-			//Llena el elemento Opciones en la estructura del menú padre
-			Facultad.Opciones = &proyectos_curriculares
-		}
-		return proyectos_curriculares
-	}
 
-	//Función que busca las dependencias que no tengan asignadas padre
+	if err == nil {
+
+		//Llena el elemento Opciones en la estructura del menú padre
+		Facultad.Opciones = &proyectos_curriculares
+	}
+	return proyectos_curriculares
+}
+
+//Función que busca las dependencias que no tengan asignadas padre
 func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
 	o := orm.NewOrm()
 	//Arreglo
@@ -275,7 +273,6 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 	return dependenciaHijas
 }
 
-
 func TRDependenciaPadre(m *DependenciaPadreV2) (id int64, err error) {
 	o := orm.NewOrm()
 	Hija := m.HijaId
@@ -284,18 +281,18 @@ func TRDependenciaPadre(m *DependenciaPadreV2) (id int64, err error) {
 	Hija.FechaModificacion = time.Now()
 	o.Begin()
 	id, err = o.Insert(Hija)
+	if err != nil {
+		o.Rollback()
+	} else {
+		m.Activo = true
+		m.FechaCreacion = time.Now()
+		m.FechaModificacion = time.Now()
+		_, err = o.Insert(m)
 		if err != nil {
-		    o.Rollback()
-		} else {
-			m.Activo = true
-			m.FechaCreacion = time.Now()
-			m.FechaModificacion = time.Now()
-		    _, err = o.Insert(m)
-			if err != nil {
-				o.Rollback()
-			}
+			o.Rollback()
 		}
-	
+	}
+
 	o.Commit()
 	return
 }

@@ -3,13 +3,15 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
-	"fmt"
-	"github.com/udistrital/oikos_api/models"
 	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // DependenciaPadreController oprations for DependenciaPadre
@@ -39,27 +41,26 @@ func (c *DependenciaPadreController) Post() {
 	var v models.DependenciaPadre
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		
-		dp := &models.DependenciaV2 {
+
+		dp := &models.DependenciaV2{
 			Id: v.Padre.Id,
 		}
 
-		dh := &models.DependenciaV2 {
+		dh := &models.DependenciaV2{
 			Id: v.Hija.Id,
 		}
 
-		temp := models.DependenciaPadreV2 {
-			Id: v.Id,
-			PadreId: dp,
-			HijaId: dh,
-			Activo : true,
-			FechaCreacion  : time.Now(),
-			FechaModificacion  : time.Now(),
-			
+		temp := models.DependenciaPadreV2{
+			Id:                v.Id,
+			PadreId:           dp,
+			HijaId:            dh,
+			Activo:            true,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
 		}
 		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddDependenciaPadre(&temp); err == nil {
-		//if _, err := models.AddDependenciaPadre(&v); err == nil {
+			//if _, err := models.AddDependenciaPadre(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -95,32 +96,31 @@ func (c *DependenciaPadreController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		dp := &models.Dependencia {
-			Id: v.PadreId.Id,
-			Nombre: v.PadreId.Nombre,
-			TelefonoDependencia:v.PadreId.TelefonoDependencia,
-			CorreoElectronico: v.PadreId.CorreoElectronico,
+		dp := &models.Dependencia{
+			Id:                  v.PadreId.Id,
+			Nombre:              v.PadreId.Nombre,
+			TelefonoDependencia: v.PadreId.TelefonoDependencia,
+			CorreoElectronico:   v.PadreId.CorreoElectronico,
 		}
 
-		dh := &models.Dependencia {
-			Id: v.HijaId.Id,
-			Nombre: v.HijaId.Nombre,
-			TelefonoDependencia:v.HijaId.TelefonoDependencia,
-			CorreoElectronico: v.HijaId.CorreoElectronico,
+		dh := &models.Dependencia{
+			Id:                  v.HijaId.Id,
+			Nombre:              v.HijaId.Nombre,
+			TelefonoDependencia: v.HijaId.TelefonoDependencia,
+			CorreoElectronico:   v.HijaId.CorreoElectronico,
 		}
-		
-		temp := models.DependenciaPadre {
-					Id: v.Id,
-					Padre: dp,
-					Hija: dh,
-					Activo: v.Activo,
-					FechaCreacion: v.FechaCreacion,
-					FechaModificacion: v.FechaModificacion,		  
-			
-				}
+
+		temp := models.DependenciaPadre{
+			Id:                v.Id,
+			Padre:             dp,
+			Hija:              dh,
+			Activo:            v.Activo,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,
+		}
 
 		c.Data["json"] = temp
-//		c.Data["json"] = v
+		//		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -189,44 +189,42 @@ func (c *DependenciaPadreController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
-				//-------------- Temporal: Cambio por transición ------- //
+		} else {
+			//-------------- Temporal: Cambio por transición ------- //
 			var temp []models.DependenciaPadre
 			for _, i := range l {
 				field, _ := i.(models.DependenciaPadreV2)
-				
-				dp := &models.Dependencia {
-					Id: field.PadreId.Id,
-					Nombre: field.PadreId.Nombre,
-					TelefonoDependencia:field.PadreId.TelefonoDependencia,
-					CorreoElectronico: field.PadreId.CorreoElectronico,
+
+				dp := &models.Dependencia{
+					Id:                  field.PadreId.Id,
+					Nombre:              field.PadreId.Nombre,
+					TelefonoDependencia: field.PadreId.TelefonoDependencia,
+					CorreoElectronico:   field.PadreId.CorreoElectronico,
 				}
 
-				dh := &models.Dependencia {
-					Id: field.HijaId.Id,
-					Nombre: field.HijaId.Nombre,
-					TelefonoDependencia:field.HijaId.TelefonoDependencia,
-					CorreoElectronico: field.HijaId.CorreoElectronico,
+				dh := &models.Dependencia{
+					Id:                  field.HijaId.Id,
+					Nombre:              field.HijaId.Nombre,
+					TelefonoDependencia: field.HijaId.TelefonoDependencia,
+					CorreoElectronico:   field.HijaId.CorreoElectronico,
 				}
 
-				x := models.DependenciaPadre {
-					Id: field.Id,
-					Padre: dp,
-					Hija: dh,
-					Activo: field.Activo,
-					FechaCreacion: field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,		  
-			
+				x := models.DependenciaPadre{
+					Id:                field.Id,
+					Padre:             dp,
+					Hija:              dh,
+					Activo:            field.Activo,
+					FechaCreacion:     field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,
 				}
 
-				temp = append(temp,x)
+				temp = append(temp, x)
 			}
 
 			c.Data["json"] = temp
 
 		}
 
-		
 		//c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -251,14 +249,14 @@ func (c *DependenciaPadreController) Put() {
 		}
 		dh := &models.DependenciaV2{
 			Id: v.Hija.Id,
-		}	
+		}
 		v2 := models.DependenciaPadreV2{
-			Id: id,
-			PadreId: dp,
-			HijaId: dh,
-			Activo : v.Activo,
-			FechaCreacion : v.FechaCreacion,
-			FechaModificacion  : time.Now(),
+			Id:                id,
+			PadreId:           dp,
+			HijaId:            dh,
+			Activo:            v.Activo,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: time.Now(),
 		}
 
 		if err := models.UpdateDependenciaPadreById(&v2); err == nil {
@@ -330,7 +328,6 @@ func (c *DependenciaPadreController) ArbolDependencias() {
 	c.ServeJSON()
 }
 
-
 // TRDependenciaPadre ...
 // @Title TRDependenciaPadre
 // @Description Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.
@@ -341,7 +338,7 @@ func (c *DependenciaPadreController) ArbolDependencias() {
 func (c *DependenciaPadreController) TRDependenciaPadre() {
 	var v models.DependenciaPadreV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		
+
 		if _, err := models.TRDependenciaPadre(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v

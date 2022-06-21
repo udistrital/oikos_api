@@ -3,12 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // CampoController oprations for Campo
@@ -36,19 +38,18 @@ func (c *CampoController) Post() {
 	var v models.Campo
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-	
-		temp := models.CampoV2 {
-			Id  :   v.Id,          
-			Nombre:  v.Nombre,    
-			Descripcion:  v.Descripcion,    
-			CodigoAbreviacion : "C_"+v.Nombre,
-			Activo   : true,    
-			FechaCreacion :  time.Now(),   
-			FechaModificacion :  time.Now(),		
-		    
+
+		temp := models.CampoV2{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       v.Descripcion,
+			CodigoAbreviacion: "C_" + v.Nombre,
+			Activo:            true,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
 		}
 		if _, err := models.AddCampo(&temp); err == nil {
-		//if _, err := models.AddCampo(&v); err == nil {
+			//if _, err := models.AddCampo(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -59,9 +60,9 @@ func (c *CampoController) Post() {
 		}
 	} else {
 		logs.Error(err)
-			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-			c.Data["system"] = err
-			c.Abort("400")
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -84,18 +85,18 @@ func (c *CampoController) GetOne() {
 		c.Abort("400")
 	} else {
 
-	temp := models.Campo {
-		Id: v.Id,
-		Nombre: v.Nombre,   
-		Descripcion:  v.Descripcion,   
-		CodigoAbreviacion: v.CodigoAbreviacion,
-		Activo: v.Activo, 
-		FechaCreacion :  v.FechaCreacion,   
-		FechaModificacion :  v.FechaModificacion,		
-	}
+		temp := models.Campo{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       v.Descripcion,
+			CodigoAbreviacion: v.CodigoAbreviacion,
+			Activo:            v.Activo,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,
+		}
 
-	c.Data["json"] = temp
-//-------------- Temporal: Cambio por transición ------- //
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
 		//c.Data["json"] = v
 	}
 	c.ServeJSON()
@@ -165,23 +166,23 @@ func (c *CampoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
+		} else {
 			//-------------- Temporal: Cambio por transición ------- //
 			var temp []models.Campo
 			for _, i := range l {
 				field, _ := i.(models.CampoV2)
 
-				x := models.Campo {
-					Id: field.Id,
-					Nombre: field.Nombre,   
-					Descripcion:  field.Descripcion,   
+				x := models.Campo{
+					Id:                field.Id,
+					Nombre:            field.Nombre,
+					Descripcion:       field.Descripcion,
 					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo: field.Activo, 
-					FechaCreacion :  field.FechaCreacion,   
-					FechaModificacion :  field.FechaModificacion,		
+					Activo:            field.Activo,
+					FechaCreacion:     field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,
 				}
 
-				temp = append(temp,x)
+				temp = append(temp, x)
 			}
 			c.Data["json"] = temp
 		}
@@ -207,13 +208,13 @@ func (c *CampoController) Put() {
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		v2 := models.CampoV2{
-			Id: id,
-			Nombre: v.Nombre,
-			Descripcion: v.Descripcion,
+			Id:                id,
+			Nombre:            v.Nombre,
+			Descripcion:       v.Descripcion,
 			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo : infoDep.Activo,
-			FechaCreacion : infoDep.FechaCreacion,
-			FechaModificacion  : time.Now(),
+			Activo:            infoDep.Activo,
+			FechaCreacion:     infoDep.FechaCreacion,
+			FechaModificacion: time.Now(),
 		}
 
 		if err := models.UpdateCampoById(&v2); err == nil {

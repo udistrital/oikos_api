@@ -3,13 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
-	"fmt"
-	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // DependenciaPadreV2Controller operations for DependenciaPadre
@@ -197,7 +198,6 @@ func (c *DependenciaPadreV2Controller) Delete() {
 	c.ServeJSON()
 }
 
-
 // FacultadesConProyectos ...
 // @Title FacultadesConProyectos
 // @Description Lista las facultades con sus respectivos proyectos curriculares
@@ -229,7 +229,6 @@ func (c *DependenciaPadreV2Controller) ArbolDependenciasV2() {
 	c.ServeJSON()
 }
 
-
 // TRDependenciaPadre ...
 // @Title TRDependenciaPadre
 // @Description Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.
@@ -240,7 +239,7 @@ func (c *DependenciaPadreV2Controller) ArbolDependenciasV2() {
 func (c *DependenciaPadreV2Controller) TRDependenciaPadreV2() {
 	var v models.DependenciaPadreV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		
+
 		if _, err := models.TRDependenciaPadre(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
@@ -258,4 +257,3 @@ func (c *DependenciaPadreV2Controller) TRDependenciaPadreV2() {
 	}
 	c.ServeJSON()
 }
-

@@ -5,10 +5,12 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"github.com/udistrital/oikos_api/models"
+	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-	"time"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // AsignacionEspacioFisicoDependenciaController oprations for AsignacionEspacioFisicoDependencia
@@ -36,40 +38,39 @@ func (c *AsignacionEspacioFisicoDependenciaController) Post() {
 	var v models.AsignacionEspacioFisicoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		var act bool;
-		if (v.Estado == "Activo"){
+		var act bool
+		if v.Estado == "Activo" {
 			act = true
-		}else if (v.Estado == "Inactivo"){
+		} else if v.Estado == "Inactivo" {
 			act = false
-		}else{
+		} else {
 			act = true
 		}
 
-		dc,_ := strconv.Atoi(v.DocumentoSoporte)
-		ef := &models.EspacioFisicoV2 {
+		dc, _ := strconv.Atoi(v.DocumentoSoporte)
+		ef := &models.EspacioFisicoV2{
 			Id: v.EspacioFisicoId.Id,
 		}
-		d := &models.DependenciaV2 {
+		d := &models.DependenciaV2{
 			Id: v.DependenciaId.Id,
 		}
 
-		temp := models.AsignacionEspacioFisicoDependenciaV2 {
-					
-					Id: v.Id,
-					EspacioFisicoId: ef,
-					DependenciaId: d,
-					FechaInicio:  v.FechaInicio,
-					FechaFin: v.FechaFin,
-					DocumentoSoporte: dc, 
-	  				Activo : act ,
-					FechaCreacion  : time.Now(),
-					FechaModificacion  : time.Now(),
-					
+		temp := models.AsignacionEspacioFisicoDependenciaV2{
+
+			Id:                v.Id,
+			EspacioFisicoId:   ef,
+			DependenciaId:     d,
+			FechaInicio:       v.FechaInicio,
+			FechaFin:          v.FechaFin,
+			DocumentoSoporte:  dc,
+			Activo:            act,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
 		}
-			
+
 		if _, err := models.AddAsignacionEspacioFisicoDependencia(&temp); err == nil {
-		//-------------- Temporal: Cambio por transición ------- //	
-		//	if _, err := models.AddAsignacionEspacioFisicoDependencia(&v); err == nil {
+			//-------------- Temporal: Cambio por transición ------- //
+			//	if _, err := models.AddAsignacionEspacioFisicoDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -106,31 +107,29 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
 		dc := strconv.Itoa(v.DocumentoSoporte)
-		ef := &models.EspacioFisico {
+		ef := &models.EspacioFisico{
 			Id: v.EspacioFisicoId.Id,
 		}
-		d := &models.Dependencia {
+		d := &models.Dependencia{
 			Id: v.DependenciaId.Id,
 		}
 
-		var act string;
-				if (v.Activo == true){
-					act = "Activo"
-				}else {
-					act = "Inactivo"
-				}
-			
+		var act string
+		if v.Activo == true {
+			act = "Activo"
+		} else {
+			act = "Inactivo"
+		}
 
-		temp := models.AsignacionEspacioFisicoDependencia {
-					
-			  Id: v.Id,
-			  Estado: act,
-			  FechaInicio:  v.FechaInicio,
-			  FechaFin: v.FechaFin,
-			  DocumentoSoporte: dc, 
-			  EspacioFisicoId: ef,
-			  DependenciaId: d,
+		temp := models.AsignacionEspacioFisicoDependencia{
 
+			Id:               v.Id,
+			Estado:           act,
+			FechaInicio:      v.FechaInicio,
+			FechaFin:         v.FechaFin,
+			DocumentoSoporte: dc,
+			EspacioFisicoId:  ef,
+			DependenciaId:    d,
 		}
 		c.Data["json"] = temp
 		//-------------- Temporal: Cambio por transición ------- //
@@ -203,64 +202,61 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
+		} else {
 			//-------------- Temporal: Cambio por transición ------- //
 			var temp []models.AsignacionEspacioFisicoDependencia
 			for _, i := range l {
 				field, _ := i.(models.AsignacionEspacioFisicoDependenciaV2)
 				dc := strconv.Itoa(field.DocumentoSoporte)
 
-				tef := &models.TipoEspacioFisico {
-					Id: field.EspacioFisicoId.TipoEspacioFisicoId.Id,
-					Nombre: field.EspacioFisicoId.TipoEspacioFisicoId.Nombre, 
-					Descripcion: field.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
+				tef := &models.TipoEspacioFisico{
+					Id:                field.EspacioFisicoId.TipoEspacioFisicoId.Id,
+					Nombre:            field.EspacioFisicoId.TipoEspacioFisicoId.Nombre,
+					Descripcion:       field.EspacioFisicoId.TipoEspacioFisicoId.Descripcion,
 					CodigoAbreviacion: field.EspacioFisicoId.TipoEspacioFisicoId.CodigoAbreviacion,
-					Activo: field.EspacioFisicoId.TipoEspacioFisicoId.Activo,
-					FechaCreacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
-					FechaModificacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,	
+					Activo:            field.EspacioFisicoId.TipoEspacioFisicoId.Activo,
+					FechaCreacion:     field.EspacioFisicoId.TipoEspacioFisicoId.FechaCreacion,
+					FechaModificacion: field.EspacioFisicoId.TipoEspacioFisicoId.FechaModificacion,
 				}
 
-				var act string;
-				if (field.EspacioFisicoId.Activo == true){
+				var act string
+				if field.EspacioFisicoId.Activo == true {
 					act = "Activo"
-				}else {
+				} else {
 					act = "Inactivo"
 				}
-			
-				
-				ef := &models.EspacioFisico {
-					Id: field.EspacioFisicoId.Id,
-					Nombre: field.EspacioFisicoId.Nombre,
+
+				ef := &models.EspacioFisico{
+					Id:          field.EspacioFisicoId.Id,
+					Nombre:      field.EspacioFisicoId.Nombre,
 					Descripcion: field.EspacioFisicoId.Descripcion,
-					Codigo: field.EspacioFisicoId.CodigoAbreviacion,
-					Estado:act,
-					TipoEspacio : tef,
+					Codigo:      field.EspacioFisicoId.CodigoAbreviacion,
+					Estado:      act,
+					TipoEspacio: tef,
 				}
 
-				d := &models.Dependencia {
-					Id: field.DependenciaId.Id,
-					Nombre: field.DependenciaId.Nombre,      		  
+				d := &models.Dependencia{
+					Id:                  field.DependenciaId.Id,
+					Nombre:              field.DependenciaId.Nombre,
 					TelefonoDependencia: field.DependenciaId.TelefonoDependencia,
-					CorreoElectronico: field.DependenciaId.CorreoElectronico, 
-					       
+					CorreoElectronico:   field.DependenciaId.CorreoElectronico,
 				}
 
-				x := models.AsignacionEspacioFisicoDependencia {
-					Id: field.Id,
-					Estado: "TRUE",
-					FechaInicio:  field.FechaInicio,
-					FechaFin: field.FechaFin,
-					EspacioFisicoId: ef,
-					DependenciaId: d,
-					DocumentoSoporte: dc, 
-				
+				x := models.AsignacionEspacioFisicoDependencia{
+					Id:               field.Id,
+					Estado:           "TRUE",
+					FechaInicio:      field.FechaInicio,
+					FechaFin:         field.FechaFin,
+					EspacioFisicoId:  ef,
+					DependenciaId:    d,
+					DocumentoSoporte: dc,
 				}
 
-				temp = append(temp,x)
+				temp = append(temp, x)
 			}
 			c.Data["json"] = temp
 		}
-		
+
 		//c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -281,10 +277,10 @@ func (c *AsignacionEspacioFisicoDependenciaController) Put() {
 	//-------------- Temporal: Cambio por transición ------- //
 	infoDep, _ := models.GetAsignacionEspacioFisicoDependenciaById(id)
 	v := models.AsignacionEspacioFisicoDependenciaV2{
-		Id: id,
-		Activo : true ,
-		FechaCreacion : infoDep.FechaCreacion,
-		FechaModificacion  : time.Now(),
+		Id:                id,
+		Activo:            true,
+		FechaCreacion:     infoDep.FechaCreacion,
+		FechaModificacion: time.Now(),
 	}
 	//-------------- Temporal: Cambio por transición ------- //
 	//v := models.AsignacionEspacioFisicoDependencia{Id: id}

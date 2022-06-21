@@ -6,9 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/udistrital/oikos_api/models"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // TipoEspacioFisicoController oprations for TipoEspacioFisico
@@ -36,20 +38,19 @@ func (c *TipoEspacioFisicoController) Post() {
 	var v models.TipoEspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		
-				temp := models.TipoEspacioFisicoV2 {
-					Id: v.Id,
-					Nombre: v.Nombre,      		  
-					Descripcion: "Descripción",
-					CodigoAbreviacion: "TU_"+v.Nombre,
-					Activo : true,
-					FechaCreacion  : time.Now(),
-					FechaModificacion  : time.Now(),
-					
-				}
-				//-------------- Temporal: Cambio por transición ------- //
+
+		temp := models.TipoEspacioFisicoV2{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       "Descripción",
+			CodigoAbreviacion: "TU_" + v.Nombre,
+			Activo:            true,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
+		}
+		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddTipoEspacioFisico(&temp); err == nil {
-		//if _, err := models.AddTipoEspacioFisico(&v); err == nil {
+			//if _, err := models.AddTipoEspacioFisico(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -85,15 +86,15 @@ func (c *TipoEspacioFisicoController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-	
-		temp := models.TipoEspacioFisico {
-					Id: v.Id,
-					Nombre: v.Nombre, 
-					Descripcion: v.Descripcion,
-					CodigoAbreviacion: v.CodigoAbreviacion,
-					Activo: v.Activo,
-					FechaCreacion: v.FechaCreacion,
-					FechaModificacion: v.FechaModificacion,	     		  
+
+		temp := models.TipoEspacioFisico{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       v.Descripcion,
+			CodigoAbreviacion: v.CodigoAbreviacion,
+			Activo:            v.Activo,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,
 		}
 		c.Data["json"] = temp
 		//-------------- Temporal: Cambio por transición ------- //
@@ -166,24 +167,24 @@ func (c *TipoEspacioFisicoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
+		} else {
 			//-------------- Temporal: Cambio por transición ------- //
 			var temp []models.TipoEspacioFisico
 			for _, i := range l {
 				field, _ := i.(models.TipoEspacioFisicoV2)
-				x := models.TipoEspacioFisico {
-					Id: field.Id,
-					Nombre: field.Nombre,      
-					Descripcion: field.Descripcion,
+				x := models.TipoEspacioFisico{
+					Id:                field.Id,
+					Nombre:            field.Nombre,
+					Descripcion:       field.Descripcion,
 					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo: field.Activo,
-					FechaCreacion: field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,		  
+					Activo:            field.Activo,
+					FechaCreacion:     field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,
 				}
 
-				temp = append(temp,x)
+				temp = append(temp, x)
 			}
-				
+
 			c.Data["json"] = temp
 		}
 
@@ -210,13 +211,13 @@ func (c *TipoEspacioFisicoController) Put() {
 	v := models.TipoEspacioFisico{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		v2 := models.TipoEspacioFisicoV2{
-			Id: id,
-			Nombre: v.Nombre,
-			Descripcion: infoDep.Descripcion,
+			Id:                id,
+			Nombre:            v.Nombre,
+			Descripcion:       infoDep.Descripcion,
 			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo : infoDep.Activo,
-			FechaCreacion : infoDep.FechaCreacion,
-			FechaModificacion  : time.Now(),
+			Activo:            infoDep.Activo,
+			FechaCreacion:     infoDep.FechaCreacion,
+			FechaModificacion: time.Now(),
 		}
 
 		if err := models.UpdateTipoEspacioFisicoById(&v2); err == nil {

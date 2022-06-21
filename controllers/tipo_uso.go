@@ -6,10 +6,11 @@ import (
 	"strconv"
 	"strings"
 	"time"
-	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // TipoUsoController oprations for TipoUso
@@ -37,20 +38,19 @@ func (c *TipoUsoController) Post() {
 	var v models.TipoUso
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		
-		temp := models.TipoUsoV2 {
-			Id: v.Id,
-			Nombre: v.Nombre,      		  
-			Descripcion: "Descripción",
-			CodigoAbreviacion: "TU_"+v.Nombre,
-			Activo : true,
-			FechaCreacion  : time.Now(),
-			FechaModificacion  : time.Now(),
-			
+
+		temp := models.TipoUsoV2{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       "Descripción",
+			CodigoAbreviacion: "TU_" + v.Nombre,
+			Activo:            true,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
 		}
 		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddTipoUso(&temp); err == nil {
-		//if _, err := models.AddTipoUso(&v); err == nil {
+			//if _, err := models.AddTipoUso(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -86,15 +86,15 @@ func (c *TipoUsoController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-	
-		temp := models.TipoUso {
-			Id: v.Id,
-			Nombre: v.Nombre, 
-			Descripcion: v.Descripcion,
+
+		temp := models.TipoUso{
+			Id:                v.Id,
+			Nombre:            v.Nombre,
+			Descripcion:       v.Descripcion,
 			CodigoAbreviacion: v.CodigoAbreviacion,
-			Activo: v.Activo,
-			FechaCreacion: v.FechaCreacion,
-			FechaModificacion: v.FechaModificacion,	     		  
+			Activo:            v.Activo,
+			FechaCreacion:     v.FechaCreacion,
+			FechaModificacion: v.FechaModificacion,
 		}
 		c.Data["json"] = temp
 		//-------------- Temporal: Cambio por transición ------- //
@@ -167,26 +167,26 @@ func (c *TipoUsoController) GetAll() {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
 			c.Data["json"] = l
-		}else{
+		} else {
 			//-------------- Temporal: Cambio por transición ------- //
 			var temp []models.TipoUso
 			for _, i := range l {
 				field, _ := i.(models.TipoUsoV2)
-				x := models.TipoUso {
-					Id: field.Id,
-					Nombre: field.Nombre,      
-					Descripcion: field.Descripcion,
+				x := models.TipoUso{
+					Id:                field.Id,
+					Nombre:            field.Nombre,
+					Descripcion:       field.Descripcion,
 					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo: field.Activo,
-					FechaCreacion: field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,		  
+					Activo:            field.Activo,
+					FechaCreacion:     field.FechaCreacion,
+					FechaModificacion: field.FechaModificacion,
 				}
 
-				temp = append(temp,x)
+				temp = append(temp, x)
 			}
 			c.Data["json"] = temp
-		}	
-		
+		}
+
 		//c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -208,13 +208,13 @@ func (c *TipoUsoController) Put() {
 	v := models.TipoUso{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		v2 := models.TipoUsoV2{
-			Id: id,
-			Nombre: v.Nombre,
-			Descripcion: infoDep.Descripcion,
+			Id:                id,
+			Nombre:            v.Nombre,
+			Descripcion:       infoDep.Descripcion,
 			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo : infoDep.Activo,
-			FechaCreacion : infoDep.FechaCreacion,
-			FechaModificacion  : time.Now(),
+			Activo:            infoDep.Activo,
+			FechaCreacion:     infoDep.FechaCreacion,
+			FechaModificacion: time.Now(),
 		}
 
 		if err := models.UpdateTipoUsoById(&v2); err == nil {

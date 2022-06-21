@@ -3,13 +3,14 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
-	"fmt"
-	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // DependenciaV2Controller operations for Dependencia
@@ -195,7 +196,6 @@ func (c *DependenciaV2Controller) Delete() {
 	}
 	c.ServeJSON()
 }
-
 
 // ProyectosPorFacultad ...
 // @Title ProyectosPorFacultad
