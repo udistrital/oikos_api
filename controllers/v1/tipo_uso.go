@@ -56,6 +56,7 @@ func (c *TipoUsoController) Post() {
 		if _, err := models.AddTipoUso(&temp); err == nil {
 			//if _, err := models.AddTipoUso(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
