@@ -8,11 +8,20 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type TipoUso struct {
 	Id     int    `orm:"column(id);pk;auto"`
 	Nombre string `orm:"column(nombre)"`
+}
+
+func (d *TipoUsoV2) FromV1(in TipoUso) error {
+	return formatdata.FillStruct(in, &d)
+}
+func (d *TipoUsoV2) ToV1(out *TipoUso) error {
+	return formatdata.FillStruct(d, out)
 }
 
 type TipoUsoV2 struct {

@@ -74,10 +74,8 @@ func (c *TipoUsoController) GetOne() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		temp := models.TipoUso{
-			Id:     v.Id,
-			Nombre: v.Nombre,
-		}
+		var temp models.TipoUso
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -142,15 +140,18 @@ func (c *TipoUsoController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.TipoUso
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.TipoUsoV2)
-			x := models.TipoUso{
-				Id:     field.Id,
-				Nombre: field.Nombre,
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.TipoUsoV2:
+				var x models.TipoUso
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
 			}
-
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}
@@ -169,19 +170,14 @@ func (c *TipoUsoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	//-------------- Temporal: Cambio por transición ------- //
-	infoDep, _ := models.GetTipoUsoById(id)
+	v2, _ := models.GetTipoUsoById(id)
 	v := models.TipoUso{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		v2 := models.TipoUsoV2{
-			Id:                id,
-			Nombre:            v.Nombre,
-			Descripcion:       infoDep.Descripcion,
-			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo:            infoDep.Activo,
-			FechaCreacion:     infoDep.FechaCreacion,
-			FechaModificacion: time.Now(),
-		}
-		if err := models.UpdateTipoUsoById(&v2); err == nil {
+		v2.Id = id
+		v2.Nombre = v.Nombre
+		v2.FechaModificacion = time.Now()
+
+		if err := models.UpdateTipoUsoById(v2); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
