@@ -37,27 +37,16 @@ func (c *DependenciaTipoDependenciaController) Post() {
 	var v models.DependenciaTipoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		td := &models.TipoDependenciaV2{
-			Id: v.TipoDependenciaId.Id,
-		}
-
-		d := &models.DependenciaV2{
-			Id: v.DependenciaId.Id,
-		}
-
-		temp := models.DependenciaTipoDependenciaV2{
-			Id:                v.Id,
-			TipoDependenciaId: td,
-			DependenciaId:     d,
-			Activo:            true,
-			FechaCreacion:     time.Now(),
-			FechaModificacion: time.Now(),
-		}
+		var temp models.DependenciaTipoDependenciaV2
+		temp.FromV1(v)
+		temp.Activo = true
+		t := time.Now()
+		temp.FechaCreacion = t
+		temp.FechaModificacion = t
 		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddDependenciaTipoDependencia(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			v.Id = temp.Id
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
@@ -83,21 +72,8 @@ func (c *DependenciaTipoDependenciaController) GetOne() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		td := &models.TipoDependencia{
-			Id:     v.TipoDependenciaId.Id,
-			Nombre: v.TipoDependenciaId.Nombre,
-		}
-		d := &models.Dependencia{
-			Id:                  v.DependenciaId.Id,
-			Nombre:              v.DependenciaId.Nombre,
-			TelefonoDependencia: v.DependenciaId.TelefonoDependencia,
-			CorreoElectronico:   v.DependenciaId.CorreoElectronico,
-		}
-		temp := models.DependenciaTipoDependencia{
-			Id:                v.Id,
-			TipoDependenciaId: td,
-			DependenciaId:     d,
-		}
+		var temp models.DependenciaTipoDependencia
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -162,29 +138,19 @@ func (c *DependenciaTipoDependenciaController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.DependenciaTipoDependencia
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.DependenciaTipoDependenciaV2)
-
-			td := &models.TipoDependencia{
-				Id:     field.TipoDependenciaId.Id,
-				Nombre: field.TipoDependenciaId.Nombre,
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.DependenciaTipoDependenciaV2:
+				var x models.DependenciaTipoDependencia
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
 			}
 
-			d := &models.Dependencia{
-				Id:                  field.DependenciaId.Id,
-				Nombre:              field.DependenciaId.Nombre,
-				TelefonoDependencia: field.DependenciaId.TelefonoDependencia,
-				CorreoElectronico:   field.DependenciaId.CorreoElectronico,
-			}
-
-			x := models.DependenciaTipoDependencia{
-				Id:                field.Id,
-				TipoDependenciaId: td,
-				DependenciaId:     d,
-			}
-
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}
@@ -202,9 +168,9 @@ func (c *DependenciaTipoDependenciaController) GetAll() {
 func (c *DependenciaTipoDependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	//-------------- Temporal: Cambio por transición ------- //
 	v2, _ := models.GetDependenciaTipoDependenciaById(id)
 	v := models.DependenciaTipoDependencia{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		v2.TipoDependenciaId = &models.TipoDependenciaV2{Id: v.TipoDependenciaId.Id}
 		v2.DependenciaId = &models.DependenciaV2{Id: v.DependenciaId.Id}

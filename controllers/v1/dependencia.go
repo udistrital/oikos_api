@@ -39,18 +39,15 @@ func (c *DependenciaController) Post() {
 	var v models.Dependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		temp := models.DependenciaV2{
-			Id:                  v.Id,
-			Nombre:              v.Nombre,
-			TelefonoDependencia: v.TelefonoDependencia,
-			CorreoElectronico:   v.CorreoElectronico,
-			Activo:              true,
-			FechaCreacion:       time.Now(),
-			FechaModificacion:   time.Now(),
-		}
+		var temp models.DependenciaV2
+		temp.FromV1(v)
+		temp.Activo = true
+		t := time.Now()
+		temp.FechaCreacion = t
+		temp.FechaModificacion = t
 		if _, err := models.AddDependencia(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			v.Id = temp.Id
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
@@ -76,14 +73,8 @@ func (c *DependenciaController) GetOne() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.Dependencia{
-			Id:                  v.Id,
-			Nombre:              v.Nombre,
-			TelefonoDependencia: v.TelefonoDependencia,
-			CorreoElectronico:   v.CorreoElectronico,
-		}
-
+		var temp models.Dependencia
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -149,42 +140,18 @@ func (c *DependenciaController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.Dependencia
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.DependenciaV2)
-
-			var dtp []*models.DependenciaTipoDependencia
-
-			for _, j := range field.DependenciaTipoDependencia {
-				td := &models.TipoDependencia{
-					Id:     j.TipoDependenciaId.Id,
-					Nombre: j.TipoDependenciaId.Nombre,
-				}
-
-				d := &models.Dependencia{
-					Id:                  j.DependenciaId.Id,
-					Nombre:              j.DependenciaId.Nombre,
-					TelefonoDependencia: j.DependenciaId.TelefonoDependencia,
-					CorreoElectronico:   j.DependenciaId.CorreoElectronico,
-				}
-
-				y := &models.DependenciaTipoDependencia{
-					Id:                j.Id,
-					TipoDependenciaId: td,
-					DependenciaId:     d,
-				}
-
-				dtp = append(dtp, y)
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.DependenciaV2:
+				var x models.Dependencia
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
 			}
-
-			x := models.Dependencia{
-				Id:                         field.Id,
-				Nombre:                     field.Nombre,
-				TelefonoDependencia:        field.TelefonoDependencia,
-				CorreoElectronico:          field.CorreoElectronico,
-				DependenciaTipoDependencia: dtp,
-			}
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}
