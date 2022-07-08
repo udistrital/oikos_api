@@ -39,6 +39,7 @@ func (c *TipoEspacioFisicoController) Post() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
 
+		// TODO: Revisar lo siguiente ...
 		temp := models.TipoEspacioFisicoV2{
 			Id:                v.Id,
 			Nombre:            v.Nombre,
@@ -48,6 +49,9 @@ func (c *TipoEspacioFisicoController) Post() {
 			FechaCreacion:     time.Now(),
 			FechaModificacion: time.Now(),
 		}
+		// ... debería bastar con:
+		// var temp models.TipoEspacioFisicoV2
+		// temp.FromV1(v)
 		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddTipoEspacioFisico(&temp); err == nil {
 			//if _, err := models.AddTipoEspacioFisico(&v); err == nil {
@@ -86,16 +90,8 @@ func (c *TipoEspacioFisicoController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.TipoEspacioFisico{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Descripcion:       v.Descripcion,
-			CodigoAbreviacion: v.CodigoAbreviacion,
-			Activo:            v.Activo,
-			FechaCreacion:     v.FechaCreacion,
-			FechaModificacion: v.FechaModificacion,
-		}
+		var temp models.TipoEspacioFisico
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 		//-------------- Temporal: Cambio por transición ------- //
 		//c.Data["json"] = v
@@ -169,28 +165,21 @@ func (c *TipoEspacioFisicoController) GetAll() {
 			c.Data["json"] = l
 		} else {
 			//-------------- Temporal: Cambio por transición ------- //
-			var temp []models.TipoEspacioFisico
+			var temp []interface{}
 			for _, i := range l {
-				field, _ := i.(models.TipoEspacioFisicoV2)
-				x := models.TipoEspacioFisico{
-					Id:                field.Id,
-					Nombre:            field.Nombre,
-					Descripcion:       field.Descripcion,
-					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo:            field.Activo,
-					FechaCreacion:     field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,
+				switch v := i.(type) {
+				case map[string]interface{}:
+					temp = append(temp, v)
+				case models.TipoEspacioFisicoV2:
+					var x models.TipoEspacioFisico
+					v.ToV1(&x)
+					temp = append(temp, x)
+					// default:
+					// 	// SIN MANEJAR!
 				}
-
-				temp = append(temp, x)
 			}
-
 			c.Data["json"] = temp
 		}
-
-		//-------------- Temporal: Cambio por transición ------- //
-
-		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -207,20 +196,17 @@ func (c *TipoEspacioFisicoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	//-------------- Temporal: Cambio por transición ------- //
-	infoDep, _ := models.GetTipoEspacioFisicoById(id)
+	v2, _ := models.GetTipoEspacioFisicoById(id)
 	v := models.TipoEspacioFisico{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		v2 := models.TipoEspacioFisicoV2{
-			Id:                id,
-			Nombre:            v.Nombre,
-			Descripcion:       infoDep.Descripcion,
-			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo:            infoDep.Activo,
-			FechaCreacion:     infoDep.FechaCreacion,
-			FechaModificacion: time.Now(),
-		}
+		// TODO: Revisar lo siguiente ...:
+		v2.Id = id
+		v2.Nombre = v.Nombre
+		v2.FechaModificacion = time.Now()
+		// ... debería bastar con:
+		// v2.FromV1(v)
 
-		if err := models.UpdateTipoEspacioFisicoById(&v2); err == nil {
+		if err := models.UpdateTipoEspacioFisicoById(v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -248,7 +234,7 @@ func (c *TipoEspacioFisicoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteTipoEspacioFisico(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"Id": id}
+		c.Data["json"] = models.Deleted{Id: id}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
