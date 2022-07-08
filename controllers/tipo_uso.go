@@ -5,21 +5,20 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"time"
+
+	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-
-	"github.com/udistrital/oikos_api/models"
 )
 
-// TipoUsoController oprations for TipoUso
-type TipoUsoController struct {
+// TipoUsoV2Controller operations for TipoUso
+type TipoUsoV2Controller struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *TipoUsoController) URLMapping() {
+func (c *TipoUsoV2Controller) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -30,27 +29,14 @@ func (c *TipoUsoController) URLMapping() {
 // Post ...
 // @Title Post
 // @Description create TipoUso
-// @Param	body		body 	models.TipoUso	true		"body for TipoUso content"
-// @Success 201 {object} models.TipoUso
+// @Param	body		body 	models.TipoUsoV2	true		"body for TipoUso content"
+// @Success 201 {object} models.TipoUsoV2
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *TipoUsoController) Post() {
-	var v models.TipoUso
+func (c *TipoUsoV2Controller) Post() {
+	var v models.TipoUsoV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.TipoUsoV2{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Descripcion:       "Descripción",
-			CodigoAbreviacion: "TU_" + v.Nombre,
-			Activo:            true,
-			FechaCreacion:     time.Now(),
-			FechaModificacion: time.Now(),
-		}
-		//-------------- Temporal: Cambio por transición ------- //
-		if _, err := models.AddTipoUso(&temp); err == nil {
-			//if _, err := models.AddTipoUso(&v); err == nil {
+		if _, err := models.AddTipoUso(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -72,10 +58,10 @@ func (c *TipoUsoController) Post() {
 // @Title Get One
 // @Description get TipoUso by id
 // @Param	id		path 	int	true		"The key for staticblock"
-// @Success 200 {object} models.TipoUso
+// @Success 200 {object} models.TipoUsoV2
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *TipoUsoController) GetOne() {
+func (c *TipoUsoV2Controller) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetTipoUsoById(id)
@@ -85,20 +71,7 @@ func (c *TipoUsoController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.TipoUso{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Descripcion:       v.Descripcion,
-			CodigoAbreviacion: v.CodigoAbreviacion,
-			Activo:            v.Activo,
-			FechaCreacion:     v.FechaCreacion,
-			FechaModificacion: v.FechaModificacion,
-		}
-		c.Data["json"] = temp
-		//-------------- Temporal: Cambio por transición ------- //
-		//c.Data["json"] = v
+		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -112,10 +85,10 @@ func (c *TipoUsoController) GetOne() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	int	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} []models.TipoUso
+// @Success 200 {object} []models.TipoUsoV2
 // @Failure 404 not found resource
 // @router / [get]
-func (c *TipoUsoController) GetAll() {
+func (c *TipoUsoV2Controller) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -166,28 +139,8 @@ func (c *TipoUsoController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-			c.Data["json"] = l
-		} else {
-			//-------------- Temporal: Cambio por transición ------- //
-			var temp []models.TipoUso
-			for _, i := range l {
-				field, _ := i.(models.TipoUsoV2)
-				x := models.TipoUso{
-					Id:                field.Id,
-					Nombre:            field.Nombre,
-					Descripcion:       field.Descripcion,
-					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo:            field.Activo,
-					FechaCreacion:     field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,
-				}
-
-				temp = append(temp, x)
-			}
-			c.Data["json"] = temp
 		}
-
-		//c.Data["json"] = l
+		c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -196,28 +149,16 @@ func (c *TipoUsoController) GetAll() {
 // @Title Put
 // @Description update the TipoUso
 // @Param	id		path 	int	true		"The id you want to update"
-// @Param	body		body 	models.TipoUso	true		"body for TipoUso content"
-// @Success 200 {object} models.TipoUso
+// @Param	body		body 	models.TipoUsoV2	true		"body for TipoUso content"
+// @Success 200 {object} models.TipoUsoV2
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *TipoUsoController) Put() {
+func (c *TipoUsoV2Controller) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	//-------------- Temporal: Cambio por transición ------- //
-	infoDep, _ := models.GetTipoUsoById(id)
-	v := models.TipoUso{Id: id}
+	v := models.TipoUsoV2{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		v2 := models.TipoUsoV2{
-			Id:                id,
-			Nombre:            v.Nombre,
-			Descripcion:       infoDep.Descripcion,
-			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo:            infoDep.Activo,
-			FechaCreacion:     infoDep.FechaCreacion,
-			FechaModificacion: time.Now(),
-		}
-
-		if err := models.UpdateTipoUsoById(&v2); err == nil {
+		if err := models.UpdateTipoUsoById(&v); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -241,7 +182,7 @@ func (c *TipoUsoController) Put() {
 // @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
-func (c *TipoUsoController) Delete() {
+func (c *TipoUsoV2Controller) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteTipoUso(id); err == nil {

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -13,59 +12,31 @@ import (
 	"github.com/udistrital/oikos_api/models"
 )
 
-// EspacioFisicoController oprations for EspacioFisico
-type EspacioFisicoController struct {
+// EspacioFisicoV2Controller operations for EspacioFisico
+type EspacioFisicoV2Controller struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *EspacioFisicoController) URLMapping() {
+func (c *EspacioFisicoV2Controller) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-	c.Mapping("EspaciosHuerfanos", c.EspaciosHuerfanos)
 }
 
 // Post ...
 // @Title Post
 // @Description create EspacioFisico
-// @Param	body		body 	models.EspacioFisico	true		"body for EspacioFisico content"
-// @Success 201 {object} models.EspacioFisico
+// @Param	body		body 	models.EspacioFisicoV2	true		"body for EspacioFisico content"
+// @Success 201 {object} models.EspacioFisicoV2
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *EspacioFisicoController) Post() {
-	var v models.EspacioFisico
+func (c *EspacioFisicoV2Controller) Post() {
+	var v models.EspacioFisicoV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		//-------------- Temporal: Cambio por transición ------- //
-		var act bool
-		if v.Estado == "Activo" {
-			act = true
-		} else if v.Estado == "Inactivo" {
-			act = false
-		} else {
-			act = true
-		}
-
-		te := &models.TipoEspacioFisicoV2{
-			Id: v.TipoEspacio.Id,
-		}
-
-		temp := models.EspacioFisicoV2{
-			Id:                  v.Id,
-			Nombre:              v.Nombre,
-			Descripcion:         "Descripción - " + v.Nombre,
-			CodigoAbreviacion:   v.Codigo,
-			Activo:              act,
-			FechaCreacion:       time.Now(),
-			FechaModificacion:   time.Now(),
-			TipoEspacioFisicoId: te,
-		}
-
-		if _, err := models.AddEspacioFisico(&temp); err == nil {
-
-			//if _, err := models.AddEspacioFisico(&v); err == nil {
+		if _, err := models.AddEspacioFisico(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -87,10 +58,10 @@ func (c *EspacioFisicoController) Post() {
 // @Title Get One
 // @Description get EspacioFisico by id
 // @Param	id		path 	int	true		"The key for staticblock"
-// @Success 200 {object} models.EspacioFisico
+// @Success 200 {object} models.EspacioFisicoV2
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *EspacioFisicoController) GetOne() {
+func (c *EspacioFisicoV2Controller) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetEspacioFisicoById(id)
@@ -100,39 +71,7 @@ func (c *EspacioFisicoController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		//-------------- Temporal: Cambio por transición ------- //
-		var act string
-		if v.Activo == true {
-			act = "Activo"
-		} else {
-			act = "Inactivo"
-		}
-
-		te := &models.TipoEspacioFisico{
-			Id:                v.TipoEspacioFisicoId.Id,
-			Nombre:            v.TipoEspacioFisicoId.Nombre,
-			Descripcion:       v.TipoEspacioFisicoId.Descripcion,
-			CodigoAbreviacion: v.TipoEspacioFisicoId.CodigoAbreviacion,
-			Activo:            v.TipoEspacioFisicoId.Activo,
-			FechaCreacion:     v.TipoEspacioFisicoId.FechaCreacion,
-			FechaModificacion: v.TipoEspacioFisicoId.FechaModificacion,
-		}
-
-		temp := models.EspacioFisico{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Codigo:            v.CodigoAbreviacion,
-			Estado:            act,
-			Descripcion:       v.Descripcion,
-			FechaCreacion:     v.FechaCreacion,
-			FechaModificacion: v.FechaModificacion,
-			TipoEspacio:       te,
-			//espacio_fisicoTipoespacio_fisico: field.espacio_fisicoTipoespacio_fisico,
-		}
-
-		c.Data["json"] = temp
-		//-------------- Temporal: Cambio por transición ------- //
-		//c.Data["json"] = v
+		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -146,10 +85,10 @@ func (c *EspacioFisicoController) GetOne() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	int	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} []models.EspacioFisico
+// @Success 200 {object} []models.EspacioFisicoV2
 // @Failure 404 not found resource
 // @router / [get]
-func (c *EspacioFisicoController) GetAll() {
+func (c *EspacioFisicoV2Controller) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -187,12 +126,7 @@ func (c *EspacioFisicoController) GetAll() {
 				return
 			}
 			k, v := kv[0], kv[1]
-			if k == "TipoEspacio.Id" {
-				query["TipoEspacioFisicoId.Id"] = v
-			} else {
-				query[k] = v
-			}
-
+			query[k] = v
 		}
 	}
 
@@ -205,47 +139,8 @@ func (c *EspacioFisicoController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-			c.Data["json"] = l
-		} else {
-			var temp []models.EspacioFisico
-			for _, i := range l {
-				field, _ := i.(models.EspacioFisicoV2)
-				var act string
-				if field.Activo == true {
-					act = "Activo"
-				} else {
-					act = "Inactivo"
-				}
-
-				te := &models.TipoEspacioFisico{
-					Id:                field.TipoEspacioFisicoId.Id,
-					Nombre:            field.TipoEspacioFisicoId.Nombre,
-					Descripcion:       field.TipoEspacioFisicoId.Descripcion,
-					CodigoAbreviacion: field.TipoEspacioFisicoId.CodigoAbreviacion,
-					Activo:            field.TipoEspacioFisicoId.Activo,
-					FechaCreacion:     field.TipoEspacioFisicoId.FechaCreacion,
-					FechaModificacion: field.TipoEspacioFisicoId.FechaModificacion,
-				}
-
-				x := models.EspacioFisico{
-					Id:                field.Id,
-					Nombre:            field.Nombre,
-					Codigo:            field.CodigoAbreviacion,
-					Estado:            act,
-					Descripcion:       field.Descripcion,
-					FechaCreacion:     field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,
-					TipoEspacio:       te,
-					//espacio_fisicoTipoespacio_fisico: field.espacio_fisicoTipoespacio_fisico,
-				}
-
-				temp = append(temp, x)
-			}
-			c.Data["json"] = temp
 		}
-		//-------------- Temporal: Cambio por transición ------- //
-
-		//c.Data["json"] = l
+		c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -254,34 +149,16 @@ func (c *EspacioFisicoController) GetAll() {
 // @Title Put
 // @Description update the EspacioFisico
 // @Param	id		path 	int	true		"The id you want to update"
-// @Param	body		body 	models.EspacioFisico	true		"body for EspacioFisico content"
-// @Success 200 {object} models.EspacioFisico
+// @Param	body		body 	models.EspacioFisicoV2	true		"body for EspacioFisico content"
+// @Success 200 {object} models.EspacioFisicoV2
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *EspacioFisicoController) Put() {
+func (c *EspacioFisicoV2Controller) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	infoDep, _ := models.GetEspacioFisicoById(id)
-	v := models.EspacioFisico{Id: id}
-
+	v := models.EspacioFisicoV2{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-
-		tef := &models.TipoEspacioFisicoV2{
-			Id: v.TipoEspacio.Id,
-		}
-
-		v2 := models.EspacioFisicoV2{
-			Id:                  id,
-			Nombre:              v.Nombre,
-			Descripcion:         v.Descripcion,
-			CodigoAbreviacion:   v.Codigo,
-			Activo:              infoDep.Activo,
-			FechaCreacion:       infoDep.FechaCreacion,
-			FechaModificacion:   time.Now(),
-			TipoEspacioFisicoId: tef,
-		}
-
-		if err := models.UpdateEspacioFisicoById(&v2); err == nil {
+		if err := models.UpdateEspacioFisicoById(&v); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -305,7 +182,7 @@ func (c *EspacioFisicoController) Put() {
 // @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
-func (c *EspacioFisicoController) Delete() {
+func (c *EspacioFisicoV2Controller) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteEspacioFisico(id); err == nil {
@@ -322,12 +199,12 @@ func (c *EspacioFisicoController) Delete() {
 // EspaciosHuerfanos ...
 // @Title EspaciosHuerfanos
 // @Description Función para cargar los espacios físicos huerfanos
-// @Param	id		path 	string	true		"Id del espacio físico"
+// @Param	id		path 	int	true		"Id del espacio físico"
 // @Success 200 {object} []models.EspacioFisico
 // @Failure 403 id is empty
 // @router /EspaciosHuerfanos/:id [get]
 //Función para cargar los espacios físicos huerfanos
-func (c *EspacioFisicoController) EspaciosHuerfanos() {
+func (c *EspacioFisicoV2Controller) EspaciosHuerfanos() {
 	tipo := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(tipo)
 	//perfiles := ("Admin_Arka")
@@ -347,7 +224,7 @@ func (c *EspacioFisicoController) EspaciosHuerfanos() {
 // @Success 200 {object} models.EspacioFisicoPadreHijo
 // @Failure 403 :espacio_fisico is empty
 // @router /get_espacios_fisicos_hijos_by_id/:espacio_fisico [get]
-func (c *EspacioFisicoController) GetEspaciosFisicosHijosById() {
+func (c *EspacioFisicoV2Controller) GetEspaciosFisicosHijosById() {
 	//Se crea variable que contiene el id con tipo de dato string
 	espacioFisicoPadre := c.Ctx.Input.Param(":espacio_fisico")
 	EFPadreint, _ := strconv.Atoi(espacioFisicoPadre)
@@ -370,11 +247,11 @@ func (c *EspacioFisicoController) GetEspaciosFisicosHijosById() {
 // GetEspaciosFisicosPadresById ...
 // @Title GetEspaciosFisicosPadresById
 // @Description A partir de una espacio_fisico dado, se obtienen todos sus predecesores en una estructura de árbol.
-// @Param	espacio_fisico	path 	int	true		"Id de la espacio_fisico"
+// @Param	espacio_fisico	path 	string	true		"Id de la espacio_fisico"
 // @Success 200 {object} []models.EspafioFisicoPadreHijo
 // @Failure 404 :espacio_fisico is empty
 // @router /get_espacios_fisicos_padres_by_id/:espacio_fisico [get]
-func (c *EspacioFisicoController) GetEspaciosFisicosPadresById() {
+func (c *EspacioFisicoV2Controller) GetEspaciosFisicosPadresById() {
 	//Se crea variable que contiene el id con tipo de dato string
 	espacioFisicoHijo := c.Ctx.Input.Param(":espacio_fisico")
 	EFHijoint, _ := strconv.Atoi(espacioFisicoHijo)

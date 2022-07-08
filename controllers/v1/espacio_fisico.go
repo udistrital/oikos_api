@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -12,32 +13,65 @@ import (
 	"github.com/udistrital/oikos_api/models"
 )
 
-// DependenciaV2Controller operations for Dependencia
-type DependenciaV2Controller struct {
+// EspacioFisicoController oprations for EspacioFisico
+type EspacioFisicoController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *DependenciaV2Controller) URLMapping() {
+func (c *EspacioFisicoController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("EspaciosHuerfanos", c.EspaciosHuerfanos)
 }
 
 // Post ...
 // @Title Post
-// @Description create Dependencia
-// @Param	body		body 	models.DependenciaV2	true		"body for Dependencia content"
-// @Success 201 {object} models.DependenciaV2
+// @Description create EspacioFisico
+// @Param	body		body 	models.EspacioFisico	true		"body for EspacioFisico content"
+// @Success 201 {object} models.EspacioFisico
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *DependenciaV2Controller) Post() {
-	var v models.DependenciaV2
+func (c *EspacioFisicoController) Post() {
+	var v models.EspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddDependencia(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		// TODO: Revisar lo siguiente... :
+		var act bool
+		if v.Estado == "Activo" {
+			act = true
+		} else if v.Estado == "Inactivo" {
+			act = false
+		} else {
+			act = true
+		}
+
+		te := &models.TipoEspacioFisicoV2{
+			Id: v.TipoEspacio.Id,
+		}
+
+		temp := models.EspacioFisicoV2{
+			Id:                  v.Id,
+			Nombre:              v.Nombre,
+			Descripcion:         "Descripción - " + v.Nombre,
+			CodigoAbreviacion:   v.Codigo,
+			Activo:              act,
+			FechaCreacion:       time.Now(),
+			FechaModificacion:   time.Now(),
+			TipoEspacioFisicoId: te,
+		}
+		// ... debería bastar con:
+		// var temp models.EspacioFisicoV2
+		// temp.FromV1(v)
+
+		if _, err := models.AddEspacioFisico(&temp); err == nil {
+
+			//if _, err := models.AddEspacioFisico(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -56,39 +90,42 @@ func (c *DependenciaV2Controller) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get Dependencia by id
+// @Description get EspacioFisico by id
 // @Param	id		path 	int	true		"The key for staticblock"
-// @Success 200 {object} models.DependenciaV2
+// @Success 200 {object} models.EspacioFisico
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *DependenciaV2Controller) GetOne() {
+func (c *EspacioFisicoController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetDependenciaById(id)
+	v, err := models.GetEspacioFisicoById(id)
 	if err != nil {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp models.EspacioFisico
+		v.ToV1(&temp)
+		c.Data["json"] = temp
 	}
 	c.ServeJSON()
 }
 
 // GetAll ...
 // @Title Get All
-// @Description get Dependencia
+// @Description get EspacioFisico
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	int	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} []models.DependenciaV2
+// @Success 200 {object} []models.EspacioFisico
 // @Failure 404 not found resource
 // @router / [get]
-func (c *DependenciaV2Controller) GetAll() {
+func (c *EspacioFisicoController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -126,11 +163,16 @@ func (c *DependenciaV2Controller) GetAll() {
 				return
 			}
 			k, v := kv[0], kv[1]
-			query[k] = v
+			if k == "TipoEspacio.Id" {
+				query["TipoEspacioFisicoId.Id"] = v
+			} else {
+				query[k] = v
+			}
+
 		}
 	}
 
-	l, err := models.GetAllDependencia(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllEspacioFisico(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
@@ -139,26 +181,55 @@ func (c *DependenciaV2Controller) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
+		} else {
+			var temp []interface{}
+			for _, i := range l {
+				switch v := i.(type) {
+				case map[string]interface{}:
+					temp = append(temp, v)
+				case models.EspacioFisicoV2:
+					var x models.EspacioFisico
+					v.ToV1(&x)
+					temp = append(temp, x)
+					// default:
+					// 	// SIN MANEJAR!
+				}
+			}
+			c.Data["json"] = temp
 		}
-		c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
 
 // Put ...
 // @Title Put
-// @Description update the Dependencia
+// @Description update the EspacioFisico
 // @Param	id		path 	int	true		"The id you want to update"
-// @Param	body		body 	models.DependenciaV2	true		"body for Dependencia content"
-// @Success 200 {object} models.DependenciaV2
+// @Param	body		body 	models.EspacioFisico	true		"body for EspacioFisico content"
+// @Success 200 {object} models.EspacioFisico
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *DependenciaV2Controller) Put() {
+func (c *EspacioFisicoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.DependenciaV2{Id: id}
+	v2, _ := models.GetEspacioFisicoById(id)
+	v := models.EspacioFisico{Id: id}
+
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateDependenciaById(&v); err == nil {
+
+		// TODO: Revisar lo siguiente ...:
+		v2.Id = id
+		v2.Nombre = v.Nombre
+		v2.Descripcion = v.Descripcion
+		v2.CodigoAbreviacion = v.Codigo
+		v2.FechaModificacion = time.Now()
+		v2.TipoEspacioFisicoId.FromV1(*v.TipoEspacio)
+		// ... debería bastar con:
+		// v2.FromV1(v)
+
+		if err := models.UpdateEspacioFisicoById(v2); err == nil {
+			v2.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -177,16 +248,16 @@ func (c *DependenciaV2Controller) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the Dependencia
+// @Description delete the EspacioFisico
 // @Param	id		path 	int	true		"The id you want to delete"
-// @Success 200 {models} models.Deleted
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
-func (c *DependenciaV2Controller) Delete() {
+func (c *EspacioFisicoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteDependencia(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"Id": id}
+	if err := models.DeleteEspacioFisico(id); err == nil {
+		c.Data["json"] = models.Deleted{Id: id}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
@@ -196,60 +267,39 @@ func (c *DependenciaV2Controller) Delete() {
 	c.ServeJSON()
 }
 
-// ProyectosPorFacultad ...
-// @Title ProyectosPorFacultad
-// @Description Get curricular projects by faculty
-// @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
-// @Param	nivel_academico		path 	string	true		"El nivel académico a consultar de acuerdo a la facultad"
-// @Success 200 {object} []models.ProyectosCurriculares
-// @Failure 403 :id_facultad is empty
-// @router /proyectosPorFacultad/:id_facultad/:nivel_academico [get]
-func (c *DependenciaV2Controller) ProyectosPorFacultad() {
-	//Se crea variable que contiene el id con tipo de dato string
-	idStr := c.Ctx.Input.Param(":id_facultad")
-	nivel_academico := c.Ctx.Input.Param(":nivel_academico")
-	//Se nombra la variable id, en la cual se hizo la conversión de string a int
-	id_facultad, _ := strconv.Atoi(idStr)
+// EspaciosHuerfanos ...
+// @Title EspaciosHuerfanos
+// @Description Función para cargar los espacios físicos huerfanos
+// @Param	id		path 	string	true		"Id del espacio físico"
+// @Success 200 {object} []models.EspacioFisico
+// @Failure 403 id is empty
+// @router /EspaciosHuerfanos/:id [get]
+//Función para cargar los espacios físicos huerfanos
+func (c *EspacioFisicoController) EspaciosHuerfanos() {
+	tipo := c.Ctx.Input.Param(":id")
+	id, _ := strconv.Atoi(tipo)
+	//perfiles := ("Admin_Arka")
+	//perfilesR := strings.NewReplacer(",", "','")
 
-	//Construcción Json menus
-	l := models.ProyectosPorFacultad(id_facultad, nivel_academico)
+	//Construcción Json Menús Huerfanos
+	l := models.EspacioFisicosHuerfanos(id)
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }
 
-// ProyectosPorFacultadNivelAcademico ...
-// @Title ProyectosPorFacultadNivelAcademico
-// @Description Get curricular projects by faculty and academic level
-// @Param	id_facultad		path 	int	true		"El id de la facultad a consultar sus proyectos curriculares"
-// @Success 200 {object} []models.ProyectosCurriculares
-// @Failure 403 :id_facultad is empty
-// @router /proyectosPorFacultad/:id_facultad [get]
-func (c *DependenciaV2Controller) ProyectosPorFacultadNivelAcademico() {
+// GetEspaciosFisicosHijosById ...
+// @Title GetEspaciosFisicosHijosById
+// @Description A partir de un espacio físico dado, se obtienen los hijas de él en una estructura de árbol.
+// @Param	espacio_fisico	path 	int	true		"Id del espacio físico"
+// @Success 200 {object} models.EspacioFisicoPadreHijo
+// @Failure 403 :espacio_fisico is empty
+// @router /get_espacios_fisicos_hijos_by_id/:espacio_fisico [get]
+func (c *EspacioFisicoController) GetEspaciosFisicosHijosById() {
 	//Se crea variable que contiene el id con tipo de dato string
-	idStr := c.Ctx.Input.Param(":id_facultad")
-	//Se nombra la variable id, en la cual se hizo la conversión de string a int
-	id_facultad, _ := strconv.Atoi(idStr)
-
-	//Construcción Json menus
-	l := models.ProyectosPorFacultad(id_facultad, "undefined")
-	c.Data["json"] = l
-	//Generera el Json con los datos obtenidos
-	c.ServeJSON()
-}
-
-// GetDependenciasHijasById ...
-// @Title GetDependenciasHijasById
-// @Description A partir de una dependencia dada, se obtienen las hijas de ella en una estructura de árbol.
-// @Param	dependencia	path 	int	true		"Id de la dependencia"
-// @Success 200 {object} models.DependenciaPadreHijo
-// @Failure 403 :dependencia_padre is empty
-// @router /get_dependencias_hijas_by_id/:dependencia [get]
-func (c *DependenciaV2Controller) GetDependenciasHijasById() {
-	//Se crea variable que contiene el id con tipo de dato string
-	dependenciaPadre := c.Ctx.Input.Param(":dependencia")
-	depPadreint, _ := strconv.Atoi(dependenciaPadre)
-	l, err := models.GetDependenciasHijasById(depPadreint)
+	espacioFisicoPadre := c.Ctx.Input.Param(":espacio_fisico")
+	EFPadreint, _ := strconv.Atoi(espacioFisicoPadre)
+	l, err := models.GetEspaciosFisicosHijosById(EFPadreint)
 	if err != nil {
 		beego.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
@@ -265,18 +315,18 @@ func (c *DependenciaV2Controller) GetDependenciasHijasById() {
 	c.ServeJSON()
 }
 
-// GetDependenciasPadresById ...
-// @Title GetDependenciasPadresById
-// @Description A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.
-// @Param	dependencia	path 	int	true		"Id de la dependencia"
-// @Success 200 {object} []models.DependenciaPadreHijo
-// @Failure 404 :dependencia is empty
-// @router /get_dependencias_padres_by_id/:dependencia [get]
-func (c *DependenciaV2Controller) GetDependenciasPadresById() {
+// GetEspaciosFisicosPadresById ...
+// @Title GetEspaciosFisicosPadresById
+// @Description A partir de una espacio_fisico dado, se obtienen todos sus predecesores en una estructura de árbol.
+// @Param	espacio_fisico	path 	int	true		"Id de la espacio_fisico"
+// @Success 200 {object} []models.EspafioFisicoPadreHijo
+// @Failure 404 :espacio_fisico is empty
+// @router /get_espacios_fisicos_padres_by_id/:espacio_fisico [get]
+func (c *EspacioFisicoController) GetEspaciosFisicosPadresById() {
 	//Se crea variable que contiene el id con tipo de dato string
-	dependenciaHija := c.Ctx.Input.Param(":dependencia")
-	depHijaint, _ := strconv.Atoi(dependenciaHija)
-	l, err := models.GetDependenciasPadresById(depHijaint)
+	espacioFisicoHijo := c.Ctx.Input.Param(":espacio_fisico")
+	EFHijoint, _ := strconv.Atoi(espacioFisicoHijo)
+	l, err := models.GetEspaciosFisicosPadresById(EFHijoint)
 	if err != nil {
 		beego.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}

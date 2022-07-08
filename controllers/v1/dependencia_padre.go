@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -12,33 +13,44 @@ import (
 	"github.com/udistrital/oikos_api/models"
 )
 
-// DependenciaPadreV2Controller operations for DependenciaPadre
-type DependenciaPadreV2Controller struct {
+// DependenciaPadreController oprations for DependenciaPadre
+type DependenciaPadreController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *DependenciaPadreV2Controller) URLMapping() {
+func (c *DependenciaPadreController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-
+	c.Mapping("FacultadesConProyectos", c.FacultadesConProyectos)
+	c.Mapping("ArbolDependencias", c.ArbolDependencias)
 }
 
 // Post ...
 // @Title Post
 // @Description create DependenciaPadre
-// @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadre content"
-// @Success 201 {object} models.DependenciaPadreV2
+// @Param	body		body 	models.DependenciaPadre	true		"body for DependenciaPadre content"
+// @Success 201 {object} models.DependenciaPadre
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *DependenciaPadreV2Controller) Post() {
-	var v models.DependenciaPadreV2
+func (c *DependenciaPadreController) Post() {
+	var v models.DependenciaPadre
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddDependenciaPadre(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp models.DependenciaPadreV2
+		temp.FromV1(v)
+		temp.Activo = true
+		t := time.Now()
+		temp.FechaCreacion = t
+		temp.FechaModificacion = t
+		//-------------- Temporal: Cambio por transición ------- //
+		if _, err := models.AddDependenciaPadre(&temp); err == nil {
+			//if _, err := models.AddDependenciaPadre(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -59,10 +71,10 @@ func (c *DependenciaPadreV2Controller) Post() {
 // @Title Get One
 // @Description get DependenciaPadre by id
 // @Param	id		path 	int	true		"The key for staticblock"
-// @Success 200 {object} models.DependenciaPadreV2
+// @Success 200 {object} models.DependenciaPadre
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *DependenciaPadreV2Controller) GetOne() {
+func (c *DependenciaPadreController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetDependenciaPadreById(id)
@@ -72,7 +84,11 @@ func (c *DependenciaPadreV2Controller) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp models.DependenciaPadre
+		v.ToV1(&temp)
+		c.Data["json"] = temp
+		//		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -86,10 +102,10 @@ func (c *DependenciaPadreV2Controller) GetOne() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	int	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} []models.DependenciaPadreV2
+// @Success 200 {object} []models.DependenciaPadre
 // @Failure 404 not found resource
 // @router / [get]
-func (c *DependenciaPadreV2Controller) GetAll() {
+func (c *DependenciaPadreController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -140,8 +156,25 @@ func (c *DependenciaPadreV2Controller) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
+		} else {
+			//-------------- Temporal: Cambio por transición ------- //
+			var temp []interface{}
+			for _, i := range l {
+				switch v := i.(type) {
+				case map[string]interface{}:
+					temp = append(temp, v)
+				case models.DependenciaPadreV2:
+					var x models.DependenciaPadre
+					v.ToV1(&x)
+					temp = append(temp, x)
+					// default:
+					// 	// SIN MANEJAR!
+				}
+			}
+			c.Data["json"] = temp
+
 		}
-		c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -150,16 +183,20 @@ func (c *DependenciaPadreV2Controller) GetAll() {
 // @Title Put
 // @Description update the DependenciaPadre
 // @Param	id		path 	int	true		"The id you want to update"
-// @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadre content"
-// @Success 200 {object} models.DependenciaPadreV2
+// @Param	body		body 	models.DependenciaPadre	true		"body for DependenciaPadre content"
+// @Success 200 {object} models.DependenciaPadre
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *DependenciaPadreV2Controller) Put() {
+func (c *DependenciaPadreController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.DependenciaPadreV2{Id: id}
+	v := models.DependenciaPadre{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateDependenciaPadreById(&v); err == nil {
+		var v2 models.DependenciaPadreV2
+		v2.FromV1(v)
+		v2.FechaModificacion = time.Now()
+		if err := models.UpdateDependenciaPadreById(&v2); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -183,11 +220,11 @@ func (c *DependenciaPadreV2Controller) Put() {
 // @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
-func (c *DependenciaPadreV2Controller) Delete() {
+func (c *DependenciaPadreController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteDependenciaPadre(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"Id": id}
+		c.Data["json"] = models.Deleted{Id: id}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
@@ -203,7 +240,7 @@ func (c *DependenciaPadreV2Controller) Delete() {
 // @Success 200 {object} []models.Tree
 // @Failure 403
 // @router /FacultadesConProyectos [get]
-func (c *DependenciaPadreV2Controller) FacultadesConProyectosV2() {
+func (c *DependenciaPadreController) FacultadesConProyectos() {
 	//Construcción Json menus
 	l := models.Facultades()
 	c.Data["json"] = l
@@ -217,7 +254,7 @@ func (c *DependenciaPadreV2Controller) FacultadesConProyectosV2() {
 // @Success 200 {object} []models.TreeDependencia
 // @Failure 403
 // @router /ArbolDependencias [get]
-func (c *DependenciaPadreV2Controller) ArbolDependenciasV2() {
+func (c *DependenciaPadreController) ArbolDependencias() {
 	//Construcción Json menus
 	l := models.ConstruirDependenciasPadre()
 	c.Data["json"] = l
@@ -232,7 +269,7 @@ func (c *DependenciaPadreV2Controller) ArbolDependenciasV2() {
 // @Success 201 {object} models.DependenciaPadreV2
 // @Failure 400 the request contains incorrect syntax
 // @router /tr_dependencia_padre [post]
-func (c *DependenciaPadreV2Controller) TRDependenciaPadreV2() {
+func (c *DependenciaPadreController) TRDependenciaPadre() {
 	var v models.DependenciaPadreV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 

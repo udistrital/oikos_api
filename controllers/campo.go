@@ -5,21 +5,20 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"time"
+
+	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-
-	"github.com/udistrital/oikos_api/models"
 )
 
-// CampoController oprations for Campo
-type CampoController struct {
+// CampoV2Controller operations for Campo
+type CampoV2Controller struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *CampoController) URLMapping() {
+func (c *CampoV2Controller) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -30,26 +29,14 @@ func (c *CampoController) URLMapping() {
 // Post ...
 // @Title Post
 // @Description create Campo
-// @Param	body		body 	models.Campo	true		"body for Campo content"
-// @Success 201 {object} models.Campo
-// @Failure 403 body is empty
+// @Param	body		body 	models.CampoV2	true		"body for Campo content"
+// @Success 201 {object} models.CampoV2
+// @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *CampoController) Post() {
-	var v models.Campo
+func (c *CampoV2Controller) Post() {
+	var v models.CampoV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.CampoV2{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Descripcion:       v.Descripcion,
-			CodigoAbreviacion: "C_" + v.Nombre,
-			Activo:            true,
-			FechaCreacion:     time.Now(),
-			FechaModificacion: time.Now(),
-		}
-		if _, err := models.AddCampo(&temp); err == nil {
-			//if _, err := models.AddCampo(&v); err == nil {
+		if _, err := models.AddCampo(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -71,10 +58,10 @@ func (c *CampoController) Post() {
 // @Title Get One
 // @Description get Campo by id
 // @Param	id		path 	int	true		"The key for staticblock"
-// @Success 200 {object} models.Campo
-// @Failure 403 :id is empty
+// @Success 200 {object} models.CampoV2
+// @Failure 404 not found resource
 // @router /:id [get]
-func (c *CampoController) GetOne() {
+func (c *CampoV2Controller) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetCampoById(id)
@@ -82,22 +69,9 @@ func (c *CampoController) GetOne() {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
 		c.Data["system"] = err
-		c.Abort("400")
+		c.Abort("404")
 	} else {
-
-		temp := models.Campo{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Descripcion:       v.Descripcion,
-			CodigoAbreviacion: v.CodigoAbreviacion,
-			Activo:            v.Activo,
-			FechaCreacion:     v.FechaCreacion,
-			FechaModificacion: v.FechaModificacion,
-		}
-
-		c.Data["json"] = temp
-		//-------------- Temporal: Cambio por transición ------- //
-		//c.Data["json"] = v
+		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -111,10 +85,10 @@ func (c *CampoController) GetOne() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	int	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} []models.Campo
-// @Failure 403
+// @Success 200 {object} []models.CampoV2
+// @Failure 404 not found resource
 // @router / [get]
-func (c *CampoController) GetAll() {
+func (c *CampoV2Controller) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -165,29 +139,8 @@ func (c *CampoController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-			c.Data["json"] = l
-		} else {
-			//-------------- Temporal: Cambio por transición ------- //
-			var temp []models.Campo
-			for _, i := range l {
-				field, _ := i.(models.CampoV2)
-
-				x := models.Campo{
-					Id:                field.Id,
-					Nombre:            field.Nombre,
-					Descripcion:       field.Descripcion,
-					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo:            field.Activo,
-					FechaCreacion:     field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,
-				}
-
-				temp = append(temp, x)
-			}
-			c.Data["json"] = temp
 		}
-
-		//c.Data["json"] = l
+		c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -196,28 +149,16 @@ func (c *CampoController) GetAll() {
 // @Title Put
 // @Description update the Campo
 // @Param	id		path 	int	true		"The id you want to update"
-// @Param	body		body 	models.Campo	true		"body for Campo content"
-// @Success 200 {object} models.Campo
-// @Failure 403 :id is not int
+// @Param	body		body 	models.CampoV2	true		"body for Campo content"
+// @Success 200 {object} models.CampoV2
+// @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *CampoController) Put() {
+func (c *CampoV2Controller) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	infoDep, _ := models.GetCampoById(id)
-	v := models.Campo{Id: id}
-
+	v := models.CampoV2{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		v2 := models.CampoV2{
-			Id:                id,
-			Nombre:            v.Nombre,
-			Descripcion:       v.Descripcion,
-			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo:            infoDep.Activo,
-			FechaCreacion:     infoDep.FechaCreacion,
-			FechaModificacion: time.Now(),
-		}
-
-		if err := models.UpdateCampoById(&v2); err == nil {
+		if err := models.UpdateCampoById(&v); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -239,9 +180,9 @@ func (c *CampoController) Put() {
 // @Description delete the Campo
 // @Param	id		path 	int	true		"The id you want to delete"
 // @Success 200 {object} models.Deleted
-// @Failure 403 id is empty
+// @Failure 404 not found resource
 // @router /:id [delete]
-func (c *CampoController) Delete() {
+func (c *CampoV2Controller) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteCampo(id); err == nil {

@@ -8,6 +8,8 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type TipoEspacioFisico struct {
@@ -18,6 +20,13 @@ type TipoEspacioFisico struct {
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
+func (d *TipoEspacioFisicoV2) FromV1(in TipoEspacioFisico) error {
+	return formatdata.FillStruct(in, &d)
+}
+func (d *TipoEspacioFisicoV2) ToV1(out *TipoEspacioFisico) error {
+	return formatdata.FillStruct(d, out)
 }
 
 type TipoEspacioFisicoV2 struct {
