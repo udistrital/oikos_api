@@ -7,13 +7,52 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type EspacioFisicoPadre struct {
 	Id    int            `orm:"column(id);pk;auto"`
 	Padre *EspacioFisico `orm:"column(padre);rel(fk)"`
 	Hijo  *EspacioFisico `orm:"column(hijo);rel(fk)"`
+}
+
+func (d *EspacioFisicoPadreV2) FromV1(in EspacioFisicoPadre) error {
+	if err := formatdata.FillStruct(in, &d); err != nil {
+		return err
+	}
+	if in.Padre != nil {
+		var esp EspacioFisicoV2
+		esp.FromV1(*in.Padre)
+		d.PadreId = &esp
+	}
+	if in.Hijo != nil {
+		var esp EspacioFisicoV2
+		esp.FromV1(*in.Hijo)
+		d.HijoId = &esp
+	}
+	return nil
+}
+func (d *EspacioFisicoPadreV2) ToV1(out *EspacioFisicoPadre) error {
+	if err := formatdata.FillStruct(d, &out); err != nil {
+		return err
+	}
+	if d.PadreId != nil {
+		var esp EspacioFisico
+		d.PadreId.ToV1(&esp)
+		out.Padre = &esp
+	}
+	if d.HijoId != nil {
+		var esp EspacioFisico
+		d.HijoId.ToV1(&esp)
+		out.Hijo = &esp
+	}
+	logs.Debug("out:", out)
+	var d2 EspacioFisicoPadreV2
+	d2.FromV1(*out)
+	logs.Debug("d2:", d2)
+	return nil
 }
 
 type EspacioFisicoPadreV2 struct {

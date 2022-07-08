@@ -37,25 +37,15 @@ func (c *EspacioFisicoPadreController) Post() {
 	var v models.EspacioFisicoPadre
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		efp := &models.EspacioFisicoV2{
-			Id: v.Padre.Id,
-		}
-
-		efh := &models.EspacioFisicoV2{
-			Id: v.Hijo.Id,
-		}
-
-		temp := models.EspacioFisicoPadreV2{
-			Id:                v.Id,
-			PadreId:           efp,
-			HijoId:            efh,
-			FechaCreacion:     time.Now(),
-			FechaModificacion: time.Now(),
-		}
+		var temp models.EspacioFisicoPadreV2
+		temp.FromV1(v)
+		t := time.Now()
+		temp.FechaCreacion = t
+		temp.FechaModificacion = t
+		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddEspacioFisicoPadre(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			v.Id = temp.Id
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
@@ -81,21 +71,8 @@ func (c *EspacioFisicoPadreController) GetOne() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		efp := &models.EspacioFisico{
-			Id: v.PadreId.Id,
-		}
-
-		efh := &models.EspacioFisico{
-			Id: v.HijoId.Id,
-		}
-
-		temp := models.EspacioFisicoPadre{
-			Id:    v.Id,
-			Padre: efp,
-			Hijo:  efh,
-		}
-
+		var temp models.EspacioFisicoPadre
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -160,56 +137,18 @@ func (c *EspacioFisicoPadreController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.EspacioFisicoPadre
-		var act string
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.EspacioFisicoPadreV2)
-
-			tefp := &models.TipoEspacioFisico{
-				Id:     field.PadreId.TipoEspacioFisicoId.Id,
-				Nombre: field.PadreId.TipoEspacioFisicoId.Nombre,
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.EspacioFisicoPadreV2:
+				var x models.EspacioFisicoPadre
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
 			}
-
-			tefh := &models.TipoEspacioFisico{
-				Id:     field.HijoId.TipoEspacioFisicoId.Id,
-				Nombre: field.HijoId.TipoEspacioFisicoId.Nombre,
-			}
-
-			if field.PadreId.Activo == true {
-				act = "Activo"
-			} else {
-				act = "Inactivo"
-			}
-
-			efp := &models.EspacioFisico{
-				Id:          field.PadreId.Id,
-				Nombre:      field.PadreId.Nombre,
-				Estado:      act,
-				Codigo:      field.PadreId.CodigoAbreviacion,
-				TipoEspacio: tefp,
-			}
-
-			if field.HijoId.Activo == true {
-				act = "Activo"
-			} else {
-				act = "Inactivo"
-			}
-
-			efh := &models.EspacioFisico{
-				Id:          field.HijoId.Id,
-				Nombre:      field.HijoId.Nombre,
-				Estado:      act,
-				Codigo:      field.HijoId.CodigoAbreviacion,
-				TipoEspacio: tefh,
-			}
-
-			x := models.EspacioFisicoPadre{
-				Id:    field.Id,
-				Padre: efp,
-				Hijo:  efh,
-			}
-
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}
@@ -228,26 +167,13 @@ func (c *EspacioFisicoPadreController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v := models.EspacioFisicoPadre{Id: id}
-	infoEsp, _ := models.GetEspacioFisicoPadreById(id)
+	v2, _ := models.GetEspacioFisicoPadreById(id)
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-		efp := &models.EspacioFisicoV2{
-			Id: v.Padre.Id,
-		}
-		efh := &models.EspacioFisicoV2{
-			Id: v.Hijo.Id,
-		}
-
-		v2 := models.EspacioFisicoPadreV2{
-			Id:                id,
-			PadreId:           efp,
-			HijoId:            efh,
-			FechaCreacion:     infoEsp.FechaCreacion,
-			FechaModificacion: time.Now(),
-		}
-
-		if err := models.UpdateEspacioFisicoPadreById(&v2); err == nil {
-			c.Data["json"] = v
+		v2.FromV1(v)
+		v2.FechaModificacion = time.Now()
+		if err := models.UpdateEspacioFisicoPadreById(v2); err == nil {
+			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
 		}
