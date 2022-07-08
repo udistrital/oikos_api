@@ -48,7 +48,7 @@ func (c *TipoUsoController) Post() {
 		}
 		if _, err := models.AddTipoUso(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			v.Id = temp.Id
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
