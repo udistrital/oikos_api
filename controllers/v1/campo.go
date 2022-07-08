@@ -39,6 +39,7 @@ func (c *CampoController) Post() {
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
 
+		// TODO: Revisar lo siguiente ...
 		temp := models.CampoV2{
 			Id:                v.Id,
 			Nombre:            v.Nombre,
@@ -48,9 +49,13 @@ func (c *CampoController) Post() {
 			FechaCreacion:     time.Now(),
 			FechaModificacion: time.Now(),
 		}
+		// ... debería bastar con:
+		// var temp models.CampoV2
+		// temp.FromV1(v)
 		if _, err := models.AddCampo(&temp); err == nil {
 			//if _, err := models.AddCampo(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -84,17 +89,8 @@ func (c *CampoController) GetOne() {
 		c.Data["system"] = err
 		c.Abort("400")
 	} else {
-
-		temp := models.Campo{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Descripcion:       v.Descripcion,
-			CodigoAbreviacion: v.CodigoAbreviacion,
-			Activo:            v.Activo,
-			FechaCreacion:     v.FechaCreacion,
-			FechaModificacion: v.FechaModificacion,
-		}
-
+		var temp models.Campo
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 		//-------------- Temporal: Cambio por transición ------- //
 		//c.Data["json"] = v
@@ -168,26 +164,21 @@ func (c *CampoController) GetAll() {
 			c.Data["json"] = l
 		} else {
 			//-------------- Temporal: Cambio por transición ------- //
-			var temp []models.Campo
+			var temp []interface{}
 			for _, i := range l {
-				field, _ := i.(models.CampoV2)
-
-				x := models.Campo{
-					Id:                field.Id,
-					Nombre:            field.Nombre,
-					Descripcion:       field.Descripcion,
-					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo:            field.Activo,
-					FechaCreacion:     field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,
+				switch v := i.(type) {
+				case map[string]interface{}:
+					temp = append(temp, v)
+				case models.CampoV2:
+					var x models.Campo
+					v.ToV1(&x)
+					temp = append(temp, x)
+					// default:
+					// 	// SIN MANEJAR!
 				}
-
-				temp = append(temp, x)
 			}
 			c.Data["json"] = temp
 		}
-
-		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -203,21 +194,20 @@ func (c *CampoController) GetAll() {
 func (c *CampoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	infoDep, _ := models.GetCampoById(id)
+	v2, _ := models.GetCampoById(id)
 	v := models.Campo{Id: id}
 
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		v2 := models.CampoV2{
-			Id:                id,
-			Nombre:            v.Nombre,
-			Descripcion:       v.Descripcion,
-			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo:            infoDep.Activo,
-			FechaCreacion:     infoDep.FechaCreacion,
-			FechaModificacion: time.Now(),
-		}
+		// TODO: Revisar lo siguiente ...:
+		v2.Id = id
+		v2.Nombre = v.Nombre
+		v2.Descripcion = v.Descripcion
+		v2.FechaModificacion = time.Now()
+		// ... debería bastar con:
+		// v2.FromV1(v)
 
-		if err := models.UpdateCampoById(&v2); err == nil {
+		if err := models.UpdateCampoById(v2); err == nil {
+			v2.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -245,7 +235,7 @@ func (c *CampoController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteCampo(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"Id": id}
+		c.Data["json"] = models.Deleted{Id: id}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
