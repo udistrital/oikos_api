@@ -9,10 +9,17 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 var elementMapEF = make(map[int]EspacioFisicoPadreHijo)
 var lef = list.New()
+
+const (
+	EspacioFisicoEstadoActivo   = "Activo"
+	EspacioFisicoEstadoInactivo = "Inactivo"
+)
 
 type EspacioFisico struct {
 	Id          int                `orm:"column(id);pk;auto"`
@@ -20,6 +27,37 @@ type EspacioFisico struct {
 	TipoEspacio *TipoEspacioFisico `orm:"column(tipo_espacio);rel(fk)"`
 	Nombre      string             `orm:"column(nombre)"`
 	Codigo      string             `orm:"column(codigo)"`
+}
+
+func (d *EspacioFisicoV2) FromV1(in EspacioFisico) error {
+	if err := formatdata.FillStruct(in, &d); err != nil {
+		return err
+	}
+	d.Activo = in.Estado != EspacioFisicoEstadoInactivo
+	d.CodigoAbreviacion = in.Codigo
+	if in.TipoEspacio != nil {
+		var esp TipoEspacioFisicoV2
+		esp.FromV1(*in.TipoEspacio)
+		d.TipoEspacioFisicoId = &esp
+	}
+	return nil
+}
+func (d *EspacioFisicoV2) ToV1(out *EspacioFisico) error {
+	if err := formatdata.FillStruct(d, out); err != nil {
+		return err
+	}
+	out.Codigo = d.CodigoAbreviacion
+	if d.Activo {
+		out.Estado = EspacioFisicoEstadoActivo
+	} else {
+		out.Estado = EspacioFisicoEstadoInactivo
+	}
+	if d.TipoEspacioFisicoId != nil {
+		var esp TipoEspacioFisico
+		d.TipoEspacioFisicoId.ToV1(&esp)
+		(*out).TipoEspacio = &esp
+	}
+	return nil
 }
 
 type EspacioFisicoV2 struct {

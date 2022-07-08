@@ -53,7 +53,7 @@ func (c *EspacioFisicoController) Post() {
 		}
 		if _, err := models.AddEspacioFisico(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			v.Id = temp.Id
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
@@ -79,25 +79,8 @@ func (c *EspacioFisicoController) GetOne() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var act string
-		if v.Activo == true {
-			act = "Activo"
-		} else {
-			act = "Inactivo"
-		}
-
-		te := &models.TipoEspacioFisico{
-			Id:     v.TipoEspacioFisicoId.Id,
-			Nombre: v.TipoEspacioFisicoId.Nombre,
-		}
-
-		temp := models.EspacioFisico{
-			Id:          v.Id,
-			Nombre:      v.Nombre,
-			Codigo:      v.CodigoAbreviacion,
-			Estado:      act,
-			TipoEspacio: te,
-		}
+		var temp models.EspacioFisico
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -166,30 +149,18 @@ func (c *EspacioFisicoController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		var temp []models.EspacioFisico
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.EspacioFisicoV2)
-			var act string
-			if field.Activo == true {
-				act = "Activo"
-			} else {
-				act = "Inactivo"
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.EspacioFisicoV2:
+				var x models.EspacioFisico
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
 			}
-
-			te := &models.TipoEspacioFisico{
-				Id:     field.TipoEspacioFisicoId.Id,
-				Nombre: field.TipoEspacioFisicoId.Nombre,
-			}
-
-			x := models.EspacioFisico{
-				Id:          field.Id,
-				Nombre:      field.Nombre,
-				Codigo:      field.CodigoAbreviacion,
-				Estado:      act,
-				TipoEspacio: te,
-			}
-
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}
@@ -207,27 +178,25 @@ func (c *EspacioFisicoController) GetAll() {
 func (c *EspacioFisicoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	infoDep, _ := models.GetEspacioFisicoById(id)
+	v2, _ := models.GetEspacioFisicoById(id)
 	v := models.EspacioFisico{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 
-		tef := &models.TipoEspacioFisicoV2{
-			Id: v.TipoEspacio.Id,
+		// TODO: Revisar lo siguiente ...:
+		v2.Id = id
+		v2.Nombre = v.Nombre
+		v2.CodigoAbreviacion = v.Codigo
+		v2.Activo = v.Estado == "Activo"
+		v2.FechaModificacion = time.Now()
+		if v.TipoEspacio != nil {
+			v2.TipoEspacioFisicoId.FromV1(*v.TipoEspacio)
 		}
+		// ... debería bastar con:
+		// v2.FromV1(v)
 
-		v2 := models.EspacioFisicoV2{
-			Id:                  id,
-			Nombre:              v.Nombre,
-			Descripcion:         infoDep.Descripcion,
-			CodigoAbreviacion:   v.Codigo,
-			Activo:              v.Estado == "Activo",
-			FechaCreacion:       infoDep.FechaCreacion,
-			FechaModificacion:   time.Now(),
-			TipoEspacioFisicoId: tef,
-		}
-
-		if err := models.UpdateEspacioFisicoById(&v2); err == nil {
-			c.Data["json"] = "OK"
+		if err := models.UpdateEspacioFisicoById(v2); err == nil {
+			v2.ToV1(&v)
+			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
 		}
