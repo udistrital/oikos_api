@@ -8,12 +8,21 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type Campo struct {
 	Id          int    `orm:"column(id);pk;auto"`
 	Nombre      string `orm:"column(nombre)"`
 	Descripcion string `orm:"column(descripcion);null"`
+}
+
+func (d *CampoV2) FromV1(in Campo) error {
+	return formatdata.FillStruct(in, &d)
+}
+func (d *CampoV2) ToV1(out *Campo) error {
+	return formatdata.FillStruct(d, out)
 }
 
 type CampoV2 struct {

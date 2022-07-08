@@ -46,9 +46,12 @@ func (c *CampoController) Post() {
 			FechaCreacion:     time.Now(),
 			FechaModificacion: time.Now(),
 		}
+		// ... debería bastar con:
+		// var temp models.CampoV2
+		// temp.FromV1(v)
 		if _, err := models.AddCampo(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			v.Id = temp.Id
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
@@ -73,11 +76,8 @@ func (c *CampoController) GetOne() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		temp := models.Campo{
-			Id:          v.Id,
-			Nombre:      v.Nombre,
-			Descripcion: v.Descripcion,
-		}
+		var temp models.Campo
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -142,17 +142,18 @@ func (c *CampoController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.Campo
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.CampoV2)
-
-			x := models.Campo{
-				Id:          field.Id,
-				Nombre:      field.Nombre,
-				Descripcion: field.Descripcion,
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.CampoV2:
+				var x models.Campo
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
 			}
-
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}
