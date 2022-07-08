@@ -38,6 +38,8 @@ func (c *TipoDependenciaController) Post() {
 	var v models.TipoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
+
+		// TODO: Revisar lo siguiente ...:
 		temp := models.TipoDependenciaV2{
 			Id:                v.Id,
 			Nombre:            v.Nombre,
@@ -47,6 +49,9 @@ func (c *TipoDependenciaController) Post() {
 			FechaCreacion:     time.Now(),
 			FechaModificacion: time.Now(),
 		}
+		// ... debería bastar con:
+		// var temp models.TipoDependenciaV2
+		// temp.FromV1(v)
 		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddTipoDependencia(&temp); err == nil {
 			//if _, err := models.AddTipoDependencia(&v); err == nil {
@@ -85,19 +90,9 @@ func (c *TipoDependenciaController) GetOne() {
 		c.Abort("404")
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.TipoDependencia{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Descripcion:       v.Descripcion,
-			CodigoAbreviacion: v.CodigoAbreviacion,
-			Activo:            v.Activo,
-			FechaCreacion:     v.FechaCreacion,
-			FechaModificacion: v.FechaModificacion,
-		}
+		var temp models.TipoDependencia
+		v.ToV1(&temp)
 		c.Data["json"] = temp
-		//-------------- Temporal: Cambio por transición ------- //
-		//c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
@@ -168,26 +163,21 @@ func (c *TipoDependenciaController) GetAll() {
 			c.Data["json"] = l
 		} else {
 			//-------------- Temporal: Cambio por transición ------- //
-			var temp []models.TipoDependencia
+			var temp []interface{}
 			for _, i := range l {
-				field, _ := i.(models.TipoDependenciaV2)
-				x := models.TipoDependencia{
-					Id:                field.Id,
-					Nombre:            field.Nombre,
-					Descripcion:       field.Descripcion,
-					CodigoAbreviacion: field.CodigoAbreviacion,
-					Activo:            field.Activo,
-					FechaCreacion:     field.FechaCreacion,
-					FechaModificacion: field.FechaModificacion,
+				switch v := i.(type) {
+				case map[string]interface{}:
+					temp = append(temp, v)
+				case models.TipoDependenciaV2:
+					var x models.TipoDependencia
+					v.ToV1(&x)
+					temp = append(temp, v)
+					// default:
+					// 	// SIN MANEJAR!
 				}
-
-				temp = append(temp, x)
 			}
 			c.Data["json"] = temp
 		}
-
-		//-------------- Temporal: Cambio por transición ------- //
-		//c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
@@ -204,19 +194,17 @@ func (c *TipoDependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	//-------------- Temporal: Cambio por transición ------- //
-	infoDep, _ := models.GetTipoDependenciaById(id)
+	v2, _ := models.GetTipoDependenciaById(id)
 	v := models.TipoDependencia{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		v2 := models.TipoDependenciaV2{
-			Id:                id,
-			Nombre:            v.Nombre,
-			Descripcion:       infoDep.Descripcion,
-			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo:            infoDep.Activo,
-			FechaCreacion:     infoDep.FechaCreacion,
-			FechaModificacion: time.Now(),
-		}
-		if err := models.UpdateTipoDependenciaById(&v2); err == nil {
+		// TODO: Revisar lo siguiente...:
+		v2.Id = id
+		v2.Nombre = v.Nombre
+		v2.FechaModificacion = time.Now()
+		// ... debería bastar con:
+		// v2.FromV1(v)
+		if err := models.UpdateTipoDependenciaById(v2); err == nil {
+			v2.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -244,7 +232,7 @@ func (c *TipoDependenciaController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteTipoDependencia(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"Id": id}
+		c.Data["json"] = models.Deleted{Id: id}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
