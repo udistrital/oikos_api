@@ -37,6 +37,8 @@ func (c *TipoDependenciaController) Post() {
 	var v models.TipoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
+
+		// TODO: Revisar lo siguiente ...:
 		temp := models.TipoDependenciaV2{
 			Id:                v.Id,
 			Nombre:            v.Nombre,
@@ -74,11 +76,8 @@ func (c *TipoDependenciaController) GetOne() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.TipoDependencia{
-			Id:     v.Id,
-			Nombre: v.Nombre,
-		}
+		var temp models.TipoDependencia
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -143,15 +142,18 @@ func (c *TipoDependenciaController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.TipoDependencia
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.TipoDependenciaV2)
-			x := models.TipoDependencia{
-				Id:     field.Id,
-				Nombre: field.Nombre,
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.TipoDependenciaV2:
+				var x models.TipoDependencia
+				v.ToV1(&x)
+				temp = append(temp, v)
+				// default:
+				// 	// SIN MANEJAR!
 			}
-
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}
@@ -170,19 +172,13 @@ func (c *TipoDependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	//-------------- Temporal: Cambio por transición ------- //
-	infoDep, _ := models.GetTipoDependenciaById(id)
+	v2, _ := models.GetTipoDependenciaById(id)
 	v := models.TipoDependencia{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		v2 := models.TipoDependenciaV2{
-			Id:                id,
-			Nombre:            v.Nombre,
-			Descripcion:       infoDep.Descripcion,
-			CodigoAbreviacion: infoDep.CodigoAbreviacion,
-			Activo:            infoDep.Activo,
-			FechaCreacion:     infoDep.FechaCreacion,
-			FechaModificacion: time.Now(),
-		}
-		if err := models.UpdateTipoDependenciaById(&v2); err == nil {
+		v2.Id = id
+		v2.Nombre = v.Nombre
+		v2.FechaModificacion = time.Now()
+		if err := models.UpdateTipoDependenciaById(v2); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
