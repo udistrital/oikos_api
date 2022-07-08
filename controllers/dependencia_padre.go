@@ -3,49 +3,54 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"strconv"
 	"strings"
 
-	"github.com/udistrital/oikos_api/models"
-
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
-// DependenciaPadreController oprations for DependenciaPadre
-type DependenciaPadreController struct {
+// DependenciaPadreV2Controller operations for DependenciaPadre
+type DependenciaPadreV2Controller struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *DependenciaPadreController) URLMapping() {
+func (c *DependenciaPadreV2Controller) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
-	c.Mapping("ArbolDependencias", c.ArbolDependencias)
-	c.Mapping("FacultadesConProyectos", c.FacultadesConProyectos)
+
 }
 
 // Post ...
 // @Title Post
 // @Description create DependenciaPadre
-// @Param	body		body 	models.DependenciaPadre	true		"body for DependenciaPadre content"
-// @Success 201 {int} models.DependenciaPadre
-// @Failure 403 body is empty
+// @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadre content"
+// @Success 201 {object} models.DependenciaPadreV2
+// @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *DependenciaPadreController) Post() {
-	var v models.DependenciaPadre
+func (c *DependenciaPadreV2Controller) Post() {
+	var v models.DependenciaPadreV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if _, err := models.AddDependenciaPadre(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -53,16 +58,19 @@ func (c *DependenciaPadreController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get DependenciaPadre by id
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.DependenciaPadre
-// @Failure 403 :id is empty
+// @Param	id		path 	int	true		"The key for staticblock"
+// @Success 200 {object} models.DependenciaPadreV2
+// @Failure 404 not found resource
 // @router /:id [get]
-func (c *DependenciaPadreController) GetOne() {
+func (c *DependenciaPadreV2Controller) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetDependenciaPadreById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
 		c.Data["json"] = v
 	}
@@ -76,12 +84,12 @@ func (c *DependenciaPadreController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.DependenciaPadre
-// @Failure 403
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.DependenciaPadreV2
+// @Failure 404 not found resource
 // @router / [get]
-func (c *DependenciaPadreController) GetAll() {
+func (c *DependenciaPadreV2Controller) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -125,8 +133,14 @@ func (c *DependenciaPadreController) GetAll() {
 
 	l, err := models.GetAllDependenciaPadre(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
+		if l == nil {
+			l = append(l, map[string]interface{}{})
+		}
 		c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -135,23 +149,29 @@ func (c *DependenciaPadreController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the DependenciaPadre
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.DependenciaPadre	true		"body for DependenciaPadre content"
-// @Success 200 {object} models.DependenciaPadre
-// @Failure 403 :id is not int
+// @Param	id		path 	int	true		"The id you want to update"
+// @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadre content"
+// @Success 200 {object} models.DependenciaPadreV2
+// @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *DependenciaPadreController) Put() {
+func (c *DependenciaPadreV2Controller) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.DependenciaPadre{Id: id}
+	v := models.DependenciaPadreV2{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateDependenciaPadreById(&v); err == nil {
-			c.Data["json"] = "OK"
+			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -159,52 +179,77 @@ func (c *DependenciaPadreController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the DependenciaPadre
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
-// @Failure 403 id is empty
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
+// @Failure 404 not found resource
 // @router /:id [delete]
-func (c *DependenciaPadreController) Delete() {
+func (c *DependenciaPadreV2Controller) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteDependenciaPadre(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"Id": id}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	}
-	c.ServeJSON()
-}
-
-// ArbolDependencias ...
-// @Title ArbolDependencias
-// @Description Construye el arbol de dependencias
-// @Success 200 {object} models.DependenciaPadre
-// @Failure 403
-// @router /ArbolDependencias [get]
-//Función para armar los árboles de las dependencias
-func (c *DependenciaPadreController) ArbolDependencias() {
-	//Construcción Json menus
-	l := models.ConstruirDependenciasPadre()
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
-	c.Data["json"] = l
-	//Generera el Json con los datos obtenidos
 	c.ServeJSON()
 }
 
 // FacultadesConProyectos ...
 // @Title FacultadesConProyectos
 // @Description Lista las facultades con sus respectivos proyectos curriculares
-// @Success 200 {object} models.DependenciaPadre
+// @Success 200 {object} []models.Tree
 // @Failure 403
 // @router /FacultadesConProyectos [get]
-func (c *DependenciaPadreController) FacultadesConProyectos() {
+func (c *DependenciaPadreV2Controller) FacultadesConProyectosV2() {
 	//Construcción Json menus
 	l := models.Facultades()
-	fmt.Println("Este es el resultado de la consulta")
-	fmt.Println(l)
-
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// ArbolDependencias ...
+// @Title ArbolDependencias
+// @Description ArbolDependencias
+// @Success 200 {object} []models.TreeDependencia
+// @Failure 403
+// @router /ArbolDependencias [get]
+func (c *DependenciaPadreV2Controller) ArbolDependenciasV2() {
+	//Construcción Json menus
+	l := models.ConstruirDependenciasPadre()
+	c.Data["json"] = l
+	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// TRDependenciaPadre ...
+// @Title TRDependenciaPadre
+// @Description Transacción que inserta una dependencia y le asocia un padre, al insertar en la tabla dependencia_padre. Se verifica que el padre exista y si no, se reversa la inserción de la dependencia.
+// @Param	body		body 	models.DependenciaPadreV2	true		"body for DependenciaPadreV2 content"
+// @Success 201 {object} models.DependenciaPadreV2
+// @Failure 400 the request contains incorrect syntax
+// @router /tr_dependencia_padre [post]
+func (c *DependenciaPadreV2Controller) TRDependenciaPadreV2() {
+	var v models.DependenciaPadreV2
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+
+		if _, err := models.TRDependenciaPadre(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = v
+		} else {
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
+		}
+	} else {
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
+	}
 	c.ServeJSON()
 }

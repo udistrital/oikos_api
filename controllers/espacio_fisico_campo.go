@@ -3,20 +3,22 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
 
+	"github.com/udistrital/oikos_api/models"
+
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
-// EspacioFisicoCampoController oprations for EspacioFisicoCampo
-type EspacioFisicoCampoController struct {
+// EspacioFisicoCampoV2Controller operations for EspacioFisicoCampo
+type EspacioFisicoCampoV2Controller struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *EspacioFisicoCampoController) URLMapping() {
+func (c *EspacioFisicoCampoV2Controller) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -27,21 +29,27 @@ func (c *EspacioFisicoCampoController) URLMapping() {
 // Post ...
 // @Title Post
 // @Description create EspacioFisicoCampo
-// @Param	body		body 	models.EspacioFisicoCampo	true		"body for EspacioFisicoCampo content"
-// @Success 201 {int} models.EspacioFisicoCampo
-// @Failure 403 body is empty
+// @Param	body		body 	models.EspacioFisicoCampoV2	true		"body for EspacioFisicoCampo content"
+// @Success 201 {object} models.EspacioFisicoCampoV2
+// @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *EspacioFisicoCampoController) Post() {
-	var v models.EspacioFisicoCampo
+func (c *EspacioFisicoCampoV2Controller) Post() {
+	var v models.EspacioFisicoCampoV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if _, err := models.AddEspacioFisicoCampo(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -49,16 +57,19 @@ func (c *EspacioFisicoCampoController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get EspacioFisicoCampo by id
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.EspacioFisicoCampo
-// @Failure 403 :id is empty
+// @Param	id		path 	int	true		"The key for staticblock"
+// @Success 200 {object} models.EspacioFisicoCampoV2
+// @Failure 404 not found resource
 // @router /:id [get]
-func (c *EspacioFisicoCampoController) GetOne() {
+func (c *EspacioFisicoCampoV2Controller) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetEspacioFisicoCampoById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
 		c.Data["json"] = v
 	}
@@ -72,12 +83,12 @@ func (c *EspacioFisicoCampoController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.EspacioFisicoCampo
-// @Failure 403
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.EspacioFisicoCampoV2
+// @Failure 404 not found resource
 // @router / [get]
-func (c *EspacioFisicoCampoController) GetAll() {
+func (c *EspacioFisicoCampoV2Controller) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -121,8 +132,14 @@ func (c *EspacioFisicoCampoController) GetAll() {
 
 	l, err := models.GetAllEspacioFisicoCampo(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
+		if l == nil {
+			l = append(l, map[string]interface{}{})
+		}
 		c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -131,23 +148,29 @@ func (c *EspacioFisicoCampoController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the EspacioFisicoCampo
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.EspacioFisicoCampo	true		"body for EspacioFisicoCampo content"
-// @Success 200 {object} models.EspacioFisicoCampo
-// @Failure 403 :id is not int
+// @Param	id		path 	int	true		"The id you want to update"
+// @Param	body		body 	models.EspacioFisicoCampoV2	true		"body for EspacioFisicoCampo content"
+// @Success 200 {object} models.EspacioFisicoCampoV2
+// @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *EspacioFisicoCampoController) Put() {
+func (c *EspacioFisicoCampoV2Controller) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.EspacioFisicoCampo{Id: id}
+	v := models.EspacioFisicoCampoV2{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateEspacioFisicoCampoById(&v); err == nil {
-			c.Data["json"] = "OK"
+			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -155,17 +178,20 @@ func (c *EspacioFisicoCampoController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the EspacioFisicoCampo
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
-// @Failure 403 id is empty
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
+// @Failure 404 not found resource
 // @router /:id [delete]
-func (c *EspacioFisicoCampoController) Delete() {
+func (c *EspacioFisicoCampoV2Controller) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteEspacioFisicoCampo(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"Id": id}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	}
 	c.ServeJSON()
 }

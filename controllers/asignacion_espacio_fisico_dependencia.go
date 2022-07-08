@@ -3,20 +3,22 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
 
+	"github.com/udistrital/oikos_api/models"
+
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
-// AsignacionEspacioFisicoDependenciaController oprations for AsignacionEspacioFisicoDependencia
-type AsignacionEspacioFisicoDependenciaController struct {
+// AsignacionEspacioFisicoDependenciaV2Controller operations for AsignacionEspacioFisicoDependencia
+type AsignacionEspacioFisicoDependenciaV2Controller struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *AsignacionEspacioFisicoDependenciaController) URLMapping() {
+func (c *AsignacionEspacioFisicoDependenciaV2Controller) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -27,21 +29,27 @@ func (c *AsignacionEspacioFisicoDependenciaController) URLMapping() {
 // Post ...
 // @Title Post
 // @Description create AsignacionEspacioFisicoDependencia
-// @Param	body		body 	models.AsignacionEspacioFisicoDependencia	true		"body for AsignacionEspacioFisicoDependencia content"
-// @Success 201 {int} models.AsignacionEspacioFisicoDependencia
-// @Failure 403 body is empty
+// @Param	body		body 	models.AsignacionEspacioFisicoDependenciaV2	true		"body for AsignacionEspacioFisicoDependencia content"
+// @Success 201 {object} models.AsignacionEspacioFisicoDependenciaV2
+// @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *AsignacionEspacioFisicoDependenciaController) Post() {
-	var v models.AsignacionEspacioFisicoDependencia
+func (c *AsignacionEspacioFisicoDependenciaV2Controller) Post() {
+	var v models.AsignacionEspacioFisicoDependenciaV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if _, err := models.AddAsignacionEspacioFisicoDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -49,16 +57,19 @@ func (c *AsignacionEspacioFisicoDependenciaController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get AsignacionEspacioFisicoDependencia by id
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.AsignacionEspacioFisicoDependencia
-// @Failure 403 :id is empty
+// @Param	id		path 	int	true		"The key for staticblock"
+// @Success 200 {object} models.AsignacionEspacioFisicoDependenciaV2
+// @Failure 404 not found resource
 // @router /:id [get]
-func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
+func (c *AsignacionEspacioFisicoDependenciaV2Controller) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetAsignacionEspacioFisicoDependenciaById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
 		c.Data["json"] = v
 	}
@@ -72,12 +83,12 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.AsignacionEspacioFisicoDependencia
-// @Failure 403
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.AsignacionEspacioFisicoDependenciaV2
+// @Failure 404 not found resource
 // @router / [get]
-func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
+func (c *AsignacionEspacioFisicoDependenciaV2Controller) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -121,8 +132,14 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 
 	l, err := models.GetAllAsignacionEspacioFisicoDependencia(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
+		if l == nil {
+			l = append(l, map[string]interface{}{})
+		}
 		c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -131,23 +148,29 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the AsignacionEspacioFisicoDependencia
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.AsignacionEspacioFisicoDependencia	true		"body for AsignacionEspacioFisicoDependencia content"
-// @Success 200 {object} models.AsignacionEspacioFisicoDependencia
-// @Failure 403 :id is not int
+// @Param	id		path 	int	true		"The id you want to update"
+// @Param	body		body 	models.AsignacionEspacioFisicoDependenciaV2	true		"body for AsignacionEspacioFisicoDependencia content"
+// @Success 200 {object} models.AsignacionEspacioFisicoDependenciaV2
+// @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *AsignacionEspacioFisicoDependenciaController) Put() {
+func (c *AsignacionEspacioFisicoDependenciaV2Controller) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.AsignacionEspacioFisicoDependencia{Id: id}
+	v := models.AsignacionEspacioFisicoDependenciaV2{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		if err := models.UpdateAsignacionEspacioFisicoDependenciaById(&v); err == nil {
-			c.Data["json"] = "OK"
+			c.Data["json"] = v
 		} else {
-			c.Data["json"] = err.Error()
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
 		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -155,17 +178,20 @@ func (c *AsignacionEspacioFisicoDependenciaController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the AsignacionEspacioFisicoDependencia
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
-// @Failure 403 id is empty
+// @Param	id		path 	int	true		"The id you want to delete"
+// @Success 200 {object} models.Deleted
+// @Failure 404 not found resource
 // @router /:id [delete]
-func (c *AsignacionEspacioFisicoDependenciaController) Delete() {
+func (c *AsignacionEspacioFisicoDependenciaV2Controller) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteAsignacionEspacioFisicoDependencia(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"Id": id}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	}
 	c.ServeJSON()
 }
