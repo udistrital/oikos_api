@@ -46,7 +46,7 @@ func (d *EspacioFisicoV2) FromV1(in EspacioFisico) error {
 	return nil
 }
 func (d *EspacioFisicoV2) ToV1(out *EspacioFisico) error {
-	if err := formatdata.FillStruct(d, out); err != nil {
+	if err := formatdata.FillStruct(d, &out); err != nil {
 		return err
 	}
 	out.Codigo = d.CodigoAbreviacion
