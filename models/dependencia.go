@@ -170,11 +170,14 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 
 	if nivel_academico == "PREGRADO" {
 
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 14`).QueryRows(&proyectosCurriculares)
+		num, err := o.Raw(
+			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija
+			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+			WHERE d.id = ? AND dtd.tipo_dependencia_id = 14`,
+			id_facultad).
+			QueryRows(&proyectosCurriculares)
 
 		if err == nil {
 			fmt.Println("Proyectos curriculares encontrados: ", num)
@@ -183,11 +186,14 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 		}
 
 	} else if nivel_academico == "POSGRADO" {
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 15`).QueryRows(&proyectosCurriculares)
+		num, err := o.Raw(
+			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija
+			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+			WHERE d.id = ? AND dtd.tipo_dependencia_id = 15`,
+			id_facultad).
+			QueryRows(&proyectosCurriculares)
 
 		if err == nil {
 			fmt.Println("Proyectos curriculares encontrados: ", num)
@@ -195,11 +201,14 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			fmt.Println("Este es el error ", err)
 		}
 	} else if nivel_academico == "undefined" {
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-											 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-											 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
+		num, err := o.Raw(
+			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija
+			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+			WHERE d.id = ? AND dtd.tipo_dependencia_id IN (1,14,15)`,
+			id_facultad).
+			QueryRows(&proyectosCurriculares)
 
 		if err == nil {
 			fmt.Println("Proyectos curriculares encontrados: ", num)
