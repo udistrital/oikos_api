@@ -159,11 +159,13 @@ func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
 	o := orm.NewOrm()
 	//Arreglo
 	var dependenciaPadres []TreeDependencia
-	num, err := o.Raw(`SELECT de.id AS id, de.nombre AS nombre, dep.padre AS padre
-										 FROM oikos.dependencia
-										 AS de left join oikos.dependencia_padre
-										 AS dep ON de.id = dep.hija
-										 WHERE padre IS NULL ORDER BY de.id`).QueryRows(&dependenciaPadres)
+	num, err := o.Raw(
+		`SELECT de.id AS id, de.nombre AS nombre, dep.padre AS padre
+		FROM ` + Esquema + `.dependencia
+		AS de left join ` + Esquema + `.dependencia_padre
+		AS dep ON de.id = dep.hija
+		WHERE padre IS NULL ORDER BY de.id`).
+		QueryRows(&dependenciaPadres)
 
 	if err == nil {
 		fmt.Println("Dependencias padre encontradas: ", num)
@@ -185,10 +187,13 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 	//Arreglo
 	var dependenciaHijas []TreeDependencia
 
-	num, err := o.Raw(`SELECT de.id, de.nombre, dep.padre, dep.hija
-											 FROM oikos.dependencia AS de
-											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija
-											 WHERE dep.padre = ` + padre + ` ORDER BY de.id`).QueryRows(&dependenciaHijas)
+	num, err := o.Raw(
+		`SELECT de.id, de.nombre, dep.padre, dep.hija
+		FROM `+Esquema+`.dependencia AS de
+		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija
+		WHERE dep.padre = ? ORDER BY de.id`,
+		padre).
+		QueryRows(&dependenciaHijas)
 
 	//Condicional si el error es nulo
 	if err == nil {
@@ -216,11 +221,13 @@ func Facultades() (facultad []TreeDependencia) {
 	//Arreglo que tendra las facultades encontradas
 	var facultades []TreeDependencia
 
-	num, err := o.Raw(`SELECT dh.id AS id, dh.nombre AS nombre
-										 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre
-                     INNER JOIN oikos.dependencia dh ON dh.id = dp.hija
-										 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-										 WHERE dtd.tipo_dependencia_id = 2`).QueryRows(&facultades)
+	num, err := o.Raw(
+		`SELECT dh.id AS id, dh.nombre AS nombre
+		FROM ` + Esquema + `.dependencia d INNER JOIN ` + Esquema + `.dependencia_padre dp ON d.id = dp.padre
+		INNER JOIN ` + Esquema + `.dependencia dh ON dh.id = dp.hija
+		INNER JOIN ` + Esquema + `.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+		WHERE dtd.tipo_dependencia_id = 2`).
+		QueryRows(&facultades)
 
 	if err == nil {
 		fmt.Println("Facultades encontradas: ", num)
@@ -245,11 +252,14 @@ func ProyectosCurricularesPorFacultad(Facultad *TreeDependencia) (proyectos []Tr
 	//Arreglo que tendra las facultades encontradas
 	var proyectos_curriculares []TreeDependencia
 
-	num, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre, dep.hija
-										 FROM oikos.dependencia AS de
-										 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija
-										 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dep.hija = dtd.dependencia_id
-										 WHERE dep.padre =` + padre + ` AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`).QueryRows(&proyectos_curriculares)
+	num, err := o.Raw(
+		`SELECT DISTINCT de.id, de.nombre, dep.padre, dep.hija
+		FROM `+Esquema+`.dependencia AS de
+		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija
+		INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dep.hija = dtd.dependencia_id
+		WHERE dep.padre = ? AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`,
+		padre).
+		QueryRows(&proyectos_curriculares)
 
 	if err == nil {
 		fmt.Println("Proyectos curriculares encontradas: ", num)
