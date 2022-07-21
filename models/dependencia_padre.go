@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type DependenciaPadre struct {
@@ -19,39 +18,6 @@ type DependenciaPadre struct {
 	Activo            bool         `orm:"column(activo)"`
 	FechaCreacion     time.Time    `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	FechaModificacion time.Time    `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-}
-
-func (d *DependenciaPadreV2) FromV1(in DependenciaPadre) error {
-	if err := formatdata.FillStruct(in, &d); err != nil {
-		return err
-	}
-	if in.Padre != nil {
-		var dep DependenciaV2
-		dep.FromV1(*in.Padre)
-		d.PadreId = &dep
-	}
-	if in.Hija != nil {
-		var dep DependenciaV2
-		dep.FromV1(*in.Hija)
-		d.HijaId = &dep
-	}
-	return nil
-}
-func (d *DependenciaPadreV2) ToV1(out *DependenciaPadre) error {
-	if err := formatdata.FillStruct(d, out); err != nil {
-		return err
-	}
-	if d.PadreId != nil {
-		var dep Dependencia
-		d.PadreId.ToV1(&dep)
-		out.Padre = &dep
-	}
-	if d.HijaId != nil {
-		var dep Dependencia
-		d.HijaId.ToV1(&dep)
-		out.Hija = &dep
-	}
-	return nil
 }
 
 type DependenciaPadreV2 struct {

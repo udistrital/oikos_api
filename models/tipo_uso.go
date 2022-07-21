@@ -8,8 +8,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-
-	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type TipoUso struct {
@@ -20,13 +18,6 @@ type TipoUso struct {
 	Activo            bool      `orm:"column(activo)"`
 	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-}
-
-func (d *TipoUsoV2) FromV1(in TipoUso) error {
-	return formatdata.FillStruct(in, &d)
-}
-func (d *TipoUsoV2) ToV1(out *TipoUso) error {
-	return formatdata.FillStruct(d, out)
 }
 
 type TipoUsoV2 struct {

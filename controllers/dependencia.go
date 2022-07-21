@@ -5,6 +5,7 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
@@ -12,31 +13,47 @@ import (
 	"github.com/udistrital/oikos_api/models"
 )
 
-// DependenciaV2Controller operations for Dependencia
-type DependenciaV2Controller struct {
+// DependenciaController oprations for Dependencia
+type DependenciaController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *DependenciaV2Controller) URLMapping() {
+func (c *DependenciaController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	c.Mapping("GetOne", c.GetOne)
-	c.Mapping("GetAll", c.GetAll)
+	c.Mapping("GetOne", c.GetOne) //--check
+	c.Mapping("GetAll", c.GetAll) //--check
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("ProyectosPorFacultad", c.ProyectosPorFacultad)
+	c.Mapping("GetDependenciasHijasById", c.GetDependenciasHijasById)
 }
 
 // Post ...
 // @Title Post
 // @Description create Dependencia
-// @Param	body		body 	models.DependenciaV2	true		"body for Dependencia content"
-// @Success 201 {object} models.DependenciaV2
+// @Param	body		body 	models.Dependencia	true		"body for Dependencia content"
+// @Success 201 {object} models.Dependencia
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *DependenciaV2Controller) Post() {
-	var v models.DependenciaV2
+func (c *DependenciaController) Post() {
+	var v models.Dependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddDependencia(&v); err == nil {
+		//-------------- Temporal: Cambio por transición ------- //
+
+		temp := models.DependenciaV2{
+			Id:                  v.Id,
+			Nombre:              v.Nombre,
+			TelefonoDependencia: v.TelefonoDependencia,
+			CorreoElectronico:   v.CorreoElectronico,
+			Activo:              true,
+			FechaCreacion:       time.Now(),
+			FechaModificacion:   time.Now(),
+		}
+
+		if _, err := models.AddDependencia(&temp); err == nil {
+			//-------------- Temporal: Cambio por transición ------- //
+			//if _, err := models.AddDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
 			c.Data["json"] = v
 		} else {
@@ -58,10 +75,10 @@ func (c *DependenciaV2Controller) Post() {
 // @Title Get One
 // @Description get Dependencia by id
 // @Param	id		path 	int	true		"The key for staticblock"
-// @Success 200 {object} models.DependenciaV2
+// @Success 200 {object} models.Dependencia
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *DependenciaV2Controller) GetOne() {
+func (c *DependenciaController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetDependenciaById(id)
@@ -71,7 +88,20 @@ func (c *DependenciaV2Controller) GetOne() {
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		c.Data["json"] = v
+		//-------------- Temporal: Cambio por transición ------- //
+
+		temp := models.Dependencia{
+			Id:                  v.Id,
+			Nombre:              v.Nombre,
+			TelefonoDependencia: v.TelefonoDependencia,
+			CorreoElectronico:   v.CorreoElectronico,
+			//DependenciaTipoDependencia: field.DependenciaTipoDependencia,
+		}
+
+		c.Data["json"] = temp
+		//-------------- Temporal: Cambio por transición ------- //
+
+		//c.Data["json"] = v  -------------- Temporal: Cambio por transición ------- //
 	}
 	c.ServeJSON()
 }
@@ -85,10 +115,10 @@ func (c *DependenciaV2Controller) GetOne() {
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	int	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} []models.DependenciaV2
+// @Success 200 {object} []models.Dependencia
 // @Failure 404 not found resource
 // @router / [get]
-func (c *DependenciaV2Controller) GetAll() {
+func (c *DependenciaController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -131,6 +161,7 @@ func (c *DependenciaV2Controller) GetAll() {
 	}
 
 	l, err := models.GetAllDependencia(query, fields, sortby, order, offset, limit)
+
 	if err != nil {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
@@ -139,8 +170,60 @@ func (c *DependenciaV2Controller) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
+			c.Data["json"] = l
+		} else {
+			//-------------- Temporal: Cambio por transición ------- //
+			var temp []models.Dependencia
+			for _, i := range l {
+				field, _ := i.(models.DependenciaV2)
+
+				var dtp []*models.DependenciaTipoDependencia
+
+				for _, j := range field.DependenciaTipoDependencia {
+					td := &models.TipoDependencia{
+						Id:                j.TipoDependenciaId.Id,
+						Nombre:            j.TipoDependenciaId.Nombre,
+						Descripcion:       j.TipoDependenciaId.Descripcion,
+						CodigoAbreviacion: j.TipoDependenciaId.CodigoAbreviacion,
+						Activo:            j.TipoDependenciaId.Activo,
+						FechaCreacion:     j.TipoDependenciaId.FechaCreacion,
+						FechaModificacion: j.TipoDependenciaId.FechaModificacion,
+					}
+
+					d := &models.Dependencia{
+						Id:                  j.DependenciaId.Id,
+						Nombre:              j.DependenciaId.Nombre,
+						TelefonoDependencia: j.DependenciaId.TelefonoDependencia,
+						CorreoElectronico:   j.DependenciaId.CorreoElectronico,
+					}
+
+					y := &models.DependenciaTipoDependencia{
+						Id:                j.Id,
+						TipoDependenciaId: td,
+						DependenciaId:     d,
+						Activo:            j.Activo,
+						FechaCreacion:     j.FechaCreacion,
+						FechaModificacion: j.FechaCreacion,
+					}
+
+					dtp = append(dtp, y)
+				}
+
+				x := models.Dependencia{
+					Id:                         field.Id,
+					Nombre:                     field.Nombre,
+					TelefonoDependencia:        field.TelefonoDependencia,
+					CorreoElectronico:          field.CorreoElectronico,
+					DependenciaTipoDependencia: dtp,
+				}
+
+				temp = append(temp, x)
+			}
+			c.Data["json"] = temp
 		}
-		c.Data["json"] = l
+
+		//-------------- Temporal: Cambio por transición ------- //
+		//c.Data["json"] = l -------------- Temporal: Cambio por transición ------- //
 	}
 	c.ServeJSON()
 }
@@ -153,11 +236,21 @@ func (c *DependenciaV2Controller) GetAll() {
 // @Success 200 {object} models.DependenciaV2
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *DependenciaV2Controller) Put() {
+func (c *DependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v := models.DependenciaV2{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
+	infoDep, _ := models.GetDependenciaById(id)
+	v := models.DependenciaV2{
+		Id:                id,
+		Activo:            infoDep.Activo,
+		FechaCreacion:     infoDep.FechaCreacion,
+		FechaModificacion: time.Now(),
+	}
+	//v := models.Dependencia{Id: id}
+	//-------------- Temporal: Cambio por transición ------- //
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+
 		if err := models.UpdateDependenciaById(&v); err == nil {
 			c.Data["json"] = v
 		} else {
@@ -179,10 +272,10 @@ func (c *DependenciaV2Controller) Put() {
 // @Title Delete
 // @Description delete the Dependencia
 // @Param	id		path 	int	true		"The id you want to delete"
-// @Success 200 {models} models.Deleted
+// @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
-func (c *DependenciaV2Controller) Delete() {
+func (c *DependenciaController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteDependencia(id); err == nil {
@@ -204,7 +297,7 @@ func (c *DependenciaV2Controller) Delete() {
 // @Success 200 {object} []models.ProyectosCurriculares
 // @Failure 403 :id_facultad is empty
 // @router /proyectosPorFacultad/:id_facultad/:nivel_academico [get]
-func (c *DependenciaV2Controller) ProyectosPorFacultad() {
+func (c *DependenciaController) ProyectosPorFacultad() {
 	//Se crea variable que contiene el id con tipo de dato string
 	idStr := c.Ctx.Input.Param(":id_facultad")
 	nivel_academico := c.Ctx.Input.Param(":nivel_academico")
@@ -225,7 +318,7 @@ func (c *DependenciaV2Controller) ProyectosPorFacultad() {
 // @Success 200 {object} []models.ProyectosCurriculares
 // @Failure 403 :id_facultad is empty
 // @router /proyectosPorFacultad/:id_facultad [get]
-func (c *DependenciaV2Controller) ProyectosPorFacultadNivelAcademico() {
+func (c *DependenciaController) ProyectosPorFacultadNivelAcademico() {
 	//Se crea variable que contiene el id con tipo de dato string
 	idStr := c.Ctx.Input.Param(":id_facultad")
 	//Se nombra la variable id, en la cual se hizo la conversión de string a int
@@ -245,7 +338,7 @@ func (c *DependenciaV2Controller) ProyectosPorFacultadNivelAcademico() {
 // @Success 200 {object} models.DependenciaPadreHijo
 // @Failure 403 :dependencia_padre is empty
 // @router /get_dependencias_hijas_by_id/:dependencia [get]
-func (c *DependenciaV2Controller) GetDependenciasHijasById() {
+func (c *DependenciaController) GetDependenciasHijasById() {
 	//Se crea variable que contiene el id con tipo de dato string
 	dependenciaPadre := c.Ctx.Input.Param(":dependencia")
 	depPadreint, _ := strconv.Atoi(dependenciaPadre)
@@ -268,11 +361,11 @@ func (c *DependenciaV2Controller) GetDependenciasHijasById() {
 // GetDependenciasPadresById ...
 // @Title GetDependenciasPadresById
 // @Description A partir de una dependencia dada, se obtienen todos sus predecesores en una estructura de árbol.
-// @Param	dependencia	path 	int	true		"Id de la dependencia"
+// @Param	dependencia	path 	string	true		"Id de la dependencia"
 // @Success 200 {object} []models.DependenciaPadreHijo
 // @Failure 404 :dependencia is empty
 // @router /get_dependencias_padres_by_id/:dependencia [get]
-func (c *DependenciaV2Controller) GetDependenciasPadresById() {
+func (c *DependenciaController) GetDependenciasPadresById() {
 	//Se crea variable que contiene el id con tipo de dato string
 	dependenciaHija := c.Ctx.Input.Param(":dependencia")
 	depHijaint, _ := strconv.Atoi(dependenciaHija)

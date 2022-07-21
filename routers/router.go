@@ -9,7 +9,6 @@ package routers
 
 import (
 	"github.com/udistrital/oikos_api/controllers"
-	v1 "github.com/udistrital/oikos_api/controllers/v1"
 
 	"github.com/astaxie/beego"
 	//Libreria de middleware
@@ -25,73 +24,73 @@ func init() {
 
 		beego.NSNamespace("/tipo_uso",
 			beego.NSInclude(
-				&v1.TipoUsoController{},
+				&controllers.TipoUsoController{},
 			),
 		),
 
 		beego.NSNamespace("/dependencia",
 			beego.NSInclude(
-				&v1.DependenciaController{},
+				&controllers.DependenciaController{},
 			),
 		),
 
 		beego.NSNamespace("/espacio_fisico",
 			beego.NSInclude(
-				&v1.EspacioFisicoController{},
+				&controllers.EspacioFisicoController{},
 			),
 		),
 
 		beego.NSNamespace("/espacio_fisico_padre",
 			beego.NSInclude(
-				&v1.EspacioFisicoPadreController{},
+				&controllers.EspacioFisicoPadreController{},
 			),
 		),
 
 		beego.NSNamespace("/tipo_uso_espacio_fisico",
 			beego.NSInclude(
-				&v1.TipoUsoEspacioFisicoController{},
+				&controllers.TipoUsoEspacioFisicoController{},
 			),
 		),
 
 		beego.NSNamespace("/dependencia_padre",
 			beego.NSInclude(
-				&v1.DependenciaPadreController{},
+				&controllers.DependenciaPadreController{},
 			),
 		),
 
 		beego.NSNamespace("/tipo_espacio_fisico",
 			beego.NSInclude(
-				&v1.TipoEspacioFisicoController{},
+				&controllers.TipoEspacioFisicoController{},
 			),
 		),
 
 		beego.NSNamespace("/asignacion_espacio_fisico_dependencia",
 			beego.NSInclude(
-				&v1.AsignacionEspacioFisicoDependenciaController{},
+				&controllers.AsignacionEspacioFisicoDependenciaController{},
 			),
 		),
 
 		beego.NSNamespace("/dependencia_tipo_dependencia",
 			beego.NSInclude(
-				&v1.DependenciaTipoDependenciaController{},
+				&controllers.DependenciaTipoDependenciaController{},
 			),
 		),
 
 		beego.NSNamespace("/tipo_dependencia",
 			beego.NSInclude(
-				&v1.TipoDependenciaController{},
+				&controllers.TipoDependenciaController{},
 			),
 		),
 
 		beego.NSNamespace("/campo",
 			beego.NSInclude(
-				&v1.CampoController{},
+				&controllers.CampoController{},
 			),
 		),
 
 		beego.NSNamespace("/espacio_fisico_campo",
 			beego.NSInclude(
-				&v1.EspacioFisicoCampoController{},
+				&controllers.EspacioFisicoCampoController{},
 			),
 		),
 	)

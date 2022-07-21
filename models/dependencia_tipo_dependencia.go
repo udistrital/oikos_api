@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type DependenciaTipoDependencia struct {
@@ -18,39 +17,6 @@ type DependenciaTipoDependencia struct {
 	Activo            bool             `orm:"column(activo)"`
 	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-}
-
-func (d *DependenciaTipoDependenciaV2) FromV1(in DependenciaTipoDependencia) error {
-	if err := formatdata.FillStruct(in, &d); err != nil {
-		return err
-	}
-	if in.TipoDependenciaId != nil {
-		var td TipoDependenciaV2
-		td.FromV1(*in.TipoDependenciaId)
-		d.TipoDependenciaId = &td
-	}
-	if in.DependenciaId != nil {
-		var dep DependenciaV2
-		dep.FromV1(*in.DependenciaId)
-		d.DependenciaId = &dep
-	}
-	return nil
-}
-func (d *DependenciaTipoDependenciaV2) ToV1(out *DependenciaTipoDependencia) error {
-	if err := formatdata.FillStruct(d, &out); err != nil {
-		return err
-	}
-	if d.TipoDependenciaId != nil {
-		var td TipoDependencia
-		d.TipoDependenciaId.ToV1(&td)
-		out.TipoDependenciaId = &td
-	}
-	if d.DependenciaId != nil {
-		var dep Dependencia
-		d.DependenciaId.ToV1(&dep)
-		out.DependenciaId = &dep
-	}
-	return nil
 }
 
 type DependenciaTipoDependenciaV2 struct {
