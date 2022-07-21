@@ -1,13 +1,18 @@
 package models
 
 import (
+	"container/list"
 	"errors"
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
+
+var elementMapEF = make(map[int]EspacioFisicoPadreHijo)
+var lef = list.New()
 
 type EspacioFisico struct {
 	Id          int                `orm:"column(id);pk;auto"`
@@ -17,17 +22,30 @@ type EspacioFisico struct {
 	Codigo      string             `orm:"column(codigo)"`
 }
 
-func (t *EspacioFisico) TableName() string {
+type EspacioFisicoV2 struct {
+	Id                  int                  `orm:"column(id);pk;auto"`
+	Nombre              string               `orm:"column(nombre)"`
+	Descripcion         string               `orm:"column(descripcion);null"`
+	CodigoAbreviacion   string               `orm:"column(codigo_abreviacion);null"`
+	Activo              bool                 `orm:"column(activo)"`
+	TipoTerrenoId       int                  `orm:"column(tipo_terreno_id)"`
+	TipoEdificacionId   int                  `orm:"column(tipo_edificacion_id)"`
+	TipoEspacioFisicoId *TipoEspacioFisicoV2 `orm:"column(tipo_espacio_fisico_id);rel(fk)"`
+	FechaCreacion       time.Time            `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion   time.Time            `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
+func (t *EspacioFisicoV2) TableName() string {
 	return "espacio_fisico"
 }
 
 func init() {
-	orm.RegisterModel(new(EspacioFisico))
+	orm.RegisterModel(new(EspacioFisicoV2))
 }
 
 // AddEspacioFisico insert a new EspacioFisico into database and returns
 // last inserted Id on success.
-func AddEspacioFisico(m *EspacioFisico) (id int64, err error) {
+func AddEspacioFisico(m *EspacioFisicoV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -35,9 +53,9 @@ func AddEspacioFisico(m *EspacioFisico) (id int64, err error) {
 
 // GetEspacioFisicoById retrieves EspacioFisico by Id. Returns error if
 // Id doesn't exist
-func GetEspacioFisicoById(id int) (v *EspacioFisico, err error) {
+func GetEspacioFisicoById(id int) (v *EspacioFisicoV2, err error) {
 	o := orm.NewOrm()
-	v = &EspacioFisico{Id: id}
+	v = &EspacioFisicoV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -49,7 +67,7 @@ func GetEspacioFisicoById(id int) (v *EspacioFisico, err error) {
 func GetAllEspacioFisico(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(EspacioFisico)).RelatedSel(5)
+	qs := o.QueryTable(new(EspacioFisicoV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -95,7 +113,7 @@ func GetAllEspacioFisico(query map[string]string, fields []string, sortby []stri
 		}
 	}
 
-	var l []EspacioFisico
+	var l []EspacioFisicoV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -120,9 +138,9 @@ func GetAllEspacioFisico(query map[string]string, fields []string, sortby []stri
 
 // UpdateEspacioFisico updates EspacioFisico by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateEspacioFisicoById(m *EspacioFisico) (err error) {
+func UpdateEspacioFisicoById(m *EspacioFisicoV2) (err error) {
 	o := orm.NewOrm()
-	v := EspacioFisico{Id: m.Id}
+	v := EspacioFisicoV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -137,11 +155,11 @@ func UpdateEspacioFisicoById(m *EspacioFisico) (err error) {
 // the record to be deleted doesn't exist
 func DeleteEspacioFisico(id int) (err error) {
 	o := orm.NewOrm()
-	v := EspacioFisico{Id: id}
+	v := EspacioFisicoV2{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&EspacioFisico{Id: id}); err == nil {
+		if num, err = o.Delete(&EspacioFisicoV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
@@ -168,4 +186,143 @@ func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
 		fmt.Println("Espacio físicos huerfanos encontrados: ", num)
 	}
 	return espaciosHuerfanos
+}
+
+func buscarEF(ef int) (padre EspacioFisicoPadreHijo) {
+
+	var x EspacioFisicoPadreHijo
+	for _, element := range elementMapEF {
+
+		if ef == element.Id {
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			x.Hijo = element.Hijo
+
+		}
+	}
+
+	return x
+}
+
+//Funcion recursiva que busca los espacios fisicos hijos a partir de un id del espacio físico padre
+func getEspacioFisicoHijos(Padre *EspacioFisicoPadreHijo, padre int) (ef []EspacioFisicoPadreHijo) {
+
+	for _, element := range elementMapEF {
+
+		if padre == element.Padre {
+			var x EspacioFisicoPadreHijo
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			j := &x
+			x.Opciones = getEspacioFisicoHijos(j, element.Id)
+			Padre.Opciones = append(Padre.Opciones, x)
+
+		}
+
+	}
+
+	return Padre.Opciones
+
+}
+
+func GetEspaciosFisicosHijosById(espacioFisicoPadre int) (espaciosFisicos *EspacioFisicoPadreHijo, e error) {
+
+	var espaciosFisicosHijos []EspacioFisicoPadreHijo
+
+	qb, _ := orm.NewQueryBuilder("mysql")
+	//buscar todos
+	qb.Select("ef.id",
+		"ef.nombre",
+		"efp.padre_id",
+		"efp.hijo_id").
+		From("oikos.espacio_fisico as ef").
+		LeftJoin("oikos.espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
+		OrderBy("ef.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_, err := o.Raw(sql).QueryRows(&espaciosFisicosHijos)
+
+	//TO MAP
+	for _, s := range espaciosFisicosHijos {
+		elementMapEF[s.Id] = s
+	}
+
+	c := buscarEF(espacioFisicoPadre)
+	Cabeza := &c
+	getEspacioFisicoHijos(Cabeza, espacioFisicoPadre)
+
+	return Cabeza, err
+}
+
+func getEspaciosFisicosPadres(Hijo EspacioFisicoPadreHijo) (ef EspacioFisicoPadreHijo) {
+
+	var x EspacioFisicoPadreHijo
+	for _, element := range elementMapEF {
+
+		if Hijo.Padre == element.Hijo {
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			x.Hijo = element.Hijo
+
+			lef.PushFront(x)
+			getEspaciosFisicosPadres(x)
+		}
+	}
+
+	return x
+
+}
+
+func GetEspaciosFisicosPadresById(espacioFisicoHijo int) (espaciosFisicos []EspacioFisicoPadreHijo, e error) {
+
+	var espacioFisicoPadres []EspacioFisicoPadreHijo
+	var listaEspaciosFisicos []EspacioFisicoPadreHijo
+	lef.Init()
+
+	qb, _ := orm.NewQueryBuilder("mysql")
+	//buscar todos
+	qb.Select("ef.id",
+		"ef.nombre",
+		"efp.padre_id",
+		"efp.hijo_id").
+		From("oikos.espacio_fisico as ef").
+		LeftJoin("oikos.espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
+		OrderBy("ef.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_, err := o.Raw(sql).QueryRows(&espacioFisicoPadres)
+
+	//TO MAP
+	for _, s := range espacioFisicoPadres {
+		elementMapEF[s.Id] = s
+	}
+
+	//Obtener informacion sobre espacio físico que se busca
+	var Cola EspacioFisicoPadreHijo
+	Cola.Id = elementMapEF[espacioFisicoHijo].Id
+	Cola.Nombre = elementMapEF[espacioFisicoHijo].Nombre
+	Cola.Padre = elementMapEF[espacioFisicoHijo].Padre
+	Cola.Hijo = elementMapEF[espacioFisicoHijo].Hijo
+
+	if Cola.Hijo != 0 {
+		getEspaciosFisicosPadres(Cola)
+		lef.PushBack(Cola)
+
+		//Buscar cabeza de la lista
+		p := buscarEF(lef.Front().Value.(EspacioFisicoPadreHijo).Padre)
+		lef.PushFront(p)
+
+		for temp := lef.Front(); temp != nil; temp = temp.Next() {
+			listaEspaciosFisicos = append(listaEspaciosFisicos, temp.Value.(EspacioFisicoPadreHijo))
+		}
+	}
+
+	return listaEspaciosFisicos, err
 }

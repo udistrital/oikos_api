@@ -1,23 +1,64 @@
-workspace:
-  base: /go
-  path: src/github.com/udistrital/${DRONE_REPO##udistrital/}
-  when:
-      branch:
-      - develop
-      - release/*
-      - master
-
 kind: pipeline
 name: oas_api_ci
 
+trigger:
+  event:
+    exclude:
+      - tag
+
 steps:
 
-- name: go_build
-  image: golang:1.14
+- name: check_readme
+  image: jjvargass/qa_develoment:latest
   commands:
-  - go mod init
+  - python /app/check_readme.py
+  when:
+    branch:
+    - develop
+    - feature/*
+    - release/*
+    event:
+    - push
+
+- name: check_branch
+  image: jjvargass/qa_develoment:latest
+  commands:
+  - python /app/check_branch.py -H ${DRONE_GIT_HTTP_URL}
+  when:
+    branch:
+    - develop
+    - feature/*
+    - release/*
+    event:
+    - push
+
+  # STEP NO OBJETIVO - Deberá ajustarse el script check_commits. Mas información:
+  #https://github.com/udistrital/arka_cliente/commit/37e3ece10d52cae1303d837ad0e8a6ca1fb7a549
+- name: check_commits
+  failure: ignore
+  image: jjvargass/qa_develoment:latest
+  commands:
+  - python /app/check_commits.py
+  when:
+    branch:
+    - develop
+    - feature/*
+    - release/*
+    event:
+    - push
+
+- name: go_run_test
+  image: golang:1.18
+  commands:
   - go get -t
-  - GOOS=linux GOARCH=amd64 go build -o main
+  - go get github.com/smartystreets/goconvey/convey
+  - curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.41.1
+  - go get github.com/axw/gocov/...
+  - go get github.com/AlekSi/gocov-xml
+  - go get -u github.com/jstemmer/go-junit-report
+  - golangci-lint run ./... | tee report.xml
+  # - gocov test ./... | gocov-xml > coverage.xml
+  # - go test -v ./... | go-junit-report > test.xml
   when:
     branch:
     - develop
@@ -26,7 +67,70 @@ steps:
     event:
     - push
 
+- name: run_sonar_scanner
+  image: aosapps/drone-sonar-plugin
+  settings:
+    sonar_host:
+      from_secret: SONAR_HOST
+    sonar_token:
+      from_secret: SONAR_TOKEN
 
+- name: go_build
+  image: golang:1.18
+  commands:
+  - go get
+  - GOOS=linux GOARCH=amd64 go build -o main
+  when:
+    branch:
+    - dependabot/**
+    - develop
+    - feature/*
+    - release/*
+    - master
+    event:
+    - push
+
+- name: beego_migrate
+  image: golang:1.18
+  environment:
+    PG_MIGRATION_USER:
+      from_secret: PG_MIGRATION_USER
+    PG_MIGRATION_PASS:
+      from_secret: PG_MIGRATION_PASS
+    PG_MIGRATION_URL:
+      from_secret: PG_MIGRATION_URL
+    PG_MIGRATION_DBNAME:
+      from_secret: PG_MIGRATION_DBNAME
+  commands:
+  - go get -t
+  - GO111MODULE=on go get -u github.com/beego/bee
+  - bee migrate -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
+  when:
+    branch:
+    - release/*
+    event:
+    - push
+
+- name: beego_rollback
+  image: golang:1.18
+  environment:
+    PG_MIGRATION_USER:
+      from_secret: PG_MIGRATION_USER
+    PG_MIGRATION_PASS:
+      from_secret: PG_MIGRATION_PASS
+    PG_MIGRATION_URL:
+      from_secret: PG_MIGRATION_URL
+    PG_MIGRATION_DBNAME:
+      from_secret: PG_MIGRATION_DBNAME
+  commands:
+  - go get -t
+  - GO111MODULE=on go get -u github.com/beego/bee
+  - bee migrate rollback -driver=postgres -conn="postgres://$${PG_MIGRATION_USER}:$${PG_MIGRATION_PASS}@$${PG_MIGRATION_URL}:5432/$${PG_MIGRATION_DBNAME}?sslmode=disable"
+  when:
+    branch:
+    - release/*
+    status:
+    - failure
 
 - name: publish_dockerhub
   image: plugins/docker
@@ -45,7 +149,7 @@ steps:
     - master
 
 - name: update_aws_ecs
-  image: golang:1.9
+  image: golang:1.18
   environment:
     AWS_ACCESS_KEY_ID:
       from_secret: AWS_ACCESS_KEY_ID
@@ -80,6 +184,7 @@ steps:
     - push
 
 - name: notify_telegram
+  failure: ignore
   image: appleboy/drone-telegram
   settings:
     token:

@@ -1,0 +1,21 @@
+# Binarios y Temporales
+*.tmp
+*.exe
+*.zip
+*.log
+*~
+oikos_api
+main
+
+# Variables de entorno
+*.env
+!*template*.env
+
+# IDEs y otros
+.vscode
+.scannerwork/
+
+# Swagger
+swagger/**
+!swagger/swagger.json
+!swagger/swagger.yml

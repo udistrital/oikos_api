@@ -3,11 +3,13 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
-	"github.com/udistrital/oikos_api/models"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
+
+	"github.com/udistrital/oikos_api/models"
 )
 
 // EspacioFisicoCampoController oprations for EspacioFisicoCampo
@@ -28,14 +30,33 @@ func (c *EspacioFisicoCampoController) URLMapping() {
 // @Title Post
 // @Description create EspacioFisicoCampo
 // @Param	body		body 	models.EspacioFisicoCampo	true		"body for EspacioFisicoCampo content"
-// @Success 201 {int} models.EspacioFisicoCampo
+// @Success 201 {object} models.EspacioFisicoCampo
 // @Failure 403 body is empty
 // @router / [post]
 func (c *EspacioFisicoCampoController) Post() {
 	var v models.EspacioFisicoCampo
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddEspacioFisicoCampo(&v); err == nil {
+		ca := &models.CampoV2{
+			Id: v.Campo.Id,
+		}
+
+		ef := &models.EspacioFisicoV2{
+			Id: v.EspacioFisico.Id,
+		}
+
+		temp := models.EspacioFisicoCampoV2{
+			Id:                v.Id,
+			Valor:             v.Valor,
+			CampoId:           ca,
+			EspacioFisicoId:   ef,
+			FechaInicio:       time.Now(),
+			Activo:            true,
+			FechaCreacion:     time.Now(),
+			FechaModificacion: time.Now(),
+		}
+		if _, err := models.AddEspacioFisicoCampo(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
+			v.Id = temp.Id
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
@@ -49,7 +70,7 @@ func (c *EspacioFisicoCampoController) Post() {
 // GetOne ...
 // @Title Get One
 // @Description get EspacioFisicoCampo by id
-// @Param	id		path 	string	true		"The key for staticblock"
+// @Param	id		path 	int	true		"The key for staticblock"
 // @Success 200 {object} models.EspacioFisicoCampo
 // @Failure 403 :id is empty
 // @router /:id [get]
@@ -60,7 +81,23 @@ func (c *EspacioFisicoCampoController) GetOne() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = v
+		ca := &models.Campo{
+			Id:          v.CampoId.Id,
+			Nombre:      v.CampoId.Nombre,
+			Descripcion: v.CampoId.Descripcion,
+		}
+		ef := &models.EspacioFisico{
+			Id:     v.EspacioFisicoId.Id,
+			Nombre: v.EspacioFisicoId.Nombre,
+			Codigo: v.EspacioFisicoId.CodigoAbreviacion,
+		}
+		temp := models.EspacioFisicoCampo{
+			Id:            v.Id,
+			Valor:         v.Valor,
+			Campo:         ca,
+			EspacioFisico: ef,
+		}
+		c.Data["json"] = temp
 	}
 	c.ServeJSON()
 }
@@ -72,9 +109,9 @@ func (c *EspacioFisicoCampoController) GetOne() {
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} models.EspacioFisicoCampo
+// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} []models.EspacioFisicoCampo
 // @Failure 403
 // @router / [get]
 func (c *EspacioFisicoCampoController) GetAll() {
@@ -123,7 +160,47 @@ func (c *EspacioFisicoCampoController) GetAll() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		c.Data["json"] = l
+		//-------------- Temporal: Cambio por transición ------- //
+		var temp []models.EspacioFisicoCampo
+		for _, i := range l {
+			field, _ := i.(models.EspacioFisicoCampoV2)
+
+			te := &models.TipoEspacioFisico{
+				Id:     field.EspacioFisicoId.TipoEspacioFisicoId.Id,
+				Nombre: field.EspacioFisicoId.TipoEspacioFisicoId.Nombre,
+			}
+
+			c := &models.Campo{
+				Id:          field.CampoId.Id,
+				Nombre:      field.CampoId.Nombre,
+				Descripcion: field.CampoId.Descripcion,
+			}
+
+			var act string
+			if field.EspacioFisicoId.Activo {
+				act = "Activo"
+			} else {
+				act = "Inactivo"
+			}
+
+			ef := &models.EspacioFisico{
+				Id:          field.EspacioFisicoId.Id,
+				Nombre:      field.EspacioFisicoId.Nombre,
+				Codigo:      field.EspacioFisicoId.CodigoAbreviacion,
+				Estado:      act,
+				TipoEspacio: te,
+			}
+
+			x := models.EspacioFisicoCampo{
+				Id:            field.Id,
+				Valor:         field.Valor,
+				Campo:         c,
+				EspacioFisico: ef,
+			}
+
+			temp = append(temp, x)
+		}
+		c.Data["json"] = temp
 	}
 	c.ServeJSON()
 }
@@ -131,17 +208,23 @@ func (c *EspacioFisicoCampoController) GetAll() {
 // Put ...
 // @Title Put
 // @Description update the EspacioFisicoCampo
-// @Param	id		path 	string	true		"The id you want to update"
+// @Param	id		path 	int	true		"The id you want to update"
 // @Param	body		body 	models.EspacioFisicoCampo	true		"body for EspacioFisicoCampo content"
-// @Success 200 {object} models.EspacioFisicoCampo
+// @Success 200 {string} update success!
 // @Failure 403 :id is not int
 // @router /:id [put]
 func (c *EspacioFisicoCampoController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
+	//-------------- Temporal: Cambio por transición ------- //
+	v2, _ := models.GetEspacioFisicoCampoById(id)
 	v := models.EspacioFisicoCampo{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateEspacioFisicoCampoById(&v); err == nil {
+		v2.Valor = v.Valor
+		v2.EspacioFisicoId = &models.EspacioFisicoV2{Id: v.EspacioFisico.Id}
+		v2.CampoId = &models.CampoV2{Id: v.Campo.Id}
+		v2.FechaModificacion = time.Now()
+		if err := models.UpdateEspacioFisicoCampoById(v2); err == nil {
 			c.Data["json"] = "OK"
 		} else {
 			c.Data["json"] = err.Error()
@@ -155,7 +238,7 @@ func (c *EspacioFisicoCampoController) Put() {
 // Delete ...
 // @Title Delete
 // @Description delete the EspacioFisicoCampo
-// @Param	id		path 	string	true		"The id you want to delete"
+// @Param	id		path 	int	true		"The id you want to delete"
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]

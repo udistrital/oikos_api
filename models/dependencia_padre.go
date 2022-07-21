@@ -6,6 +6,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
@@ -16,6 +17,15 @@ type DependenciaPadre struct {
 	Hija  *Dependencia `orm:"column(hija);rel(fk)"`
 }
 
+type DependenciaPadreV2 struct {
+	Id                int            `orm:"column(id);pk;auto"`
+	PadreId           *DependenciaV2 `orm:"column(padre_id);rel(fk)"`
+	HijaId            *DependenciaV2 `orm:"column(hija_id);rel(fk)"`
+	Activo            bool           `orm:"column(activo)"`
+	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
 //Estructura para construir el arbol de dependencia
 type TreeDependencia struct {
 	Id       int
@@ -23,17 +33,17 @@ type TreeDependencia struct {
 	Opciones *[]TreeDependencia
 }
 
-func (t *DependenciaPadre) TableName() string {
+func (t *DependenciaPadreV2) TableName() string {
 	return "dependencia_padre"
 }
 
 func init() {
-	orm.RegisterModel(new(DependenciaPadre))
+	orm.RegisterModel(new(DependenciaPadreV2))
 }
 
 // AddDependenciaPadre insert a new DependenciaPadre into database and returns
 // last inserted Id on success.
-func AddDependenciaPadre(m *DependenciaPadre) (id int64, err error) {
+func AddDependenciaPadre(m *DependenciaPadreV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -41,12 +51,13 @@ func AddDependenciaPadre(m *DependenciaPadre) (id int64, err error) {
 
 // GetDependenciaPadreById retrieves DependenciaPadre by Id. Returns error if
 // Id doesn't exist
-func GetDependenciaPadreById(id int) (v *DependenciaPadre, err error) {
+func GetDependenciaPadreById(id int) (v *DependenciaPadreV2, err error) {
 	o := orm.NewOrm()
-	v = &DependenciaPadre{Id: id}
+	v = &DependenciaPadreV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
+
 	return nil, err
 }
 
@@ -55,7 +66,7 @@ func GetDependenciaPadreById(id int) (v *DependenciaPadre, err error) {
 func GetAllDependenciaPadre(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(DependenciaPadre)).RelatedSel(5)
+	qs := o.QueryTable(new(DependenciaPadreV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -101,7 +112,7 @@ func GetAllDependenciaPadre(query map[string]string, fields []string, sortby []s
 		}
 	}
 
-	var l []DependenciaPadre
+	var l []DependenciaPadreV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -126,9 +137,9 @@ func GetAllDependenciaPadre(query map[string]string, fields []string, sortby []s
 
 // UpdateDependenciaPadre updates DependenciaPadre by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateDependenciaPadreById(m *DependenciaPadre) (err error) {
+func UpdateDependenciaPadreById(m *DependenciaPadreV2) (err error) {
 	o := orm.NewOrm()
-	v := DependenciaPadre{Id: m.Id}
+	v := DependenciaPadreV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -143,11 +154,11 @@ func UpdateDependenciaPadreById(m *DependenciaPadre) (err error) {
 // the record to be deleted doesn't exist
 func DeleteDependenciaPadre(id int) (err error) {
 	o := orm.NewOrm()
-	v := DependenciaPadre{Id: id}
+	v := DependenciaPadreV2{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&DependenciaPadre{Id: id}); err == nil {
+		if num, err = o.Delete(&DependenciaPadreV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
@@ -155,24 +166,22 @@ func DeleteDependenciaPadre(id int) (err error) {
 }
 
 //Función que busca las dependencias de tipo facultad
-func Facultades() (facultad []TreeDependencia) {
+func Facultades() (facultad []Tree) {
 
 	//Declaración objeto ORM
 	o := orm.NewOrm()
 
 	//Arreglo que tendra las facultades encontradas
-	var facultades []TreeDependencia
-
-	num, err := o.Raw(
+	var facultades []Tree
+	_, err := o.Raw(
 		`SELECT dh.id AS id, dh.nombre AS nombre
-		FROM ` + Esquema + `.dependencia d INNER JOIN ` + Esquema + `.dependencia_padre dp ON d.id = dp.padre
-		INNER JOIN ` + Esquema + `.dependencia dh ON dh.id = dp.hija
+		FROM ` + Esquema + `.dependencia d INNER JOIN ` + Esquema + `.dependencia_padre dp ON d.id = dp.padre_id
+		INNER JOIN ` + Esquema + `.dependencia dh ON dh.id = dp.hija_id
 		INNER JOIN ` + Esquema + `.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 		WHERE dtd.tipo_dependencia_id = 2`).
 		QueryRows(&facultades)
 
 	if err == nil {
-		fmt.Println("Facultades encontradas: ", num)
 		//For para que recorra los Ids en busca de hijos
 		for i := 0; i < len(facultades); i++ {
 			//Me verifica que los Id tengan hijos
@@ -183,7 +192,7 @@ func Facultades() (facultad []TreeDependencia) {
 }
 
 //Función que busca las dependencias de tipo facultad
-func ProyectosCurricularesPorFacultad(Facultad *TreeDependencia) (proyectos []TreeDependencia) {
+func ProyectosCurricularesPorFacultad(Facultad *Tree) (proyectos []Tree) {
 
 	//Declaración objeto ORM
 	o := orm.NewOrm()
@@ -192,19 +201,17 @@ func ProyectosCurricularesPorFacultad(Facultad *TreeDependencia) (proyectos []Tr
 	padre := strconv.Itoa(Facultad.Id)
 
 	//Arreglo que tendra las facultades encontradas
-	var proyectos_curriculares []TreeDependencia
+	var proyectos_curriculares []Tree
 
-	num, err := o.Raw(
-		`SELECT DISTINCT de.id, de.nombre, dep.padre, dep.hija
+	_, err := o.Raw(
+		`SELECT DISTINCT de.id, de.nombre, dep.padre_id, dep.hija_id
 		FROM `+Esquema+`.dependencia AS de
-		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija
-		INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dep.hija = dtd.dependencia_id
-		WHERE dep.padre = ? AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`,
+		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija_id
+		INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dep.hija_id = dtd.dependencia_id
+		WHERE dep.padre_id = ? AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`,
 		padre).
 		QueryRows(&proyectos_curriculares)
-
 	if err == nil {
-		fmt.Println("Proyectos curriculares encontradas: ", num)
 
 		//Llena el elemento Opciones en la estructura del menú padre
 		Facultad.Opciones = &proyectos_curriculares
@@ -218,11 +225,11 @@ func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
 	//Arreglo
 	var dependenciaPadres []TreeDependencia
 	num, err := o.Raw(
-		`SELECT de.id AS id, de.nombre AS nombre, dep.padre AS padre
+		`SELECT de.id AS id, de.nombre AS nombre, dep.padre_id AS padre
 		FROM ` + Esquema + `.dependencia
 		AS de left join ` + Esquema + `.dependencia_padre
-		AS dep ON de.id = dep.hija
-		WHERE padre IS NULL ORDER BY de.id`).
+		AS dep ON de.id = dep.hija_id
+		WHERE padre_id IS NULL ORDER BY de.id`).
 		QueryRows(&dependenciaPadres)
 
 	if err == nil {
@@ -246,10 +253,10 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 	var dependenciaHijas []TreeDependencia
 
 	num, err := o.Raw(
-		`SELECT de.id, de.nombre, dep.padre, dep.hija
+		`SELECT de.id, de.nombre, dep.padre_id, dep.hija_id
 		FROM `+Esquema+`.dependencia AS de
-		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija
-		WHERE dep.padre = ? ORDER BY de.id`,
+		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija_id
+		WHERE dep.padre_id = ? ORDER BY de.id`,
 		padre).
 		QueryRows(&dependenciaHijas)
 
@@ -268,4 +275,28 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 		}
 	}
 	return dependenciaHijas
+}
+
+func TRDependenciaPadre(m *DependenciaPadreV2) (id int64, err error) {
+	o := orm.NewOrm()
+	Hija := m.HijaId
+	Hija.Activo = true
+	Hija.FechaCreacion = time.Now()
+	Hija.FechaModificacion = time.Now()
+	o.Begin()
+	id, err = o.Insert(Hija)
+	if err != nil {
+		o.Rollback()
+	} else {
+		m.Activo = true
+		m.FechaCreacion = time.Now()
+		m.FechaModificacion = time.Now()
+		_, err = o.Insert(m)
+		if err != nil {
+			o.Rollback()
+		}
+	}
+
+	o.Commit()
+	return
 }

@@ -1,14 +1,19 @@
 package models
 
 import (
+	"container/list"
 	"errors"
 	"fmt"
 	"reflect"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
 )
+
+var elementMap = make(map[int]DependenciaPadreHijo)
+var l = list.New()
 
 type Dependencia struct {
 	Id                         int                           `orm:"column(id);pk;auto"`
@@ -18,23 +23,35 @@ type Dependencia struct {
 	DependenciaTipoDependencia []*DependenciaTipoDependencia `orm:"reverse(many)"`
 }
 
+type DependenciaV2 struct {
+	Id                         int                             `orm:"column(id);pk;auto"`
+	Nombre                     string                          `orm:"column(nombre)"`
+	TelefonoDependencia        string                          `orm:"column(telefono_dependencia)"`
+	CorreoElectronico          string                          `orm:"column(correo_electronico);null"`
+	Activo                     bool                            `orm:"column(activo)"`
+	FechaCreacion              time.Time                       `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion          time.Time                       `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	DependenciaTipoDependencia []*DependenciaTipoDependenciaV2 `orm:"reverse(many)"`
+}
+
 //Estructura para traer el ID y el nombre de cada proyecto curriculares
 type ProyectosCurriculares struct {
 	Id     int
 	Nombre string
 }
 
-func (t *Dependencia) TableName() string {
+func (t *DependenciaV2) TableName() string {
 	return "dependencia"
 }
 
 func init() {
-	orm.RegisterModel(new(Dependencia))
+	//orm.RegisterModel(new(Dependencia))
+	orm.RegisterModel(new(DependenciaV2))
 }
 
 // AddDependencia insert a new Dependencia into database and returns
 // last inserted Id on success.
-func AddDependencia(m *Dependencia) (id int64, err error) {
+func AddDependencia(m *DependenciaV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -42,9 +59,9 @@ func AddDependencia(m *Dependencia) (id int64, err error) {
 
 // GetDependenciaById retrieves Dependencia by Id. Returns error if
 // Id doesn't exist
-func GetDependenciaById(id int) (v *Dependencia, err error) {
+func GetDependenciaById(id int) (v *DependenciaV2, err error) {
 	o := orm.NewOrm()
-	v = &Dependencia{Id: id}
+	v = &DependenciaV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -56,7 +73,7 @@ func GetDependenciaById(id int) (v *Dependencia, err error) {
 func GetAllDependencia(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Dependencia)).RelatedSel(5)
+	qs := o.QueryTable(new(DependenciaV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -102,7 +119,7 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 		}
 	}
 
-	var l []Dependencia
+	var l []DependenciaV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -128,9 +145,9 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 
 // UpdateDependencia updates Dependencia by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateDependenciaById(m *Dependencia) (err error) {
+func UpdateDependenciaById(m *DependenciaV2) (err error) {
 	o := orm.NewOrm()
-	v := Dependencia{Id: m.Id}
+	v := DependenciaV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -145,11 +162,12 @@ func UpdateDependenciaById(m *Dependencia) (err error) {
 // the record to be deleted doesn't exist
 func DeleteDependencia(id int) (err error) {
 	o := orm.NewOrm()
-	v := Dependencia{Id: id}
+	v := DependenciaV2{Id: id}
+
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Dependencia{Id: id}); err == nil {
+		if num, err = o.Delete(&DependenciaV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
@@ -172,8 +190,8 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 
 		num, err := o.Raw(
 			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre
-			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 			WHERE d.id = ? AND dtd.tipo_dependencia_id = 14`,
 			id_facultad).
@@ -188,8 +206,8 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 	} else if nivel_academico == "POSGRADO" {
 		num, err := o.Raw(
 			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre
-			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 			WHERE d.id = ? AND dtd.tipo_dependencia_id = 15`,
 			id_facultad).
@@ -203,8 +221,8 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 	} else if nivel_academico == "undefined" {
 		num, err := o.Raw(
 			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre
-			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
 			WHERE d.id = ? AND dtd.tipo_dependencia_id IN (1,14,15)`,
 			id_facultad).
@@ -218,4 +236,144 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 	}
 
 	return proyectosCurriculares
+}
+
+//Funcion recursiva que busca las dependencias hijas a partir de un id de la dependencia padre
+func getDependenciasHijas(Padre *DependenciaPadreHijo, padre int) (dep []DependenciaPadreHijo) {
+
+	for _, element := range elementMap {
+
+		if padre == element.Padre {
+			var x DependenciaPadreHijo
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			j := &x
+			x.Opciones = getDependenciasHijas(j, element.Id)
+			Padre.Opciones = append(Padre.Opciones, x)
+
+		}
+
+	}
+
+	return Padre.Opciones
+
+}
+
+//Funcion recursiva que busca las dependencias padre a partir de un id de la dependencia hija (hoja)
+func getDependenciasPadres(Hija DependenciaPadreHijo) (dep DependenciaPadreHijo) {
+
+	var x DependenciaPadreHijo
+	for _, element := range elementMap {
+
+		if Hija.Padre == element.Hija {
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			x.Hija = element.Hija
+
+			l.PushFront(x)
+			getDependenciasPadres(x)
+		}
+	}
+
+	return x
+
+}
+
+func buscarDep(dep int) (padre DependenciaPadreHijo) {
+
+	var x DependenciaPadreHijo
+	for _, element := range elementMap {
+
+		if dep == element.Id {
+			x.Id = element.Id
+			x.Nombre = element.Nombre
+			x.Padre = element.Padre
+			x.Hija = element.Hija
+
+		}
+	}
+
+	return x
+}
+
+func GetDependenciasPadresById(dependenciaHija int) (dependencias []DependenciaPadreHijo, e error) {
+
+	var dependenciaPadres []DependenciaPadreHijo
+	var listaDependencias []DependenciaPadreHijo
+	l.Init()
+
+	qb, _ := orm.NewQueryBuilder("mysql")
+	//buscar todos
+	qb.Select("de.id",
+		"de.nombre",
+		"dep.padre_id",
+		"dep.hija_id").
+		From("oikos.dependencia as de").
+		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
+		OrderBy("de.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_, err := o.Raw(sql).QueryRows(&dependenciaPadres)
+
+	//TO MAP
+	for _, s := range dependenciaPadres {
+		elementMap[s.Id] = s
+	}
+
+	//Obtener informacion sobre dependencia que se busca
+	var Cola DependenciaPadreHijo
+	Cola.Id = elementMap[dependenciaHija].Id
+	Cola.Nombre = elementMap[dependenciaHija].Nombre
+	Cola.Padre = elementMap[dependenciaHija].Padre
+	Cola.Hija = elementMap[dependenciaHija].Hija
+
+	if Cola.Hija != 0 {
+		getDependenciasPadres(Cola)
+		l.PushBack(Cola)
+
+		//Buscar cabeza de la lista
+		p := buscarDep(l.Front().Value.(DependenciaPadreHijo).Padre)
+		l.PushFront(p)
+
+		for temp := l.Front(); temp != nil; temp = temp.Next() {
+			listaDependencias = append(listaDependencias, temp.Value.(DependenciaPadreHijo))
+		}
+	}
+
+	return listaDependencias, err
+}
+
+func GetDependenciasHijasById(dependenciaPadre int) (dependencias *DependenciaPadreHijo, e error) {
+
+	var dependenciaHijas []DependenciaPadreHijo
+
+	qb, _ := orm.NewQueryBuilder("mysql")
+	//buscar todos
+	qb.Select("de.id",
+		"de.nombre",
+		"dep.padre_id",
+		"dep.hija_id").
+		From("oikos.dependencia as de").
+		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
+		OrderBy("de.id")
+
+	sql := qb.String()
+
+	o := orm.NewOrm()
+	_, err := o.Raw(sql).QueryRows(&dependenciaHijas)
+
+	//TO MAP
+	for _, s := range dependenciaHijas {
+		elementMap[s.Id] = s
+	}
+
+	c := buscarDep(dependenciaPadre)
+	Cabeza := &c
+	getDependenciasHijas(Cabeza, dependenciaPadre)
+
+	return Cabeza, err
 }
