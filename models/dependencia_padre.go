@@ -154,64 +154,6 @@ func DeleteDependenciaPadre(id int) (err error) {
 	return
 }
 
-//Función que busca las dependencias que no tengan asignadas padre
-func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
-	o := orm.NewOrm()
-	//Arreglo
-	var dependenciaPadres []TreeDependencia
-	num, err := o.Raw(
-		`SELECT de.id AS id, de.nombre AS nombre, dep.padre AS padre
-		FROM ` + Esquema + `.dependencia
-		AS de left join ` + Esquema + `.dependencia_padre
-		AS dep ON de.id = dep.hija
-		WHERE padre IS NULL ORDER BY de.id`).
-		QueryRows(&dependenciaPadres)
-
-	if err == nil {
-		fmt.Println("Dependencias padre encontradas: ", num)
-		//For para que recorra los Ids en busca de hijos
-		for i := 0; i < len(dependenciaPadres); i++ {
-			//Me verifica que los Id tengan hijos
-			ConstruirDependenciasHijas(&dependenciaPadres[i])
-		}
-	}
-	return dependenciaPadres
-}
-
-//Función que busca los hijos de los padres encontrados en la función anterior
-func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDependencia) {
-	o := orm.NewOrm()
-	//Conversión de entero a string
-	padre := strconv.Itoa(Padre.Id)
-
-	//Arreglo
-	var dependenciaHijas []TreeDependencia
-
-	num, err := o.Raw(
-		`SELECT de.id, de.nombre, dep.padre, dep.hija
-		FROM `+Esquema+`.dependencia AS de
-		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija
-		WHERE dep.padre = ? ORDER BY de.id`,
-		padre).
-		QueryRows(&dependenciaHijas)
-
-	//Condicional si el error es nulo
-	if err == nil {
-		fmt.Println("Dependencias Hijas encontradas: ", num)
-
-		//Llena el elemento Opciones en la estructura del menú padre
-		Padre.Opciones = &dependenciaHijas
-
-		//For que recorre el subMenu en busca de hijos (Recursiva)
-		for i := 0; i < len(dependenciaHijas); i++ {
-
-			//Me verifica que los Id tengan hijos
-			ConstruirDependenciasHijas(&dependenciaHijas[i])
-		}
-	}
-	return dependenciaHijas
-}
-
 //Función que busca las dependencias de tipo facultad
 func Facultades() (facultad []TreeDependencia) {
 
@@ -268,4 +210,62 @@ func ProyectosCurricularesPorFacultad(Facultad *TreeDependencia) (proyectos []Tr
 		Facultad.Opciones = &proyectos_curriculares
 	}
 	return proyectos_curriculares
+}
+
+//Función que busca las dependencias que no tengan asignadas padre
+func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
+	o := orm.NewOrm()
+	//Arreglo
+	var dependenciaPadres []TreeDependencia
+	num, err := o.Raw(
+		`SELECT de.id AS id, de.nombre AS nombre, dep.padre AS padre
+		FROM ` + Esquema + `.dependencia
+		AS de left join ` + Esquema + `.dependencia_padre
+		AS dep ON de.id = dep.hija
+		WHERE padre IS NULL ORDER BY de.id`).
+		QueryRows(&dependenciaPadres)
+
+	if err == nil {
+		fmt.Println("Dependencias padre encontradas: ", num)
+		//For para que recorra los Ids en busca de hijos
+		for i := 0; i < len(dependenciaPadres); i++ {
+			//Me verifica que los Id tengan hijos
+			ConstruirDependenciasHijas(&dependenciaPadres[i])
+		}
+	}
+	return dependenciaPadres
+}
+
+//Función que busca los hijos de los padres encontrados en la función anterior
+func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDependencia) {
+	o := orm.NewOrm()
+	//Conversión de entero a string
+	padre := strconv.Itoa(Padre.Id)
+
+	//Arreglo
+	var dependenciaHijas []TreeDependencia
+
+	num, err := o.Raw(
+		`SELECT de.id, de.nombre, dep.padre, dep.hija
+		FROM `+Esquema+`.dependencia AS de
+		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija
+		WHERE dep.padre = ? ORDER BY de.id`,
+		padre).
+		QueryRows(&dependenciaHijas)
+
+	//Condicional si el error es nulo
+	if err == nil {
+		fmt.Println("Dependencias Hijas encontradas: ", num)
+
+		//Llena el elemento Opciones en la estructura del menú padre
+		Padre.Opciones = &dependenciaHijas
+
+		//For que recorre el subMenu en busca de hijos (Recursiva)
+		for i := 0; i < len(dependenciaHijas); i++ {
+
+			//Me verifica que los Id tengan hijos
+			ConstruirDependenciasHijas(&dependenciaHijas[i])
+		}
+	}
+	return dependenciaHijas
 }
