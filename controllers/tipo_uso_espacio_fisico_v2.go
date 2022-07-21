@@ -5,21 +5,20 @@ import (
 	"errors"
 	"strconv"
 	"strings"
-	"time"
+
+	"github.com/udistrital/oikos_api/models"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/logs"
-
-	"github.com/udistrital/oikos_api/models"
 )
 
-// TipoEspacioFisicoController oprations for TipoEspacioFisico
-type TipoEspacioFisicoController struct {
+// TipoUsoEspacioFisicoV2Controller operations for TipoUsoEspacioFisico
+type TipoUsoEspacioFisicoV2Controller struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *TipoEspacioFisicoController) URLMapping() {
+func (c *TipoUsoEspacioFisicoV2Controller) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -29,34 +28,16 @@ func (c *TipoEspacioFisicoController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create TipoEspacioFisico
-// @Param	body		body 	models.TipoEspacioFisico	true		"body for TipoEspacioFisico content"
-// @Success 201 {object} models.TipoEspacioFisico
+// @Description create TipoUsoEspacioFisico
+// @Param	body		body 	models.TipoUsoEspacioFisicoV2	true		"body for TipoUsoEspacioFisico content"
+// @Success 201 {object} models.TipoUsoEspacioFisicoV2
 // @Failure 400 the request contains incorrect syntax
 // @router / [post]
-func (c *TipoEspacioFisicoController) Post() {
-	var v models.TipoEspacioFisico
+func (c *TipoUsoEspacioFisicoV2Controller) Post() {
+	var v models.TipoUsoEspacioFisicoV2
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		//-------------- Temporal: Cambio por transición ------- //
-
-		// TODO: Revisar lo siguiente ...
-		temp := models.TipoEspacioFisicoV2{
-			Id:                v.Id,
-			Nombre:            v.Nombre,
-			Descripcion:       "Descripción",
-			CodigoAbreviacion: "TU_" + v.Nombre,
-			Activo:            true,
-			FechaCreacion:     time.Now(),
-			FechaModificacion: time.Now(),
-		}
-		// ... debería bastar con:
-		// var temp models.TipoEspacioFisicoV2
-		// temp.FromV1(v)
-		//-------------- Temporal: Cambio por transición ------- //
-		if _, err := models.AddTipoEspacioFisico(&temp); err == nil {
-			//if _, err := models.AddTipoEspacioFisico(&v); err == nil {
+		if _, err := models.AddTipoUsoEspacioFisico(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -75,44 +56,39 @@ func (c *TipoEspacioFisicoController) Post() {
 
 // GetOne ...
 // @Title Get One
-// @Description get TipoEspacioFisico by id
+// @Description get TipoUsoEspacioFisico by id
 // @Param	id		path 	int	true		"The key for staticblock"
-// @Success 200 {object} models.TipoEspacioFisico
+// @Success 200 {object} models.TipoUsoEspacioFisicoV2
 // @Failure 404 not found resource
 // @router /:id [get]
-func (c *TipoEspacioFisicoController) GetOne() {
+func (c *TipoUsoEspacioFisicoV2Controller) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	v, err := models.GetTipoEspacioFisicoById(id)
+	v, err := models.GetTipoUsoEspacioFisicoById(id)
 	if err != nil {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
 		c.Data["system"] = err
 		c.Abort("404")
 	} else {
-		//-------------- Temporal: Cambio por transición ------- //
-		var temp models.TipoEspacioFisico
-		v.ToV1(&temp)
-		c.Data["json"] = temp
-		//-------------- Temporal: Cambio por transición ------- //
-		//c.Data["json"] = v
+		c.Data["json"] = v
 	}
 	c.ServeJSON()
 }
 
 // GetAll ...
 // @Title Get All
-// @Description get TipoEspacioFisico
+// @Description get TipoUsoEspacioFisico
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
 // @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
 // @Param	offset	query	int	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} []models.TipoEspacioFisico
+// @Success 200 {object} []models.TipoUsoEspacioFisicoV2
 // @Failure 404 not found resource
 // @router / [get]
-func (c *TipoEspacioFisicoController) GetAll() {
+func (c *TipoUsoEspacioFisicoV2Controller) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -154,7 +130,7 @@ func (c *TipoEspacioFisicoController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllTipoEspacioFisico(query, fields, sortby, order, offset, limit)
+	l, err := models.GetAllTipoUsoEspacioFisico(query, fields, sortby, order, offset, limit)
 	if err != nil {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
@@ -163,51 +139,26 @@ func (c *TipoEspacioFisicoController) GetAll() {
 	} else {
 		if l == nil {
 			l = append(l, map[string]interface{}{})
-			c.Data["json"] = l
-		} else {
-			//-------------- Temporal: Cambio por transición ------- //
-			var temp []interface{}
-			for _, i := range l {
-				switch v := i.(type) {
-				case map[string]interface{}:
-					temp = append(temp, v)
-				case models.TipoEspacioFisicoV2:
-					var x models.TipoEspacioFisico
-					v.ToV1(&x)
-					temp = append(temp, x)
-					// default:
-					// 	// SIN MANEJAR!
-				}
-			}
-			c.Data["json"] = temp
 		}
+		c.Data["json"] = l
 	}
 	c.ServeJSON()
 }
 
 // Put ...
 // @Title Put
-// @Description update the TipoEspacioFisico
+// @Description update the TipoUsoEspacioFisico
 // @Param	id		path 	int	true		"The id you want to update"
-// @Param	body		body 	models.TipoEspacioFisico	true		"body for TipoEspacioFisico content"
-// @Success 200 {object} models.TipoEspacioFisico
+// @Param	body		body 	models.TipoUsoEspacioFisicoV2	true		"body for TipoUsoEspacioFisico content"
+// @Success 200 {object} models.TipoUsoEspacioFisicoV2
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
-func (c *TipoEspacioFisicoController) Put() {
+func (c *TipoUsoEspacioFisicoV2Controller) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	//-------------- Temporal: Cambio por transición ------- //
-	v2, _ := models.GetTipoEspacioFisicoById(id)
-	v := models.TipoEspacioFisico{Id: id}
+	v := models.TipoUsoEspacioFisicoV2{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		// TODO: Revisar lo siguiente ...:
-		v2.Id = id
-		v2.Nombre = v.Nombre
-		v2.FechaModificacion = time.Now()
-		// ... debería bastar con:
-		// v2.FromV1(v)
-
-		if err := models.UpdateTipoEspacioFisicoById(v2); err == nil {
+		if err := models.UpdateTipoUsoEspacioFisicoById(&v); err == nil {
 			c.Data["json"] = v
 		} else {
 			logs.Error(err)
@@ -226,16 +177,16 @@ func (c *TipoEspacioFisicoController) Put() {
 
 // Delete ...
 // @Title Delete
-// @Description delete the TipoEspacioFisico
+// @Description delete the TipoUsoEspacioFisico
 // @Param	id		path 	int	true		"The id you want to delete"
 // @Success 200 {object} models.Deleted
 // @Failure 404 not found resource
 // @router /:id [delete]
-func (c *TipoEspacioFisicoController) Delete() {
+func (c *TipoUsoEspacioFisicoV2Controller) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
-	if err := models.DeleteTipoEspacioFisico(id); err == nil {
-		c.Data["json"] = models.Deleted{Id: id}
+	if err := models.DeleteTipoUsoEspacioFisico(id); err == nil {
+		c.Data["json"] = map[string]interface{}{"Id": id}
 	} else {
 		logs.Error(err)
 		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}

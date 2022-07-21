@@ -10,8 +10,6 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
-
-	"github.com/udistrital/utils_oas/formatdata"
 )
 
 var elementMap = make(map[int]DependenciaPadreHijo)
@@ -23,37 +21,6 @@ type Dependencia struct {
 	TelefonoDependencia        string                        `orm:"column(telefono_dependencia)"`
 	CorreoElectronico          string                        `orm:"column(correo_electronico)"`
 	DependenciaTipoDependencia []*DependenciaTipoDependencia `orm:"reverse(many)"`
-}
-
-func (d *DependenciaV2) FromV1(in Dependencia) error {
-	if err := formatdata.FillStruct(in, &d); err != nil {
-		return err
-	}
-	if len(in.DependenciaTipoDependencia) > 0 {
-		deps := make([]*DependenciaTipoDependenciaV2, 0)
-		for _, v := range in.DependenciaTipoDependencia {
-			var dep DependenciaTipoDependenciaV2
-			dep.FromV1(*v)
-			deps = append(deps, &dep)
-		}
-		d.DependenciaTipoDependencia = deps
-	}
-	return nil
-}
-func (d *DependenciaV2) ToV1(out *Dependencia) error {
-	if err := formatdata.FillStruct(d, &out); err != nil {
-		return err
-	}
-	if len(d.DependenciaTipoDependencia) > 0 {
-		deps := make([]*DependenciaTipoDependencia, 0)
-		for _, v := range d.DependenciaTipoDependencia {
-			var dep DependenciaTipoDependencia
-			v.ToV1(&dep)
-			deps = append(deps, &dep)
-		}
-		(*out).DependenciaTipoDependencia = deps
-	}
-	return nil
 }
 
 type DependenciaV2 struct {
