@@ -8,12 +8,46 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type TipoUsoEspacioFisico struct {
 	Id              int            `orm:"column(id);pk;auto"`
 	TipoUsoId       *TipoUso       `orm:"column(tipo_uso_id);rel(fk)"`
 	EspacioFisicoId *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
+}
+
+func (d *TipoUsoEspacioFisicoV2) FromV1(in TipoUsoEspacioFisico) (err error) {
+	if err = formatdata.FillStruct(in, &d); err != nil {
+		return
+	}
+	if in.TipoUsoId != nil {
+		var tu TipoUsoV2
+		tu.FromV1(*in.TipoUsoId)
+		d.TipoUsoId = &tu
+	}
+	if in.EspacioFisicoId != nil {
+		var ef EspacioFisicoV2
+		ef.FromV1(*in.EspacioFisicoId)
+		d.EspacioFisicoId = &ef
+	}
+	return
+}
+
+func (d *TipoUsoEspacioFisicoV2) ToV1(out *TipoUsoEspacioFisico) (err error) {
+	formatdata.FillStruct(d, &out)
+	if d.TipoUsoId != nil {
+		var tu TipoUso
+		d.TipoUsoId.ToV1(&tu)
+		out.TipoUsoId = &tu
+	}
+	if d.EspacioFisicoId != nil {
+		var ef EspacioFisico
+		d.EspacioFisicoId.ToV1(&ef)
+		out.EspacioFisicoId = &ef
+	}
+	return
 }
 
 type TipoUsoEspacioFisicoV2 struct {
