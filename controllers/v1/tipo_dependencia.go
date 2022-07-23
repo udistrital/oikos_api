@@ -150,7 +150,7 @@ func (c *TipoDependenciaController) GetAll() {
 			case models.TipoDependenciaV2:
 				var x models.TipoDependencia
 				v.ToV1(&x)
-				temp = append(temp, v)
+				temp = append(temp, x)
 				// default:
 				// 	// SIN MANEJAR!
 			}
