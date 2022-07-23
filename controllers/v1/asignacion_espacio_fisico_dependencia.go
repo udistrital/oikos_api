@@ -36,27 +36,14 @@ func (c *AsignacionEspacioFisicoDependenciaController) URLMapping() {
 func (c *AsignacionEspacioFisicoDependenciaController) Post() {
 	var v models.AsignacionEspacioFisicoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		dc, _ := strconv.Atoi(v.DocumentoSoporte)
-		ef := &models.EspacioFisicoV2{
-			Id: v.EspacioFisicoId.Id,
-		}
-		d := &models.DependenciaV2{
-			Id: v.DependenciaId.Id,
-		}
-		temp := models.AsignacionEspacioFisicoDependenciaV2{
-			Id:                v.Id,
-			EspacioFisicoId:   ef,
-			DependenciaId:     d,
-			FechaInicio:       v.FechaInicio,
-			FechaFin:          v.FechaFin,
-			DocumentoSoporte:  dc,
-			Activo:            v.Estado != "Inactivo",
-			FechaCreacion:     time.Now(),
-			FechaModificacion: time.Now(),
-		}
+		var temp models.AsignacionEspacioFisicoDependenciaV2
+		temp.FromV1(v)
+		t := time.Now()
+		temp.FechaCreacion = t
+		temp.FechaModificacion = t
 		if _, err := models.AddAsignacionEspacioFisicoDependencia(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			v.Id = temp.Id
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
@@ -82,31 +69,8 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetOne() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		dc := strconv.Itoa(v.DocumentoSoporte)
-		ef := &models.EspacioFisico{
-			Id: v.EspacioFisicoId.Id,
-		}
-		d := &models.Dependencia{
-			Id: v.DependenciaId.Id,
-		}
-
-		var act string
-		if v.Activo == true {
-			act = "Activo"
-		} else {
-			act = "Inactivo"
-		}
-
-		temp := models.AsignacionEspacioFisicoDependencia{
-
-			Id:               v.Id,
-			Estado:           act,
-			FechaInicio:      v.FechaInicio,
-			FechaFin:         v.FechaFin,
-			DocumentoSoporte: dc,
-			EspacioFisicoId:  ef,
-			DependenciaId:    d,
-		}
+		var temp models.AsignacionEspacioFisicoDependencia
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -171,54 +135,18 @@ func (c *AsignacionEspacioFisicoDependenciaController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.AsignacionEspacioFisicoDependencia
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.AsignacionEspacioFisicoDependenciaV2)
-			dc := strconv.Itoa(field.DocumentoSoporte)
-
-			tef := &models.TipoEspacioFisico{
-				Id:     field.EspacioFisicoId.TipoEspacioFisicoId.Id,
-				Nombre: field.EspacioFisicoId.TipoEspacioFisicoId.Nombre,
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.AsignacionEspacioFisicoDependenciaV2:
+				var x models.AsignacionEspacioFisicoDependencia
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
 			}
-
-			var act string
-			if field.EspacioFisicoId.Activo == true {
-				act = "Activo"
-			} else {
-				act = "Inactivo"
-			}
-
-			ef := &models.EspacioFisico{
-				Id:          field.EspacioFisicoId.Id,
-				Nombre:      field.EspacioFisicoId.Nombre,
-				Codigo:      field.EspacioFisicoId.CodigoAbreviacion,
-				Estado:      act,
-				TipoEspacio: tef,
-			}
-
-			d := &models.Dependencia{
-				Id:                  field.DependenciaId.Id,
-				Nombre:              field.DependenciaId.Nombre,
-				TelefonoDependencia: field.DependenciaId.TelefonoDependencia,
-				CorreoElectronico:   field.DependenciaId.CorreoElectronico,
-			}
-
-			if field.Activo {
-				act = "Activo"
-			} else {
-				act = "Inactivo"
-			}
-			x := models.AsignacionEspacioFisicoDependencia{
-				Id:               field.Id,
-				Estado:           act,
-				FechaInicio:      field.FechaInicio,
-				FechaFin:         field.FechaFin,
-				EspacioFisicoId:  ef,
-				DependenciaId:    d,
-				DocumentoSoporte: dc,
-			}
-
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}

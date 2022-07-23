@@ -4,10 +4,14 @@ import (
 	"errors"
 	"fmt"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type AsignacionEspacioFisicoDependencia struct {
@@ -18,6 +22,53 @@ type AsignacionEspacioFisicoDependencia struct {
 	DocumentoSoporte string         `orm:"column(documento_soporte)"`
 	EspacioFisicoId  *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
 	DependenciaId    *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
+}
+
+const (
+	AsignacionEspacioFisicoDependenciaEstadoActivo   = "Activo"
+	AsignacionEspacioFisicoDependenciaEstadoInactivo = "Inactivo"
+)
+
+func (d *AsignacionEspacioFisicoDependenciaV2) FromV1(in AsignacionEspacioFisicoDependencia) (err error) {
+	if err = formatdata.FillStruct(in, &d); err != nil {
+		return
+	}
+	d.Activo = in.Estado != AsignacionEspacioFisicoDependenciaEstadoInactivo
+	d.DocumentoSoporte, _ = strconv.Atoi(in.DocumentoSoporte)
+	if in.EspacioFisicoId != nil {
+		var ef EspacioFisicoV2
+		ef.FromV1(*in.EspacioFisicoId)
+		d.EspacioFisicoId = &ef
+	}
+	if in.DependenciaId != nil {
+		var dep DependenciaV2
+		dep.FromV1(*in.DependenciaId)
+		d.DependenciaId = &dep
+	}
+	return
+}
+func (d *AsignacionEspacioFisicoDependenciaV2) ToV1(out *AsignacionEspacioFisicoDependencia) (err error) {
+	formatdata.FillStruct(d, &out)
+	if d.Activo {
+		out.Estado = AsignacionEspacioFisicoDependenciaEstadoActivo
+	} else {
+		out.Estado = AsignacionEspacioFisicoDependenciaEstadoInactivo
+	}
+	out.DocumentoSoporte = fmt.Sprint(d.DocumentoSoporte)
+	if d.EspacioFisicoId != nil {
+		var ef EspacioFisico
+		d.EspacioFisicoId.ToV1(&ef)
+		(*out).EspacioFisicoId = &ef
+	}
+	if d.DependenciaId != nil {
+		var dep Dependencia
+		d.DependenciaId.ToV1(&dep)
+		(*out).DependenciaId = &dep
+	}
+	logs.Debug("convertido:")
+	formatdata.JsonPrint(out)
+	fmt.Println()
+	return
 }
 
 type AsignacionEspacioFisicoDependenciaV2 struct {
