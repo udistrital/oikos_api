@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type EspacioFisicoCampo struct {
@@ -15,6 +16,37 @@ type EspacioFisicoCampo struct {
 	Valor         string         `orm:"column(valor)"`
 	EspacioFisico *EspacioFisico `orm:"column(espacio_fisico);rel(fk)"`
 	Campo         *Campo         `orm:"column(campo);rel(fk)"`
+}
+
+func (d *EspacioFisicoCampoV2) FromV1(in EspacioFisicoCampo) (err error) {
+	if err = formatdata.FillStruct(in, &d); err != nil {
+		return
+	}
+	if in.EspacioFisico != nil {
+		var esp EspacioFisicoV2
+		esp.FromV1(*in.EspacioFisico)
+		d.EspacioFisicoId = &esp
+	}
+	if in.Campo != nil {
+		var c CampoV2
+		c.FromV1(*in.Campo)
+		d.CampoId = &c
+	}
+	return
+}
+func (d *EspacioFisicoCampoV2) ToV1(out *EspacioFisicoCampo) (err error) {
+	formatdata.FillStruct(d, &out)
+	if d.EspacioFisicoId != nil {
+		var esp EspacioFisico
+		d.EspacioFisicoId.ToV1(&esp)
+		out.EspacioFisico = &esp
+	}
+	if d.CampoId != nil {
+		var c Campo
+		d.CampoId.ToV1(&c)
+		out.Campo = &c
+	}
+	return
 }
 
 type EspacioFisicoCampoV2 struct {

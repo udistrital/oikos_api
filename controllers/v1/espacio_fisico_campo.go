@@ -36,27 +36,16 @@ func (c *EspacioFisicoCampoController) URLMapping() {
 func (c *EspacioFisicoCampoController) Post() {
 	var v models.EspacioFisicoCampo
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		ca := &models.CampoV2{
-			Id: v.Campo.Id,
-		}
-
-		ef := &models.EspacioFisicoV2{
-			Id: v.EspacioFisico.Id,
-		}
-
-		temp := models.EspacioFisicoCampoV2{
-			Id:                v.Id,
-			Valor:             v.Valor,
-			CampoId:           ca,
-			EspacioFisicoId:   ef,
-			FechaInicio:       time.Now(),
-			Activo:            true,
-			FechaCreacion:     time.Now(),
-			FechaModificacion: time.Now(),
-		}
+		var temp models.EspacioFisicoCampoV2
+		temp.FromV1(v)
+		temp.Activo = true
+		t := time.Now()
+		temp.FechaInicio = t
+		temp.FechaCreacion = t
+		temp.FechaModificacion = t
 		if _, err := models.AddEspacioFisicoCampo(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
-			v.Id = temp.Id
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
 			c.Data["json"] = err.Error()
@@ -81,22 +70,8 @@ func (c *EspacioFisicoCampoController) GetOne() {
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
-		ca := &models.Campo{
-			Id:          v.CampoId.Id,
-			Nombre:      v.CampoId.Nombre,
-			Descripcion: v.CampoId.Descripcion,
-		}
-		ef := &models.EspacioFisico{
-			Id:     v.EspacioFisicoId.Id,
-			Nombre: v.EspacioFisicoId.Nombre,
-			Codigo: v.EspacioFisicoId.CodigoAbreviacion,
-		}
-		temp := models.EspacioFisicoCampo{
-			Id:            v.Id,
-			Valor:         v.Valor,
-			Campo:         ca,
-			EspacioFisico: ef,
-		}
+		var temp models.EspacioFisicoCampo
+		v.ToV1(&temp)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
@@ -161,44 +136,18 @@ func (c *EspacioFisicoCampoController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-		var temp []models.EspacioFisicoCampo
+		var temp []interface{}
 		for _, i := range l {
-			field, _ := i.(models.EspacioFisicoCampoV2)
-
-			te := &models.TipoEspacioFisico{
-				Id:     field.EspacioFisicoId.TipoEspacioFisicoId.Id,
-				Nombre: field.EspacioFisicoId.TipoEspacioFisicoId.Nombre,
+			switch v := i.(type) {
+			case map[string]interface{}:
+				temp = append(temp, v)
+			case models.EspacioFisicoCampoV2:
+				var x models.EspacioFisicoCampo
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
 			}
-
-			c := &models.Campo{
-				Id:          field.CampoId.Id,
-				Nombre:      field.CampoId.Nombre,
-				Descripcion: field.CampoId.Descripcion,
-			}
-
-			var act string
-			if field.EspacioFisicoId.Activo {
-				act = "Activo"
-			} else {
-				act = "Inactivo"
-			}
-
-			ef := &models.EspacioFisico{
-				Id:          field.EspacioFisicoId.Id,
-				Nombre:      field.EspacioFisicoId.Nombre,
-				Codigo:      field.EspacioFisicoId.CodigoAbreviacion,
-				Estado:      act,
-				TipoEspacio: te,
-			}
-
-			x := models.EspacioFisicoCampo{
-				Id:            field.Id,
-				Valor:         field.Valor,
-				Campo:         c,
-				EspacioFisico: ef,
-			}
-
-			temp = append(temp, x)
 		}
 		c.Data["json"] = temp
 	}
