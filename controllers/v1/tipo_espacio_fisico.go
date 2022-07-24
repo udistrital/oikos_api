@@ -141,7 +141,12 @@ func (c *TipoEspacioFisicoController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllTipoEspacioFisico(query, fields, sortby, order, offset, limit)
+	aux := models.TipoEspacioFisicoV2{}
+	l, err := models.GetAllTipoEspacioFisico(
+		aux.QueryFromV1(query),
+		aux.SelectorsFromV1(fields),
+		aux.SelectorsFromV1(sortby), order,
+		offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {

@@ -137,7 +137,12 @@ func (c *TipoDependenciaController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllTipoDependencia(query, fields, sortby, order, offset, limit)
+	aux := models.TipoDependenciaV2{}
+	l, err := models.GetAllTipoDependencia(
+		aux.QueryFromV1(query),
+		aux.SelectorsFromV1(fields),
+		aux.SelectorsFromV1(sortby), order,
+		offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {

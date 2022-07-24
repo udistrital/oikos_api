@@ -135,7 +135,12 @@ func (c *TipoUsoController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllTipoUso(query, fields, sortby, order, offset, limit)
+	aux := models.TipoUsoV2{}
+	l, err := models.GetAllTipoUso(
+		aux.QueryFromV1(query),
+		aux.SelectorsFromV1(fields),
+		aux.SelectorsFromV1(sortby), order,
+		offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {

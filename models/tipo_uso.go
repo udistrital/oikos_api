@@ -12,6 +12,16 @@ import (
 	"github.com/udistrital/utils_oas/formatdata"
 )
 
+func (d *TipoUsoV2) SelectorsFromV1(in []string) (out []string) {
+	// las propiedades de v1 son similares a las de v2
+	return in
+}
+func (d *TipoUsoV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	// En teoría podría llamar a SelectorsFromV1 pero no es necesario porque
+	// las propiedades de v1 son similares a las de v2
+	return in
+}
+
 type TipoUso struct {
 	Id     int    `orm:"column(id);pk;auto"`
 	Nombre string `orm:"column(nombre)"`
