@@ -59,12 +59,19 @@ type DependenciaTipoDependenciaV2 struct {
 	FechaModificacion time.Time          `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
+var trDependenciaTipoDependenciaV1 Diccionario
+
 func (t *DependenciaTipoDependenciaV2) TableName() string {
 	return "dependencia_tipo_dependencia"
 }
 
 func init() {
 	orm.RegisterModel(new(DependenciaTipoDependenciaV2))
+
+	trDependenciaTipoDependenciaV1 = Diccionario{
+		"TipoDependenciaId": "TipoDependenciaId",
+		"DependenciaId":     "DependenciaId",
+	}
 }
 
 // AddDependenciaTipoDependencia insert a new DependenciaTipoDependencia into database and returns
@@ -158,6 +165,79 @@ func GetAllDependenciaTipoDependencia(query map[string]string, fields []string, 
 		return ml, nil
 	}
 	return nil, err
+}
+
+// Traduce los selectores (según se usen en query, filter, offset)
+// según corresponda a la jerarquía actual
+func (d *DependenciaTipoDependenciaV2) SelectorsFromV1(in []string) (out []string) {
+	out = make([]string, len(in))
+	for k, v := range in { // Iterar parametros especificados
+		// 1/3: Reemplazar "." por "__"
+		temp := strings.Replace(v, ".", "__", -1)
+		// 2/3: Trabajar sobre la parte inicial, correspondiente a esta entidad
+		split := strings.SplitN(temp, "__", 2)
+		if v, ok := trDependenciaTipoDependenciaV1[split[0]]; ok {
+			split[0] = v
+			if len(split) > 1 { // Delegar la parte restante según la entidad (v2)
+				switch v {
+				case "TipoDependenciaId":
+					aux := TipoDependenciaV2{}
+					subqueryArr := aux.SelectorsFromV1([]string{split[1]})
+					split[1] = subqueryArr[0]
+				case "DependenciaId":
+					aux := DependenciaV2{}
+					subqueryArr := aux.SelectorsFromV1([]string{split[1]})
+					split[1] = subqueryArr[0]
+				}
+			}
+		}
+		// 3/3: Combinar el resultado
+		temp = strings.Join(split, "__")
+		out[k] = temp
+	}
+	return
+}
+
+// Ajusta los queries a la V2
+func (d *DependenciaTipoDependenciaV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	out = make(map[string]string)
+	for k, v := range in { // Iterar cada criterio
+		// 1/3: Reemplazar "." por "__"
+		temp := strings.Replace(k, ".", "__", -1)
+		value := v
+		// 2/3: Trabajar sobre la parte inicial, correspondiente a esta entidad
+		split := strings.SplitN(temp, "__", 2)
+		if v2, ok := trDependenciaTipoDependenciaV1[split[0]]; ok {
+			split[0] = v2
+			if len(split) > 1 { // Delegar la parte restante según la entidad (v2)
+				switch v2 {
+				case "TipoDependenciaId":
+					aux := TipoDependenciaV2{}
+					subqueryArr := aux.QueryFromV1(map[string]string{split[1]: value})
+					if len(subqueryArr) == 1 {
+						for k3, v3 := range subqueryArr {
+							split[1] = k3
+							value = v3
+						}
+					}
+				case "DependenciaId":
+					aux := DependenciaV2{}
+					subqueryArr := aux.QueryFromV1(map[string]string{split[1]: value})
+					if len(subqueryArr) == 1 {
+						for k3, v3 := range subqueryArr {
+							split[1] = k3
+							value = v3
+						}
+					}
+				}
+			}
+		}
+		// 3/3: Combinar el resultado
+		temp = strings.Join(split, "__")
+		out[temp] = value
+	}
+	// logs.Debug("in:", in, "out:", out)
+	return
 }
 
 // UpdateDependenciaTipoDependencia updates DependenciaTipoDependencia by Id and returns error if

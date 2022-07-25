@@ -3,13 +3,17 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 
 	"github.com/udistrital/oikos_api/models"
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 // DependenciaController oprations for Dependencia
@@ -134,8 +138,12 @@ func (c *DependenciaController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllDependencia(query, fields, sortby, order, offset, limit)
-
+	aux := models.DependenciaV2{}
+	l, err := models.GetAllDependencia(
+		aux.QueryFromV1(query),
+		aux.SelectorsFromV1(fields),
+		aux.SelectorsFromV1(sortby), order,
+		offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -144,7 +152,21 @@ func (c *DependenciaController) GetAll() {
 		for _, i := range l {
 			switch v := i.(type) {
 			case map[string]interface{}:
-				temp = append(temp, v)
+				// len(fields) > 0
+				var (
+					v2    models.DependenciaV2
+					v1aux models.Dependencia
+					v1    map[string]interface{}
+					err   error
+				)
+				formatdata.FillStruct(v, &v2)                     // convertir a estructura v2 ...
+				v2.ToV1(&v1aux)                                   // ... para poder convertir a v1
+				formatdata.FillStruct(v1aux, &v1)                 // Luego a un mapeo auxiliar a ser...
+				if v1, err = FilterKeys(v1, fields); err != nil { // ...filtrado
+					logs.Error(err)
+					c.Abort(fmt.Sprint(http.StatusInternalServerError))
+				}
+				temp = append(temp, v1)
 			case models.DependenciaV2:
 				var x models.Dependencia
 				v.ToV1(&x)
