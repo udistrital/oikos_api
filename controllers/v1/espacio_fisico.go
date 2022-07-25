@@ -3,13 +3,17 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 
 	"github.com/udistrital/oikos_api/models"
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 // EspacioFisicoController oprations for EspacioFisico
@@ -136,16 +140,16 @@ func (c *EspacioFisicoController) GetAll() {
 				return
 			}
 			k, v := kv[0], kv[1]
-			if k == "TipoEspacio.Id" {
-				query["TipoEspacioFisicoId.Id"] = v
-			} else {
-				query[k] = v
-			}
-
+			query[k] = v
 		}
 	}
 
-	l, err := models.GetAllEspacioFisico(query, fields, sortby, order, offset, limit)
+	aux := models.EspacioFisicoV2{}
+	l, err := models.GetAllEspacioFisico(
+		aux.QueryFromV1(query),
+		aux.SelectorsFromV1(fields),
+		aux.SelectorsFromV1(sortby), order,
+		offset, limit)
 	if err != nil {
 		c.Data["json"] = err.Error()
 	} else {
@@ -153,7 +157,22 @@ func (c *EspacioFisicoController) GetAll() {
 		for _, i := range l {
 			switch v := i.(type) {
 			case map[string]interface{}:
-				temp = append(temp, v)
+				// len(fields) > 0
+				var (
+					v2    models.EspacioFisicoV2
+					v1aux models.EspacioFisico
+					v1    map[string]interface{}
+					err   error
+				)
+				formatdata.FillStruct(v, &v2)     // convertir a estructura v2 ...
+				v2.ToV1(&v1aux)                   // ... para poder convertir a v1
+				formatdata.FillStruct(v1aux, &v1) // Luego a un mapeo auxiliar a ser...
+				// logs.Debug("v1:", v1)
+				if v1, err = FilterKeys(v1, fields); err != nil { // ...filtrado
+					logs.Error(err)
+					c.Abort(fmt.Sprint(http.StatusInternalServerError))
+				}
+				temp = append(temp, v1)
 			case models.EspacioFisicoV2:
 				var x models.EspacioFisico
 				v.ToV1(&x)

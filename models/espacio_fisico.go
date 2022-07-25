@@ -13,6 +13,57 @@ import (
 	"github.com/udistrital/utils_oas/formatdata"
 )
 
+// Traduce los selectores (según se usen en query, filter, offset)
+// según corresponda a la jerarquía actual
+func (d *EspacioFisicoV2) SelectorsFromV1(in []string) (out []string) {
+	out = make([]string, len(in))
+	for k, v := range in { // Iterar parametros especificados
+		replace := ""
+		for k2, v2 := range trEspacioFisicoV1 { // Iterar parametros a traducir
+			if strings.HasPrefix(v, k2) {
+				replace = strings.Replace(v, k2, v2, 1)
+				// logs.Debug("k2:", k2, "v2:", v2)
+				break
+			}
+		}
+		if replace == "" {
+			out[k] = v
+		} else {
+			out[k] = replace
+		}
+		// logs.Debug("v:", v, "replace:", replace)
+	}
+	return
+}
+
+// Ajusta los queries a la V2
+func (d *EspacioFisicoV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	out = make(map[string]string)
+	for k, v := range in { // Iterar cada criterio
+		replaceK := ""
+		replaceV := v
+		for k2, v2 := range trEspacioFisicoV1 {
+			if strings.HasPrefix(k, k2) {
+				// Ajustar key, criterio
+				replaceK = strings.Replace(k, k2, v2, 1)
+				// Ajustar valores
+				switch k2 {
+				case "Estado":
+					replaceV = fmt.Sprint(d.activoFromV1(v))
+				}
+				break
+			}
+		}
+		if replaceK == "" {
+			out[k] = v
+		} else {
+			out[replaceK] = replaceV
+			// logs.Debug("k:", k, "replaceK:", replaceK, "replaceV:", replaceV)
+		}
+	}
+	return
+}
+
 var elementMapEF = make(map[int]EspacioFisicoPadreHijo)
 var lef = list.New()
 
@@ -33,7 +84,7 @@ func (d *EspacioFisicoV2) FromV1(in EspacioFisico) error {
 	if err := formatdata.FillStruct(in, &d); err != nil {
 		return err
 	}
-	d.Activo = in.Estado != EspacioFisicoEstadoInactivo
+	d.Activo = d.activoFromV1(in.Estado)
 	d.CodigoAbreviacion = in.Codigo
 	if in.TipoEspacio != nil {
 		var esp TipoEspacioFisicoV2
@@ -42,16 +93,22 @@ func (d *EspacioFisicoV2) FromV1(in EspacioFisico) error {
 	}
 	return nil
 }
+func (d *EspacioFisicoV2) activoFromV1(estado string) (activo bool) {
+	return estado != EspacioFisicoEstadoInactivo
+}
+func (d *EspacioFisicoV2) estadoToV1(activo bool) (estado string) {
+	if activo {
+		return EspacioFisicoEstadoActivo
+	} else {
+		return EspacioFisicoEstadoInactivo
+	}
+}
 func (d *EspacioFisicoV2) ToV1(out *EspacioFisico) error {
 	if err := formatdata.FillStruct(d, &out); err != nil {
 		return err
 	}
 	out.Codigo = d.CodigoAbreviacion
-	if d.Activo {
-		out.Estado = EspacioFisicoEstadoActivo
-	} else {
-		out.Estado = EspacioFisicoEstadoInactivo
-	}
+	out.Estado = d.estadoToV1(d.Activo)
 	if d.TipoEspacioFisicoId != nil {
 		var esp TipoEspacioFisico
 		d.TipoEspacioFisicoId.ToV1(&esp)
@@ -77,8 +134,16 @@ func (t *EspacioFisicoV2) TableName() string {
 	return "espacio_fisico"
 }
 
+var trEspacioFisicoV1 Diccionario
+
 func init() {
 	orm.RegisterModel(new(EspacioFisicoV2))
+	trEspacioFisicoV1 = Diccionario{
+		// V1   <---->     V2
+		"Estado":      "Activo",
+		"Codigo":      "CodigoAbreviacion",
+		"TipoEspacio": "TipoEspacioFisicoId",
+	}
 }
 
 // AddEspacioFisico insert a new EspacioFisico into database and returns
