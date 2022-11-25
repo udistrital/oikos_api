@@ -279,9 +279,15 @@ func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
 	var espaciosHuerfanos []EspacioFisico
 	//Consulta SQL que busca los espacios físicos huerfanos
 	num, err := o.Raw(
-		`SELECT es.id, es.nombre AS nombre, es.codigo AS codigo, es.tipo_espacio AS tipo, es.estado AS estado
-		FROM `+Esquema+`.espacio_fisico es WHERE es.tipo_espacio = ? AND es.id NOT IN
-		(SELECT DISTINCT hijo FROM `+Esquema+`.espacio_fisico_padre)`,
+		`SELECT
+			es.id, es.nombre AS nombre, es.codigo_abreviacion AS codigo, es.tipo_espacio_fisico_id AS tipo,
+			CASE
+				WHEN es.activo = TRUE
+				THEN 'Activo'
+				ELSE 'Inactivo'
+			END estado
+		FROM `+Esquema+`.espacio_fisico es WHERE es.tipo_espacio_fisico_id = ? AND es.id NOT IN
+		(SELECT DISTINCT hijo_id FROM `+Esquema+`.espacio_fisico_padre)`,
 		tipo_espacio).
 		QueryRows(&espaciosHuerfanos)
 
@@ -340,8 +346,8 @@ func GetEspaciosFisicosHijosById(espacioFisicoPadre int) (espaciosFisicos *Espac
 		"ef.nombre",
 		"efp.padre_id",
 		"efp.hijo_id").
-		From("oikos.espacio_fisico as ef").
-		LeftJoin("oikos.espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
+		From(Esquema + ".espacio_fisico as ef").
+		LeftJoin(Esquema + ".espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
 		OrderBy("ef.id")
 
 	sql := qb.String()
@@ -393,8 +399,8 @@ func GetEspaciosFisicosPadresById(espacioFisicoHijo int) (espaciosFisicos []Espa
 		"ef.nombre",
 		"efp.padre_id",
 		"efp.hijo_id").
-		From("oikos.espacio_fisico as ef").
-		LeftJoin("oikos.espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
+		From(Esquema + ".espacio_fisico as ef").
+		LeftJoin(Esquema + ".espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
 		OrderBy("ef.id")
 
 	sql := qb.String()

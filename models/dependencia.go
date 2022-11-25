@@ -410,8 +410,8 @@ func GetDependenciasPadresById(dependenciaHija int) (dependencias []DependenciaP
 		"de.nombre",
 		"dep.padre_id",
 		"dep.hija_id").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
+		From(Esquema + ".dependencia as de").
+		LeftJoin(Esquema + ".dependencia_padre as dep").On("de.id = dep.hija_id").
 		OrderBy("de.id")
 
 	sql := qb.String()
@@ -457,8 +457,8 @@ func GetDependenciasHijasById(dependenciaPadre int) (dependencias *DependenciaPa
 		"de.nombre",
 		"dep.padre_id",
 		"dep.hija_id").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
+		From(Esquema + ".dependencia as de").
+		LeftJoin(Esquema + ".dependencia_padre as dep").On("de.id = dep.hija_id").
 		OrderBy("de.id")
 
 	sql := qb.String()
