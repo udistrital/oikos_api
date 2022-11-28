@@ -148,6 +148,7 @@ func (c *DependenciaController) GetAll() {
 		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
+		logs.Info("Lista dependencias: ", l)
 		var temp []interface{}
 		for _, i := range l {
 			switch v := i.(type) {
@@ -175,6 +176,7 @@ func (c *DependenciaController) GetAll() {
 				// 	// SIN MANEJAR!
 			}
 		}
+		logs.Info("Lista dependencias: ", temp == nil)
 		c.Data["json"] = temp
 	}
 	c.ServeJSON()
