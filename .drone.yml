@@ -85,8 +85,9 @@ steps:
     - dependabot/**
     - develop
     - feature/*
-    - release/*
+    - hotfix/*
     - master
+    - release/*
     event:
     - push
 

@@ -8,16 +8,30 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
+func (d *TipoEspacioFisicoV2) SelectorsFromV1(in []string) (out []string) {
+	// las propiedades de v1 son similares a las de v2
+	return in
+}
+func (d *TipoEspacioFisicoV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	// En teoría podría llamar a SelectorsFromV1 pero no es necesario porque
+	// las propiedades de v1 son similares a las de v2
+	return in
+}
+
 type TipoEspacioFisico struct {
-	Id                int       `orm:"column(id);pk;auto"`
-	Nombre            string    `orm:"column(nombre)"`
-	Descripcion       string    `orm:"column(descripcion);null"`
-	CodigoAbreviacion string    `orm:"column(codigo_abreviacion);null"`
-	Activo            bool      `orm:"column(activo)"`
-	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id     int    `orm:"column(id);pk;auto"`
+	Nombre string `orm:"column(nombre)"`
+}
+
+func (d *TipoEspacioFisicoV2) FromV1(in TipoEspacioFisico) error {
+	return formatdata.FillStruct(in, &d)
+}
+func (d *TipoEspacioFisicoV2) ToV1(out *TipoEspacioFisico) error {
+	return formatdata.FillStruct(d, out)
 }
 
 type TipoEspacioFisicoV2 struct {

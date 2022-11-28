@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 var elementMap = make(map[int]DependenciaPadreHijo)
@@ -21,6 +23,37 @@ type Dependencia struct {
 	TelefonoDependencia        string                        `orm:"column(telefono_dependencia)"`
 	CorreoElectronico          string                        `orm:"column(correo_electronico)"`
 	DependenciaTipoDependencia []*DependenciaTipoDependencia `orm:"reverse(many)"`
+}
+
+func (d *DependenciaV2) FromV1(in Dependencia) error {
+	if err := formatdata.FillStruct(in, &d); err != nil {
+		return err
+	}
+	if len(in.DependenciaTipoDependencia) > 0 {
+		deps := make([]*DependenciaTipoDependenciaV2, 0)
+		for _, v := range in.DependenciaTipoDependencia {
+			var dep DependenciaTipoDependenciaV2
+			dep.FromV1(*v)
+			deps = append(deps, &dep)
+		}
+		d.DependenciaTipoDependencia = deps
+	}
+	return nil
+}
+func (d *DependenciaV2) ToV1(out *Dependencia) error {
+	if err := formatdata.FillStruct(d, &out); err != nil {
+		return err
+	}
+	if len(d.DependenciaTipoDependencia) > 0 {
+		deps := make([]*DependenciaTipoDependencia, 0)
+		for _, v := range d.DependenciaTipoDependencia {
+			var dep DependenciaTipoDependencia
+			v.ToV1(&dep)
+			deps = append(deps, &dep)
+		}
+		(*out).DependenciaTipoDependencia = deps
+	}
+	return nil
 }
 
 type DependenciaV2 struct {
@@ -40,6 +73,8 @@ type ProyectosCurriculares struct {
 	Nombre string
 }
 
+var trDependenciaV1 Diccionario
+
 func (t *DependenciaV2) TableName() string {
 	return "dependencia"
 }
@@ -47,6 +82,11 @@ func (t *DependenciaV2) TableName() string {
 func init() {
 	//orm.RegisterModel(new(Dependencia))
 	orm.RegisterModel(new(DependenciaV2))
+
+	trDependenciaV1 = Diccionario{
+		// v1 --> v2
+		"DependenciaTipoDependencia": "DependenciaTipoDependencia",
+	}
 }
 
 // AddDependencia insert a new Dependencia into database and returns
@@ -143,6 +183,66 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 	return nil, err
 }
 
+// Traduce los selectores (según se usen en query, filter, offset)
+// según corresponda a la jerarquía actual
+func (d *DependenciaV2) SelectorsFromV1(in []string) (out []string) {
+	out = make([]string, len(in))
+	for k, v := range in { // Iterar parametros especificados
+		// 1/3: Reemplazar "." por "__"
+		temp := strings.Replace(v, ".", "__", -1)
+		// 2/3: Trabajar sobre la parte inicial, correspondiente a esta entidad
+		split := strings.SplitN(temp, "__", 2)
+		if v, ok := trDependenciaV1[split[0]]; ok {
+			split[0] = v
+			if len(split) > 1 { // Delegar la parte restante según la entidad (v2)
+				switch v {
+				case "DependenciaTipoDependencia":
+					aux := DependenciaTipoDependenciaV2{}
+					subqueryArr := aux.SelectorsFromV1([]string{split[1]})
+					split[1] = subqueryArr[0]
+				}
+			}
+		}
+		// 3/3: Combinar el resultado
+		temp = strings.Join(split, "__")
+		out[k] = temp
+	}
+	return
+}
+
+// Ajusta los queries a la V2
+func (d *DependenciaV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	out = make(map[string]string)
+	for k, v := range in { // Iterar cada criterio
+		// 1/3: Reemplazar "." por "__"
+		temp := strings.Replace(k, ".", "__", -1)
+		value := v
+		// 2/3: Trabajar sobre la parte inicial, correspondiente a esta entidad
+		split := strings.SplitN(temp, "__", 2)
+		if v2, ok := trDependenciaV1[split[0]]; ok {
+			split[0] = v2
+			if len(split) > 1 { // Delegar la parte restante según la entidad (v2)
+				switch v2 {
+				case "DependenciaTipoDependencia":
+					aux := DependenciaTipoDependenciaV2{}
+					subqueryArr := aux.QueryFromV1(map[string]string{split[1]: value})
+					if len(subqueryArr) == 1 {
+						for k3, v3 := range subqueryArr {
+							split[1] = k3
+							value = v3
+						}
+					}
+				}
+			}
+		}
+		// 3/3: Combinar el resultado
+		temp = strings.Join(split, "__")
+		out[temp] = value
+	}
+	// logs.Debug("in:", in, "out:", out)
+	return
+}
+
 // UpdateDependencia updates Dependencia by Id and returns error if
 // the record to be updated doesn't exist
 func UpdateDependenciaById(m *DependenciaV2) (err error) {
@@ -188,11 +288,14 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 
 	if nivel_academico == "PREGRADO" {
 
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
-												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
-												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 14`).QueryRows(&proyectosCurriculares)
+		num, err := o.Raw(
+			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
+			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+			WHERE d.id = ? AND dtd.tipo_dependencia_id = 14`,
+			id_facultad).
+			QueryRows(&proyectosCurriculares)
 
 		if err == nil {
 			fmt.Println("Proyectos curriculares encontrados: ", num)
@@ -201,11 +304,14 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 		}
 
 	} else if nivel_academico == "POSGRADO" {
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
-												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
-												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id = 15`).QueryRows(&proyectosCurriculares)
+		num, err := o.Raw(
+			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
+			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+			WHERE d.id = ? AND dtd.tipo_dependencia_id = 15`,
+			id_facultad).
+			QueryRows(&proyectosCurriculares)
 
 		if err == nil {
 			fmt.Println("Proyectos curriculares encontrados: ", num)
@@ -213,11 +319,14 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			fmt.Println("Este es el error ", err)
 		}
 	} else if nivel_academico == "undefined" {
-		num, err := o.Raw(`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
-												 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
-												 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
-												 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-												 WHERE d.id = ` + id_facultad + ` AND dtd.tipo_dependencia_id IN (1,14,15)`).QueryRows(&proyectosCurriculares)
+		num, err := o.Raw(
+			`SELECT DISTINCT ON (dh.id) dh.id AS id, dh.nombre AS nombre
+			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
+			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
+			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+			WHERE d.id = ? AND dtd.tipo_dependencia_id IN (1,14,15)`,
+			id_facultad).
+			QueryRows(&proyectosCurriculares)
 
 		if err == nil {
 			fmt.Println("Proyectos curriculares encontrados: ", num)
@@ -301,8 +410,8 @@ func GetDependenciasPadresById(dependenciaHija int) (dependencias []DependenciaP
 		"de.nombre",
 		"dep.padre_id",
 		"dep.hija_id").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
+		From(Esquema + ".dependencia as de").
+		LeftJoin(Esquema + ".dependencia_padre as dep").On("de.id = dep.hija_id").
 		OrderBy("de.id")
 
 	sql := qb.String()
@@ -348,8 +457,8 @@ func GetDependenciasHijasById(dependenciaPadre int) (dependencias *DependenciaPa
 		"de.nombre",
 		"dep.padre_id",
 		"dep.hija_id").
-		From("oikos.dependencia as de").
-		LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
+		From(Esquema + ".dependencia as de").
+		LeftJoin(Esquema + ".dependencia_padre as dep").On("de.id = dep.hija_id").
 		OrderBy("de.id")
 
 	sql := qb.String()
