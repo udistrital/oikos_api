@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type TipoUsoEspacioFisico struct {
@@ -15,17 +18,66 @@ type TipoUsoEspacioFisico struct {
 	EspacioFisicoId *EspacioFisico `orm:"column(espacio_fisico_id);rel(fk)"`
 }
 
-func (t *TipoUsoEspacioFisico) TableName() string {
+func (d *TipoUsoEspacioFisicoV2) FromV1(in TipoUsoEspacioFisico) (err error) {
+	if err = formatdata.FillStruct(in, &d); err != nil {
+		return
+	}
+	if in.TipoUsoId != nil {
+		var tu TipoUsoV2
+		tu.FromV1(*in.TipoUsoId)
+		d.TipoUsoId = &tu
+	}
+	if in.EspacioFisicoId != nil {
+		var ef EspacioFisicoV2
+		ef.FromV1(*in.EspacioFisicoId)
+		d.EspacioFisicoId = &ef
+	}
+	return
+}
+
+func (d *TipoUsoEspacioFisicoV2) ToV1(out *TipoUsoEspacioFisico) (err error) {
+	formatdata.FillStruct(d, &out)
+	if d.TipoUsoId != nil {
+		var tu TipoUso
+		d.TipoUsoId.ToV1(&tu)
+		out.TipoUsoId = &tu
+	}
+	if d.EspacioFisicoId != nil {
+		var ef EspacioFisico
+		d.EspacioFisicoId.ToV1(&ef)
+		out.EspacioFisicoId = &ef
+	}
+	return
+}
+
+type TipoUsoEspacioFisicoV2 struct {
+	Id                int              `orm:"column(id);pk;auto"`
+	TipoUsoId         *TipoUsoV2       `orm:"column(tipo_uso_id);rel(fk)"`
+	EspacioFisicoId   *EspacioFisicoV2 `orm:"column(espacio_fisico_id);rel(fk)"`
+	Activo            bool             `orm:"column(activo)"`
+	FechaCreacion     time.Time        `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time        `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
+var trTipoUsoEspacioFisicoV1 Diccionario
+
+func (t *TipoUsoEspacioFisicoV2) TableName() string {
 	return "tipo_uso_espacio_fisico"
 }
 
 func init() {
-	orm.RegisterModel(new(TipoUsoEspacioFisico))
+	orm.RegisterModel(new(TipoUsoEspacioFisicoV2))
+
+	trTipoUsoEspacioFisicoV1 = Diccionario{
+		// v1        -->  v2
+		"TipoUsoId":       "TipoUsoId",
+		"EspacioFisicoId": "EspacioFisicoId",
+	}
 }
 
 // AddTipoUsoEspacioFisico insert a new TipoUsoEspacioFisico into database and returns
 // last inserted Id on success.
-func AddTipoUsoEspacioFisico(m *TipoUsoEspacioFisico) (id int64, err error) {
+func AddTipoUsoEspacioFisico(m *TipoUsoEspacioFisicoV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -33,9 +85,9 @@ func AddTipoUsoEspacioFisico(m *TipoUsoEspacioFisico) (id int64, err error) {
 
 // GetTipoUsoEspacioFisicoById retrieves TipoUsoEspacioFisico by Id. Returns error if
 // Id doesn't exist
-func GetTipoUsoEspacioFisicoById(id int) (v *TipoUsoEspacioFisico, err error) {
+func GetTipoUsoEspacioFisicoById(id int) (v *TipoUsoEspacioFisicoV2, err error) {
 	o := orm.NewOrm()
-	v = &TipoUsoEspacioFisico{Id: id}
+	v = &TipoUsoEspacioFisicoV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -47,7 +99,7 @@ func GetTipoUsoEspacioFisicoById(id int) (v *TipoUsoEspacioFisico, err error) {
 func GetAllTipoUsoEspacioFisico(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(TipoUsoEspacioFisico)).RelatedSel(5)
+	qs := o.QueryTable(new(TipoUsoEspacioFisicoV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -93,7 +145,7 @@ func GetAllTipoUsoEspacioFisico(query map[string]string, fields []string, sortby
 		}
 	}
 
-	var l []TipoUsoEspacioFisico
+	var l []TipoUsoEspacioFisicoV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -116,11 +168,84 @@ func GetAllTipoUsoEspacioFisico(query map[string]string, fields []string, sortby
 	return nil, err
 }
 
+// Traduce los selectores (según se usen en query, filter, offset)
+// según corresponda a la jerarquía actual
+func (d *TipoUsoEspacioFisicoV2) SelectorsFromV1(in []string) (out []string) {
+	out = make([]string, len(in))
+	for k, v := range in { // Iterar parametros especificados
+		// 1/3: Reemplazar "." por "__"
+		temp := strings.Replace(v, ".", "__", -1)
+		// 2/3: Trabajar sobre la parte inicial, correspondiente a esta entidad
+		split := strings.SplitN(temp, "__", 2)
+		if v, ok := trTipoUsoEspacioFisicoV1[split[0]]; ok {
+			split[0] = v
+			if len(split) > 1 { // Delegar la parte restante según la entidad (v2)
+				switch v {
+				case "TipoUsoId":
+					aux := TipoUsoV2{}
+					subqueryArr := aux.SelectorsFromV1([]string{split[1]})
+					split[1] = subqueryArr[0]
+				case "EspacioFisicoId":
+					aux := EspacioFisicoV2{}
+					subqueryArr := aux.SelectorsFromV1([]string{split[1]})
+					split[1] = subqueryArr[0]
+				}
+			}
+		}
+		// 3/3: Combinar el resultado
+		temp = strings.Join(split, "__")
+		out[k] = temp
+	}
+	return
+}
+
+// Ajusta los queries a la V2
+func (d *TipoUsoEspacioFisicoV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	out = make(map[string]string)
+	for k, v := range in { // Iterar cada criterio
+		// 1/3: Reemplazar "." por "__"
+		temp := strings.Replace(k, ".", "__", -1)
+		value := v
+		// 2/3: Trabajar sobre la parte inicial, correspondiente a esta entidad
+		split := strings.SplitN(temp, "__", 2)
+		if v2, ok := trTipoUsoEspacioFisicoV1[split[0]]; ok {
+			split[0] = v2
+			if len(split) > 1 { // Delegar la parte restante según la entidad (v2)
+				switch v2 {
+				case "TipoUsoId":
+					aux := TipoUsoV2{}
+					subqueryArr := aux.QueryFromV1(map[string]string{split[1]: value})
+					if len(subqueryArr) == 1 {
+						for k3, v3 := range subqueryArr {
+							split[1] = k3
+							value = v3
+						}
+					}
+				case "EspacioFisicoId":
+					aux := EspacioFisicoV2{}
+					subqueryArr := aux.QueryFromV1(map[string]string{split[1]: value})
+					if len(subqueryArr) == 1 {
+						for k3, v3 := range subqueryArr {
+							split[1] = k3
+							value = v3
+						}
+					}
+				}
+			}
+		}
+		// 3/3: Combinar el resultado
+		temp = strings.Join(split, "__")
+		out[temp] = value
+	}
+	// logs.Debug("in:", in, "out:", out)
+	return
+}
+
 // UpdateTipoUsoEspacioFisico updates TipoUsoEspacioFisico by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateTipoUsoEspacioFisicoById(m *TipoUsoEspacioFisico) (err error) {
+func UpdateTipoUsoEspacioFisicoById(m *TipoUsoEspacioFisicoV2) (err error) {
 	o := orm.NewOrm()
-	v := TipoUsoEspacioFisico{Id: m.Id}
+	v := TipoUsoEspacioFisicoV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -139,7 +264,7 @@ func DeleteTipoUsoEspacioFisico(id int) (err error) {
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&TipoUsoEspacioFisico{Id: id}); err == nil {
+		if num, err = o.Delete(&TipoUsoEspacioFisicoV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}

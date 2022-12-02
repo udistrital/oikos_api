@@ -5,9 +5,22 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
+
+func (d *CampoV2) SelectorsFromV1(in []string) (out []string) {
+	// las propiedades de v1 son similares a las de v2
+	return in
+}
+func (d *CampoV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	// En teoría podría llamar a SelectorsFromV1 pero no es necesario porque
+	// las propiedades de v1 son similares a las de v2
+	return in
+}
 
 type Campo struct {
 	Id          int    `orm:"column(id);pk;auto"`
@@ -15,17 +28,34 @@ type Campo struct {
 	Descripcion string `orm:"column(descripcion);null"`
 }
 
-func (t *Campo) TableName() string {
+func (d *CampoV2) FromV1(in Campo) error {
+	return formatdata.FillStruct(in, &d)
+}
+func (d *CampoV2) ToV1(out *Campo) error {
+	return formatdata.FillStruct(d, out)
+}
+
+type CampoV2 struct {
+	Id                int       `orm:"column(id);pk;auto"`
+	Nombre            string    `orm:"column(nombre)"`
+	Descripcion       string    `orm:"column(descripcion);null"`
+	CodigoAbreviacion string    `orm:"column(codigo_abreviacion);null"`
+	Activo            bool      `orm:"column(activo)"`
+	FechaCreacion     time.Time `orm:"column(fecha_creacion);type(timestamp without time zone)"`
+	FechaModificacion time.Time `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+}
+
+func (t *CampoV2) TableName() string {
 	return "campo"
 }
 
 func init() {
-	orm.RegisterModel(new(Campo))
+	orm.RegisterModel(new(CampoV2))
 }
 
 // AddCampo insert a new Campo into database and returns
 // last inserted Id on success.
-func AddCampo(m *Campo) (id int64, err error) {
+func AddCampo(m *CampoV2) (id int64, err error) {
 	o := orm.NewOrm()
 	id, err = o.Insert(m)
 	return
@@ -33,9 +63,9 @@ func AddCampo(m *Campo) (id int64, err error) {
 
 // GetCampoById retrieves Campo by Id. Returns error if
 // Id doesn't exist
-func GetCampoById(id int) (v *Campo, err error) {
+func GetCampoById(id int) (v *CampoV2, err error) {
 	o := orm.NewOrm()
-	v = &Campo{Id: id}
+	v = &CampoV2{Id: id}
 	if err = o.Read(v); err == nil {
 		return v, nil
 	}
@@ -47,7 +77,7 @@ func GetCampoById(id int) (v *Campo, err error) {
 func GetAllCampo(query map[string]string, fields []string, sortby []string, order []string,
 	offset int64, limit int64) (ml []interface{}, err error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(new(Campo)).RelatedSel()
+	qs := o.QueryTable(new(CampoV2)).RelatedSel()
 	// query k=v
 	for k, v := range query {
 		// rewrite dot-notation to Object__Attribute
@@ -93,7 +123,7 @@ func GetAllCampo(query map[string]string, fields []string, sortby []string, orde
 		}
 	}
 
-	var l []Campo
+	var l []CampoV2
 	qs = qs.OrderBy(sortFields...)
 	if _, err = qs.Limit(limit, offset).All(&l, fields...); err == nil {
 		if len(fields) == 0 {
@@ -118,9 +148,9 @@ func GetAllCampo(query map[string]string, fields []string, sortby []string, orde
 
 // UpdateCampo updates Campo by Id and returns error if
 // the record to be updated doesn't exist
-func UpdateCampoById(m *Campo) (err error) {
+func UpdateCampoById(m *CampoV2) (err error) {
 	o := orm.NewOrm()
-	v := Campo{Id: m.Id}
+	v := CampoV2{Id: m.Id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
@@ -139,7 +169,7 @@ func DeleteCampo(id int) (err error) {
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
-		if num, err = o.Delete(&Campo{Id: id}); err == nil {
+		if num, err = o.Delete(&CampoV2{Id: id}); err == nil {
 			fmt.Println("Number of records deleted in database:", num)
 		}
 	}
