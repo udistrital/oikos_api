@@ -9,20 +9,112 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+
+	"github.com/udistrital/utils_oas/formatdata"
 )
+
+// Traduce los selectores (según se usen en query, filter, offset)
+// según corresponda a la jerarquía actual
+func (d *EspacioFisicoV2) SelectorsFromV1(in []string) (out []string) {
+	out = make([]string, len(in))
+	for k, v := range in { // Iterar parametros especificados
+		replace := ""
+		for k2, v2 := range trEspacioFisicoV1 { // Iterar parametros a traducir
+			if strings.HasPrefix(v, k2) {
+				replace = strings.Replace(v, k2, v2, 1)
+				// logs.Debug("k2:", k2, "v2:", v2)
+				break
+			}
+		}
+		if replace == "" {
+			out[k] = v
+		} else {
+			out[k] = replace
+		}
+		// logs.Debug("v:", v, "replace:", replace)
+	}
+	return
+}
+
+// Ajusta los queries a la V2
+func (d *EspacioFisicoV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	out = make(map[string]string)
+	for k, v := range in { // Iterar cada criterio
+		replaceK := ""
+		replaceV := v
+		for k2, v2 := range trEspacioFisicoV1 {
+			if strings.HasPrefix(k, k2) {
+				// Ajustar key, criterio
+				replaceK = strings.Replace(k, k2, v2, 1)
+				// Ajustar valores
+				switch k2 {
+				case "Estado":
+					replaceV = fmt.Sprint(d.activoFromV1(v))
+				}
+				break
+			}
+		}
+		if replaceK == "" {
+			out[k] = v
+		} else {
+			out[replaceK] = replaceV
+			// logs.Debug("k:", k, "replaceK:", replaceK, "replaceV:", replaceV)
+		}
+	}
+	return
+}
 
 var elementMapEF = make(map[int]EspacioFisicoPadreHijo)
 var lef = list.New()
 
+const (
+	EspacioFisicoEstadoActivo   = "Activo"
+	EspacioFisicoEstadoInactivo = "Inactivo"
+)
+
 type EspacioFisico struct {
-	Id                int                `orm:"column(id);pk;auto"`
-	Nombre            string             `orm:"column(nombre)"`
-	Descripcion       string             `orm:"column(descripcion);null"`
-	Codigo            string             `orm:"column(codigo)"`
-	Estado            string             `orm:"column(estado)"`
-	FechaCreacion     time.Time          `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time          `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
-	TipoEspacio       *TipoEspacioFisico `orm:"column(tipo_espacio);rel(fk)"`
+	Id          int                `orm:"column(id);pk;auto"`
+	Estado      string             `orm:"column(estado)"`
+	TipoEspacio *TipoEspacioFisico `orm:"column(tipo_espacio);rel(fk)"`
+	Nombre      string             `orm:"column(nombre)"`
+	Codigo      string             `orm:"column(codigo)"`
+}
+
+func (d *EspacioFisicoV2) FromV1(in EspacioFisico) error {
+	if err := formatdata.FillStruct(in, &d); err != nil {
+		return err
+	}
+	d.Activo = d.activoFromV1(in.Estado)
+	d.CodigoAbreviacion = in.Codigo
+	if in.TipoEspacio != nil {
+		var esp TipoEspacioFisicoV2
+		esp.FromV1(*in.TipoEspacio)
+		d.TipoEspacioFisicoId = &esp
+	}
+	return nil
+}
+func (d *EspacioFisicoV2) activoFromV1(estado string) (activo bool) {
+	return estado != EspacioFisicoEstadoInactivo
+}
+func (d *EspacioFisicoV2) estadoToV1(activo bool) (estado string) {
+	if activo {
+		return EspacioFisicoEstadoActivo
+	} else {
+		return EspacioFisicoEstadoInactivo
+	}
+}
+func (d *EspacioFisicoV2) ToV1(out *EspacioFisico) error {
+	if err := formatdata.FillStruct(d, &out); err != nil {
+		return err
+	}
+	out.Codigo = d.CodigoAbreviacion
+	out.Estado = d.estadoToV1(d.Activo)
+	if d.TipoEspacioFisicoId != nil {
+		var esp TipoEspacioFisico
+		d.TipoEspacioFisicoId.ToV1(&esp)
+		(*out).TipoEspacio = &esp
+	}
+	return nil
 }
 
 type EspacioFisicoV2 struct {
@@ -42,8 +134,16 @@ func (t *EspacioFisicoV2) TableName() string {
 	return "espacio_fisico"
 }
 
+var trEspacioFisicoV1 Diccionario
+
 func init() {
 	orm.RegisterModel(new(EspacioFisicoV2))
+	trEspacioFisicoV1 = Diccionario{
+		// V1   <---->     V2
+		"Estado":      "Activo",
+		"Codigo":      "CodigoAbreviacion",
+		"TipoEspacio": "TipoEspacioFisicoId",
+	}
 }
 
 // AddEspacioFisico insert a new EspacioFisico into database and returns
@@ -178,9 +278,18 @@ func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
 	//Arreglo vacio que se llenará con los espacios físicos huerfanos
 	var espaciosHuerfanos []EspacioFisico
 	//Consulta SQL que busca los espacios físicos huerfanos
-	num, err := o.Raw(`SELECT es.id, es.nombre AS nombre, es.codigo AS codigo, es.tipo_espacio AS tipo, es.estado AS estado
-										 FROM oikos.espacio_fisico es WHERE es.tipo_espacio = ? AND es.id NOT IN
-										 (SELECT DISTINCT hijo FROM oikos.espacio_fisico_padre)`, tipo_espacio).QueryRows(&espaciosHuerfanos)
+	num, err := o.Raw(
+		`SELECT
+			es.id, es.nombre AS nombre, es.codigo_abreviacion AS codigo, es.tipo_espacio_fisico_id AS tipo,
+			CASE
+				WHEN es.activo = TRUE
+				THEN 'Activo'
+				ELSE 'Inactivo'
+			END estado
+		FROM `+Esquema+`.espacio_fisico es WHERE es.tipo_espacio_fisico_id = ? AND es.id NOT IN
+		(SELECT DISTINCT hijo_id FROM `+Esquema+`.espacio_fisico_padre)`,
+		tipo_espacio).
+		QueryRows(&espaciosHuerfanos)
 
 	if err == nil {
 		fmt.Println("Espacio físicos huerfanos encontrados: ", num)
@@ -237,8 +346,8 @@ func GetEspaciosFisicosHijosById(espacioFisicoPadre int) (espaciosFisicos *Espac
 		"ef.nombre",
 		"efp.padre_id",
 		"efp.hijo_id").
-		From("oikos.espacio_fisico as ef").
-		LeftJoin("oikos.espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
+		From(Esquema + ".espacio_fisico as ef").
+		LeftJoin(Esquema + ".espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
 		OrderBy("ef.id")
 
 	sql := qb.String()
@@ -290,8 +399,8 @@ func GetEspaciosFisicosPadresById(espacioFisicoHijo int) (espaciosFisicos []Espa
 		"ef.nombre",
 		"efp.padre_id",
 		"efp.hijo_id").
-		From("oikos.espacio_fisico as ef").
-		LeftJoin("oikos.espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
+		From(Esquema + ".espacio_fisico as ef").
+		LeftJoin(Esquema + ".espacio_fisico_padre as efp").On("ef.id = efp.hijo_id").
 		OrderBy("ef.id")
 
 	sql := qb.String()

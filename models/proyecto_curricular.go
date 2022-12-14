@@ -37,8 +37,8 @@ func GetAllProyectosByFacultades() (facultad []DependenciaPadreHijo, e error) {
 	qb, _ := orm.NewQueryBuilder("mysql")
 	qb.Select("d.id AS id",
 		"d.nombre AS nombre").
-		From("oikos.dependencia d").
-		InnerJoin("oikos.dependencia_tipo_dependencia dp").On(" d.id = dp.dependencia_id").
+		From(Esquema + ".dependencia d").
+		InnerJoin(Esquema + ".dependencia_tipo_dependencia dp").On(" d.id = dp.dependencia_id").
 		Where("dp.tipo_dependencia_id = 2")
 
 	sql := qb.String()
@@ -54,9 +54,9 @@ func GetAllProyectosByFacultades() (facultad []DependenciaPadreHijo, e error) {
 			"de.nombre",
 			"dep.padre_id",
 			"dep.hija_id").
-			From("oikos.dependencia as de").
-			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
-			InnerJoin("oikos.dependencia_tipo_dependencia dtd").On("dep.hija_id = dtd.dependencia_id").
+			From(Esquema + ".dependencia as de").
+			LeftJoin(Esquema + ".dependencia_padre as dep").On("de.id = dep.hija_id").
+			InnerJoin(Esquema + ".dependencia_tipo_dependencia dtd").On("dep.hija_id = dtd.dependencia_id").
 			Where("dtd.tipo_dependencia_id IN (1,14,15)").
 			OrderBy("de.id")
 
@@ -94,8 +94,8 @@ func GetAllProyectosByFacultadId(idFacultad int) (facultad []DependenciaPadreHij
 	qb, _ := orm.NewQueryBuilder("mysql")
 	qb.Select("d.id AS id",
 		"d.nombre AS nombre").
-		From("oikos.dependencia d").
-		InnerJoin("oikos.dependencia_tipo_dependencia dp").On(" d.id = dp.dependencia_id").
+		From(Esquema + ".dependencia d").
+		InnerJoin(Esquema + ".dependencia_tipo_dependencia dp").On(" d.id = dp.dependencia_id").
 		Where("dp.tipo_dependencia_id = 2").
 		And("d.id = ?")
 
@@ -112,9 +112,9 @@ func GetAllProyectosByFacultadId(idFacultad int) (facultad []DependenciaPadreHij
 			"de.nombre",
 			"dep.padre_id",
 			"dep.hija_id").
-			From("oikos.dependencia as de").
-			LeftJoin("oikos.dependencia_padre as dep").On("de.id = dep.hija_id").
-			InnerJoin("oikos.dependencia_tipo_dependencia dtd").On("dep.hija_id = dtd.dependencia_id").
+			From(Esquema + ".dependencia as de").
+			LeftJoin(Esquema + ".dependencia_padre as dep").On("de.id = dep.hija_id").
+			InnerJoin(Esquema + ".dependencia_tipo_dependencia dtd").On("dep.hija_id = dtd.dependencia_id").
 			Where("dtd.tipo_dependencia_id IN (1,14,15)").
 			OrderBy("de.id")
 

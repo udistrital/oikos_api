@@ -2620,11 +2620,11 @@
         }
     },
     "definitions": {
-        "22527.\u003cnil\u003e.TreeDependencia": {
+        "21868.\u003cnil\u003e.TreeDependencia": {
             "title": "TreeDependencia",
             "type": "object"
         },
-        "78841.\u003cnil\u003e.Tree": {
+        "75658.\u003cnil\u003e.Tree": {
             "title": "Tree",
             "type": "object"
         },
@@ -2701,22 +2701,8 @@
             "title": "Campo",
             "type": "object",
             "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "CodigoAbreviacion": {
-                    "type": "string"
-                },
                 "Descripcion": {
                     "type": "string"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2796,17 +2782,6 @@
             "title": "DependenciaPadre",
             "type": "object",
             "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
                 "Hija": {
                     "$ref": "#/definitions/models.Dependencia"
                 },
@@ -2877,19 +2852,8 @@
             "title": "DependenciaTipoDependencia",
             "type": "object",
             "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
                 "DependenciaId": {
                     "$ref": "#/definitions/models.Dependencia"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -2970,19 +2934,8 @@
                 "Codigo": {
                     "type": "string"
                 },
-                "Descripcion": {
-                    "type": "string"
-                },
                 "Estado": {
                     "type": "string"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3000,30 +2953,11 @@
             "title": "EspacioFisicoCampo",
             "type": "object",
             "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
                 "Campo": {
                     "$ref": "#/definitions/models.Campo"
                 },
                 "EspacioFisico": {
                     "$ref": "#/definitions/models.EspacioFisico"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaFin": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaInicio": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3076,14 +3010,6 @@
             "title": "EspacioFisicoPadre",
             "type": "object",
             "properties": {
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
                 "Hijo": {
                     "$ref": "#/definitions/models.EspacioFisico"
                 },
@@ -3209,23 +3135,6 @@
             "title": "TipoDependencia",
             "type": "object",
             "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "CodigoAbreviacion": {
-                    "type": "string"
-                },
-                "Descripcion": {
-                    "type": "string"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
@@ -3269,23 +3178,6 @@
             "title": "TipoEspacioFisico",
             "type": "object",
             "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "CodigoAbreviacion": {
-                    "type": "string"
-                },
-                "Descripcion": {
-                    "type": "string"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
@@ -3329,23 +3221,6 @@
             "title": "TipoUso",
             "type": "object",
             "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "CodigoAbreviacion": {
-                    "type": "string"
-                },
-                "Descripcion": {
-                    "type": "string"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
                 "Id": {
                     "type": "integer",
                     "format": "int64"
@@ -3359,19 +3234,8 @@
             "title": "TipoUsoEspacioFisico",
             "type": "object",
             "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
                 "EspacioFisicoId": {
                     "$ref": "#/definitions/models.EspacioFisico"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
                 },
                 "Id": {
                     "type": "integer",
@@ -3451,7 +3315,7 @@
                     "type": "string"
                 },
                 "Opciones": {
-                    "$ref": "#/definitions/78841.\u003cnil\u003e.Tree"
+                    "$ref": "#/definitions/75658.\u003cnil\u003e.Tree"
                 }
             }
         },
@@ -3467,7 +3331,7 @@
                     "type": "string"
                 },
                 "Opciones": {
-                    "$ref": "#/definitions/22527.\u003cnil\u003e.TreeDependencia"
+                    "$ref": "#/definitions/21868.\u003cnil\u003e.TreeDependencia"
                 }
             }
         }

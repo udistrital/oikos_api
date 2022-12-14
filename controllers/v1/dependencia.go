@@ -3,6 +3,8 @@ package controllers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -11,6 +13,7 @@ import (
 	"github.com/astaxie/beego/logs"
 
 	"github.com/udistrital/oikos_api/models"
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 // DependenciaController oprations for Dependencia
@@ -21,8 +24,8 @@ type DependenciaController struct {
 // URLMapping ...
 func (c *DependenciaController) URLMapping() {
 	c.Mapping("Post", c.Post)
-	c.Mapping("GetOne", c.GetOne) //--check
-	c.Mapping("GetAll", c.GetAll) //--check
+	c.Mapping("GetOne", c.GetOne)
+	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
 	c.Mapping("ProyectosPorFacultad", c.ProyectosPorFacultad)
@@ -40,33 +43,21 @@ func (c *DependenciaController) Post() {
 	var v models.Dependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.DependenciaV2{
-			Id:                  v.Id,
-			Nombre:              v.Nombre,
-			TelefonoDependencia: v.TelefonoDependencia,
-			CorreoElectronico:   v.CorreoElectronico,
-			Activo:              true,
-			FechaCreacion:       time.Now(),
-			FechaModificacion:   time.Now(),
-		}
-
+		var temp models.DependenciaV2
+		temp.FromV1(v)
+		temp.Activo = true
+		t := time.Now()
+		temp.FechaCreacion = t
+		temp.FechaModificacion = t
 		if _, err := models.AddDependencia(&temp); err == nil {
-			//-------------- Temporal: Cambio por transición ------- //
-			//if _, err := models.AddDependencia(&v); err == nil {
 			c.Ctx.Output.SetStatus(201)
+			temp.ToV1(&v)
 			c.Data["json"] = v
 		} else {
-			logs.Error(err)
-			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-			c.Data["system"] = err
-			c.Abort("400")
+			c.Data["json"] = err.Error()
 		}
 	} else {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("400")
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
@@ -83,25 +74,12 @@ func (c *DependenciaController) GetOne() {
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetDependenciaById(id)
 	if err != nil {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("404")
+		c.Data["json"] = err.Error()
 	} else {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		temp := models.Dependencia{
-			Id:                  v.Id,
-			Nombre:              v.Nombre,
-			TelefonoDependencia: v.TelefonoDependencia,
-			CorreoElectronico:   v.CorreoElectronico,
-			//DependenciaTipoDependencia: field.DependenciaTipoDependencia,
-		}
-
+		var temp models.Dependencia
+		v.ToV1(&temp)
 		c.Data["json"] = temp
-		//-------------- Temporal: Cambio por transición ------- //
-
-		//c.Data["json"] = v  -------------- Temporal: Cambio por transición ------- //
 	}
 	c.ServeJSON()
 }
@@ -160,70 +138,46 @@ func (c *DependenciaController) GetAll() {
 		}
 	}
 
-	l, err := models.GetAllDependencia(query, fields, sortby, order, offset, limit)
-
+	aux := models.DependenciaV2{}
+	l, err := models.GetAllDependencia(
+		aux.QueryFromV1(query),
+		aux.SelectorsFromV1(fields),
+		aux.SelectorsFromV1(sortby), order,
+		offset, limit)
 	if err != nil {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("404")
+		c.Data["json"] = err.Error()
 	} else {
-		if l == nil {
-			l = append(l, map[string]interface{}{})
-			c.Data["json"] = l
-		} else {
-			//-------------- Temporal: Cambio por transición ------- //
-			var temp []models.Dependencia
-			for _, i := range l {
-				field, _ := i.(models.DependenciaV2)
-
-				var dtp []*models.DependenciaTipoDependencia
-
-				for _, j := range field.DependenciaTipoDependencia {
-					td := &models.TipoDependencia{
-						Id:                j.TipoDependenciaId.Id,
-						Nombre:            j.TipoDependenciaId.Nombre,
-						Descripcion:       j.TipoDependenciaId.Descripcion,
-						CodigoAbreviacion: j.TipoDependenciaId.CodigoAbreviacion,
-						Activo:            j.TipoDependenciaId.Activo,
-						FechaCreacion:     j.TipoDependenciaId.FechaCreacion,
-						FechaModificacion: j.TipoDependenciaId.FechaModificacion,
-					}
-
-					d := &models.Dependencia{
-						Id:                  j.DependenciaId.Id,
-						Nombre:              j.DependenciaId.Nombre,
-						TelefonoDependencia: j.DependenciaId.TelefonoDependencia,
-						CorreoElectronico:   j.DependenciaId.CorreoElectronico,
-					}
-
-					y := &models.DependenciaTipoDependencia{
-						Id:                j.Id,
-						TipoDependenciaId: td,
-						DependenciaId:     d,
-						Activo:            j.Activo,
-						FechaCreacion:     j.FechaCreacion,
-						FechaModificacion: j.FechaCreacion,
-					}
-
-					dtp = append(dtp, y)
-				}
-
-				x := models.Dependencia{
-					Id:                         field.Id,
-					Nombre:                     field.Nombre,
-					TelefonoDependencia:        field.TelefonoDependencia,
-					CorreoElectronico:          field.CorreoElectronico,
-					DependenciaTipoDependencia: dtp,
-				}
-
-				temp = append(temp, x)
-			}
-			c.Data["json"] = temp
-		}
-
 		//-------------- Temporal: Cambio por transición ------- //
-		//c.Data["json"] = l -------------- Temporal: Cambio por transición ------- //
+		logs.Info("Lista dependencias: ", l)
+		var temp []interface{}
+		for _, i := range l {
+			switch v := i.(type) {
+			case map[string]interface{}:
+				// len(fields) > 0
+				var (
+					v2    models.DependenciaV2
+					v1aux models.Dependencia
+					v1    map[string]interface{}
+					err   error
+				)
+				formatdata.FillStruct(v, &v2)                     // convertir a estructura v2 ...
+				v2.ToV1(&v1aux)                                   // ... para poder convertir a v1
+				formatdata.FillStruct(v1aux, &v1)                 // Luego a un mapeo auxiliar a ser...
+				if v1, err = FilterKeys(v1, fields); err != nil { // ...filtrado
+					logs.Error(err)
+					c.Abort(fmt.Sprint(http.StatusInternalServerError))
+				}
+				temp = append(temp, v1)
+			case models.DependenciaV2:
+				var x models.Dependencia
+				v.ToV1(&x)
+				temp = append(temp, x)
+				// default:
+				// 	// SIN MANEJAR!
+			}
+		}
+		logs.Info("Lista dependencias: ", temp == nil)
+		c.Data["json"] = temp
 	}
 	c.ServeJSON()
 }
@@ -232,38 +186,29 @@ func (c *DependenciaController) GetAll() {
 // @Title Put
 // @Description update the Dependencia
 // @Param	id		path 	int	true		"The id you want to update"
-// @Param	body		body 	models.DependenciaV2	true		"body for Dependencia content"
-// @Success 200 {object} models.DependenciaV2
+// @Param	body		body 	models.Dependencia	true		"body for Dependencia content"
+// @Success 200 {string} update success!
 // @Failure 400 the request contains incorrect syntax
 // @router /:id [put]
 func (c *DependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	//-------------- Temporal: Cambio por transición ------- //
-	infoDep, _ := models.GetDependenciaById(id)
-	v := models.DependenciaV2{
-		Id:                id,
-		Activo:            infoDep.Activo,
-		FechaCreacion:     infoDep.FechaCreacion,
-		FechaModificacion: time.Now(),
-	}
-	//v := models.Dependencia{Id: id}
+	v2, _ := models.GetDependenciaById(id)
+	v := models.Dependencia{Id: id}
 	//-------------- Temporal: Cambio por transición ------- //
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-
-		if err := models.UpdateDependenciaById(&v); err == nil {
-			c.Data["json"] = v
+		v2.Nombre = v.Nombre
+		v2.TelefonoDependencia = v.TelefonoDependencia
+		v2.CorreoElectronico = v.CorreoElectronico
+		v2.FechaModificacion = time.Now()
+		if err := models.UpdateDependenciaById(v2); err == nil {
+			c.Data["json"] = "OK"
 		} else {
-			logs.Error(err)
-			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-			c.Data["system"] = err
-			c.Abort("400")
+			c.Data["json"] = err.Error()
 		}
 	} else {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("400")
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
@@ -272,19 +217,16 @@ func (c *DependenciaController) Put() {
 // @Title Delete
 // @Description delete the Dependencia
 // @Param	id		path 	int	true		"The id you want to delete"
-// @Success 200 {object} models.Deleted
+// @Success 200 {string} delete success!
 // @Failure 404 not found resource
 // @router /:id [delete]
 func (c *DependenciaController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteDependencia(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"Id": id}
+		c.Data["json"] = "OK"
 	} else {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("404")
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
@@ -326,6 +268,7 @@ func (c *DependenciaController) ProyectosPorFacultadNivelAcademico() {
 
 	//Construcción Json menus
 	l := models.ProyectosPorFacultad(id_facultad, "undefined")
+
 	c.Data["json"] = l
 	//Generera el Json con los datos obtenidos
 	c.ServeJSON()

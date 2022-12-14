@@ -1749,10 +1749,10 @@ paths:
         "404":
           description: not found resource
 definitions:
-  22527.<nil>.TreeDependencia:
+  21868.<nil>.TreeDependencia:
     title: TreeDependencia
     type: object
-  78841.<nil>.Tree:
+  75658.<nil>.Tree:
     title: Tree
     type: object
   models.AsignacionEspacioFisicoDependencia:
@@ -1808,18 +1808,8 @@ definitions:
     title: Campo
     type: object
     properties:
-      Activo:
-        type: boolean
-      CodigoAbreviacion:
-        type: string
       Descripcion:
         type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Id:
         type: integer
         format: int64
@@ -1874,14 +1864,6 @@ definitions:
     title: DependenciaPadre
     type: object
     properties:
-      Activo:
-        type: boolean
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Hija:
         $ref: '#/definitions/models.Dependencia'
       Id:
@@ -1931,16 +1913,8 @@ definitions:
     title: DependenciaTipoDependencia
     type: object
     properties:
-      Activo:
-        type: boolean
       DependenciaId:
         $ref: '#/definitions/models.Dependencia'
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Id:
         type: integer
         format: int64
@@ -1996,16 +1970,8 @@ definitions:
     properties:
       Codigo:
         type: string
-      Descripcion:
-        type: string
       Estado:
         type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Id:
         type: integer
         format: int64
@@ -2017,24 +1983,10 @@ definitions:
     title: EspacioFisicoCampo
     type: object
     properties:
-      Activo:
-        type: boolean
       Campo:
         $ref: '#/definitions/models.Campo'
       EspacioFisico:
         $ref: '#/definitions/models.EspacioFisico'
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaFin:
-        type: string
-        format: datetime
-      FechaInicio:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Id:
         type: integer
         format: int64
@@ -2071,12 +2023,6 @@ definitions:
     title: EspacioFisicoPadre
     type: object
     properties:
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Hijo:
         $ref: '#/definitions/models.EspacioFisico'
       Id:
@@ -2165,18 +2111,6 @@ definitions:
     title: TipoDependencia
     type: object
     properties:
-      Activo:
-        type: boolean
-      CodigoAbreviacion:
-        type: string
-      Descripcion:
-        type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Id:
         type: integer
         format: int64
@@ -2207,18 +2141,6 @@ definitions:
     title: TipoEspacioFisico
     type: object
     properties:
-      Activo:
-        type: boolean
-      CodigoAbreviacion:
-        type: string
-      Descripcion:
-        type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Id:
         type: integer
         format: int64
@@ -2249,18 +2171,6 @@ definitions:
     title: TipoUso
     type: object
     properties:
-      Activo:
-        type: boolean
-      CodigoAbreviacion:
-        type: string
-      Descripcion:
-        type: string
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Id:
         type: integer
         format: int64
@@ -2270,16 +2180,8 @@ definitions:
     title: TipoUsoEspacioFisico
     type: object
     properties:
-      Activo:
-        type: boolean
       EspacioFisicoId:
         $ref: '#/definitions/models.EspacioFisico'
-      FechaCreacion:
-        type: string
-        format: datetime
-      FechaModificacion:
-        type: string
-        format: datetime
       Id:
         type: integer
         format: int64
@@ -2335,7 +2237,7 @@ definitions:
       Nombre:
         type: string
       Opciones:
-        $ref: '#/definitions/78841.<nil>.Tree'
+        $ref: '#/definitions/75658.<nil>.Tree'
   models.TreeDependencia:
     title: TreeDependencia
     type: object
@@ -2346,7 +2248,7 @@ definitions:
       Nombre:
         type: string
       Opciones:
-        $ref: '#/definitions/22527.<nil>.TreeDependencia'
+        $ref: '#/definitions/21868.<nil>.TreeDependencia'
 tags:
 - name: tipo_uso
   description: |

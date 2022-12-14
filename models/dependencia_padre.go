@@ -9,15 +9,46 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/orm"
+	"github.com/udistrital/utils_oas/formatdata"
 )
 
 type DependenciaPadre struct {
-	Id                int          `orm:"column(id);pk;auto"`
-	Padre             *Dependencia `orm:"column(padre);rel(fk)"`
-	Hija              *Dependencia `orm:"column(hija);rel(fk)"`
-	Activo            bool         `orm:"column(activo)"`
-	FechaCreacion     time.Time    `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion time.Time    `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Id    int          `orm:"column(id);pk;auto"`
+	Padre *Dependencia `orm:"column(padre);rel(fk)"`
+	Hija  *Dependencia `orm:"column(hija);rel(fk)"`
+}
+
+func (d *DependenciaPadreV2) FromV1(in DependenciaPadre) error {
+	if err := formatdata.FillStruct(in, &d); err != nil {
+		return err
+	}
+	if in.Padre != nil {
+		var dep DependenciaV2
+		dep.FromV1(*in.Padre)
+		d.PadreId = &dep
+	}
+	if in.Hija != nil {
+		var dep DependenciaV2
+		dep.FromV1(*in.Hija)
+		d.HijaId = &dep
+	}
+	return nil
+}
+func (d *DependenciaPadreV2) ToV1(out *DependenciaPadre) error {
+	if err := formatdata.FillStruct(d, out); err != nil {
+		return err
+	}
+	if d.PadreId != nil {
+		var dep Dependencia
+		d.PadreId.ToV1(&dep)
+		out.Padre = &dep
+	}
+	if d.HijaId != nil {
+		var dep Dependencia
+		d.HijaId.ToV1(&dep)
+		out.Hija = &dep
+	}
+	return nil
 }
 
 type DependenciaPadreV2 struct {
@@ -36,12 +67,19 @@ type TreeDependencia struct {
 	Opciones *[]TreeDependencia
 }
 
+var trDependenciaPadreV1 Diccionario
+
 func (t *DependenciaPadreV2) TableName() string {
 	return "dependencia_padre"
 }
 
 func init() {
 	orm.RegisterModel(new(DependenciaPadreV2))
+
+	trDependenciaPadreV1 = Diccionario{
+		"Padre": "PadreId",
+		"Hija":  "HijaId",
+	}
 }
 
 // AddDependenciaPadre insert a new DependenciaPadre into database and returns
@@ -138,6 +176,66 @@ func GetAllDependenciaPadre(query map[string]string, fields []string, sortby []s
 	return nil, err
 }
 
+// Traduce los selectores (según se usen en query, filter, offset)
+// según corresponda a la jerarquía actual
+func (d *DependenciaPadreV2) SelectorsFromV1(in []string) (out []string) {
+	out = make([]string, len(in))
+	for k, v := range in { // Iterar parametros especificados
+		// 1/3: Reemplazar "." por "__"
+		temp := strings.Replace(v, ".", "__", -1)
+		// 2/3: Trabajar sobre la parte inicial, correspondiente a esta entidad
+		split := strings.SplitN(temp, "__", 2)
+		if v, ok := trDependenciaPadreV1[split[0]]; ok {
+			split[0] = v
+			if len(split) > 1 { // Delegar la parte restante según la entidad (v2)
+				switch v {
+				case "PadreId", "HijaId":
+					aux := DependenciaV2{}
+					subqueryArr := aux.SelectorsFromV1([]string{split[1]})
+					split[1] = subqueryArr[0]
+				}
+			}
+		}
+		// 3/3: Combinar el resultado
+		temp = strings.Join(split, "__")
+		out[k] = temp
+	}
+	return
+}
+
+// Ajusta los queries a la V2
+func (d *DependenciaPadreV2) QueryFromV1(in map[string]string) (out map[string]string) {
+	out = make(map[string]string)
+	for k, v := range in { // Iterar cada criterio
+		// 1/3: Reemplazar "." por "__"
+		temp := strings.Replace(k, ".", "__", -1)
+		value := v
+		// 2/3: Trabajar sobre la parte inicial, correspondiente a esta entidad
+		split := strings.SplitN(temp, "__", 2)
+		if v2, ok := trDependenciaPadreV1[split[0]]; ok {
+			split[0] = v2
+			if len(split) > 1 { // Delegar la parte restante según la entidad (v2)
+				switch v2 {
+				case "PadreId", "HijaId":
+					aux := DependenciaV2{}
+					subqueryArr := aux.QueryFromV1(map[string]string{split[1]: value})
+					if len(subqueryArr) == 1 {
+						for k3, v3 := range subqueryArr {
+							split[1] = k3
+							value = v3
+						}
+					}
+				}
+			}
+		}
+		// 3/3: Combinar el resultado
+		temp = strings.Join(split, "__")
+		out[temp] = value
+	}
+	// logs.Debug("in:", in, "out:", out)
+	return
+}
+
 // UpdateDependenciaPadre updates DependenciaPadre by Id and returns error if
 // the record to be updated doesn't exist
 func UpdateDependenciaPadreById(m *DependenciaPadreV2) (err error) {
@@ -176,15 +274,15 @@ func Facultades() (facultad []Tree) {
 
 	//Arreglo que tendra las facultades encontradas
 	var facultades []Tree
-
-	_, err := o.Raw(`SELECT dh.id AS id, dh.nombre AS nombre
-											 FROM oikos.dependencia d INNER JOIN oikos.dependencia_padre dp ON d.id = dp.padre_id
-						 INNER JOIN oikos.dependencia dh ON dh.id = dp.hija_id
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-											 WHERE dtd.tipo_dependencia_id = 2`).QueryRows(&facultades)
+	_, err := o.Raw(
+		`SELECT dh.id AS id, dh.nombre AS nombre
+		FROM ` + Esquema + `.dependencia d INNER JOIN ` + Esquema + `.dependencia_padre dp ON d.id = dp.padre_id
+		INNER JOIN ` + Esquema + `.dependencia dh ON dh.id = dp.hija_id
+		INNER JOIN ` + Esquema + `.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
+		WHERE dtd.tipo_dependencia_id = 2`).
+		QueryRows(&facultades)
 
 	if err == nil {
-
 		//For para que recorra los Ids en busca de hijos
 		for i := 0; i < len(facultades); i++ {
 			//Me verifica que los Id tengan hijos
@@ -206,12 +304,14 @@ func ProyectosCurricularesPorFacultad(Facultad *Tree) (proyectos []Tree) {
 	//Arreglo que tendra las facultades encontradas
 	var proyectos_curriculares []Tree
 
-	_, err := o.Raw(`SELECT DISTINCT de.id, de.nombre, dep.padre_id, dep.hija_id
-											 FROM oikos.dependencia AS de
-											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija_id
-											 INNER JOIN oikos.dependencia_tipo_dependencia dtd ON dep.hija_id = dtd.dependencia_id
-											 WHERE dep.padre_id =` + padre + ` AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`).QueryRows(&proyectos_curriculares)
-
+	_, err := o.Raw(
+		`SELECT DISTINCT de.id, de.nombre, dep.padre_id, dep.hija_id
+		FROM `+Esquema+`.dependencia AS de
+		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija_id
+		INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dep.hija_id = dtd.dependencia_id
+		WHERE dep.padre_id = ? AND dtd.tipo_dependencia_id IN (1,14,15) ORDER BY de.id`,
+		padre).
+		QueryRows(&proyectos_curriculares)
 	if err == nil {
 
 		//Llena el elemento Opciones en la estructura del menú padre
@@ -225,11 +325,13 @@ func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
 	o := orm.NewOrm()
 	//Arreglo
 	var dependenciaPadres []TreeDependencia
-	num, err := o.Raw(`SELECT de.id AS id, de.nombre AS nombre, dep.padre_id AS padre
-							FROM oikos.dependencia
-							AS de left join oikos.dependencia_padre
-							AS dep ON de.id = dep.hija_id
-							WHERE padre_id IS NULL ORDER BY de.id`).QueryRows(&dependenciaPadres)
+	num, err := o.Raw(
+		`SELECT de.id AS id, de.nombre AS nombre, dep.padre_id AS padre
+		FROM ` + Esquema + `.dependencia
+		AS de left join ` + Esquema + `.dependencia_padre
+		AS dep ON de.id = dep.hija_id
+		WHERE padre_id IS NULL ORDER BY de.id`).
+		QueryRows(&dependenciaPadres)
 
 	if err == nil {
 		fmt.Println("Dependencias padre encontradas: ", num)
@@ -251,10 +353,13 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 	//Arreglo
 	var dependenciaHijas []TreeDependencia
 
-	num, err := o.Raw(`SELECT de.id, de.nombre, dep.padre_id, dep.hija_id
-											 FROM oikos.dependencia AS de
-											 LEFT JOIN oikos.dependencia_padre AS dep ON de.id = dep.hija_id
-											 WHERE dep.padre_id = ` + padre + ` ORDER BY de.id`).QueryRows(&dependenciaHijas)
+	num, err := o.Raw(
+		`SELECT de.id, de.nombre, dep.padre_id, dep.hija_id
+		FROM `+Esquema+`.dependencia AS de
+		LEFT JOIN `+Esquema+`.dependencia_padre AS dep ON de.id = dep.hija_id
+		WHERE dep.padre_id = ? ORDER BY de.id`,
+		padre).
+		QueryRows(&dependenciaHijas)
 
 	//Condicional si el error es nulo
 	if err == nil {
