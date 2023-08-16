@@ -12,8 +12,6 @@ import (
 	v1 "github.com/udistrital/oikos_api/controllers/v1"
 
 	"github.com/astaxie/beego"
-	//Libreria de middleware
-	//"github.com/udistrital/auditoria"
 )
 
 func init() {

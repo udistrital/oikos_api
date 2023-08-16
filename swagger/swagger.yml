@@ -1749,12 +1749,6 @@ paths:
         "404":
           description: not found resource
 definitions:
-  21868.<nil>.TreeDependencia:
-    title: TreeDependencia
-    type: object
-  75658.<nil>.Tree:
-    title: Tree
-    type: object
   models.AsignacionEspacioFisicoDependencia:
     title: AsignacionEspacioFisicoDependencia
     type: object
@@ -2237,7 +2231,9 @@ definitions:
       Nombre:
         type: string
       Opciones:
-        $ref: '#/definitions/75658.<nil>.Tree'
+        type: array
+        items:
+          $ref: '#/definitions/models.Tree'
   models.TreeDependencia:
     title: TreeDependencia
     type: object
@@ -2248,7 +2244,9 @@ definitions:
       Nombre:
         type: string
       Opciones:
-        $ref: '#/definitions/21868.<nil>.TreeDependencia'
+        type: array
+        items:
+          $ref: '#/definitions/models.TreeDependencia'
 tags:
 - name: tipo_uso
   description: |
