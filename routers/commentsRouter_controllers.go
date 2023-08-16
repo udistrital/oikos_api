@@ -97,6 +97,51 @@ func init() {
             Filters: nil,
             Params: nil})
 
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"],
+        beego.ControllerComments{
+            Method: "Post",
+            Router: "/",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"],
+        beego.ControllerComments{
+            Method: "GetAll",
+            Router: "/",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"],
+        beego.ControllerComments{
+            Method: "GetOne",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"get"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"],
+        beego.ControllerComments{
+            Method: "Put",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"put"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CentroCostosController"],
+        beego.ControllerComments{
+            Method: "Delete",
+            Router: "/:id",
+            AllowHTTPMethods: []string{"delete"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
     beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaPadreV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:DependenciaPadreV2Controller"],
         beego.ControllerComments{
             Method: "Post",

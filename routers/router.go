@@ -95,6 +95,11 @@ func init() {
 	)
 
 	ns2 := beego.NewNamespace("/v2",
+		beego.NSNamespace("/centro_costos",
+			beego.NSInclude(
+				&controllers.CentroCostosController{},
+			),
+		),
 
 		beego.NSNamespace("/proyecto_curricular",
 			beego.NSInclude(
