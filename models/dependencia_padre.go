@@ -64,7 +64,7 @@ type DependenciaPadreV2 struct {
 type TreeDependencia struct {
 	Id       int
 	Nombre   string
-	Opciones *[]TreeDependencia
+	Opciones []TreeDependencia
 }
 
 var trDependenciaPadreV1 Diccionario
@@ -315,7 +315,7 @@ func ProyectosCurricularesPorFacultad(Facultad *Tree) (proyectos []Tree) {
 	if err == nil {
 
 		//Llena el elemento Opciones en la estructura del menú padre
-		Facultad.Opciones = &proyectos_curriculares
+		Facultad.Opciones = proyectos_curriculares
 	}
 	return proyectos_curriculares
 }
@@ -366,7 +366,7 @@ func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDepe
 		fmt.Println("Dependencias Hijas encontradas: ", num)
 
 		//Llena el elemento Opciones en la estructura del menú padre
-		Padre.Opciones = &dependenciaHijas
+		Padre.Opciones = dependenciaHijas
 
 		//For que recorre el subMenu en busca de hijos (Recursiva)
 		for i := 0; i < len(dependenciaHijas); i++ {

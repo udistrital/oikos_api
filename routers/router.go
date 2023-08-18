@@ -12,8 +12,6 @@ import (
 	v1 "github.com/udistrital/oikos_api/controllers/v1"
 
 	"github.com/astaxie/beego"
-	//Libreria de middleware
-	//"github.com/udistrital/auditoria"
 )
 
 func init() {
@@ -97,6 +95,11 @@ func init() {
 	)
 
 	ns2 := beego.NewNamespace("/v2",
+		beego.NSNamespace("/centro_costos",
+			beego.NSInclude(
+				&controllers.CentroCostosController{},
+			),
+		),
 
 		beego.NSNamespace("/proyecto_curricular",
 			beego.NSInclude(

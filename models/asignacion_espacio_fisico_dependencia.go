@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 
 	"github.com/udistrital/utils_oas/formatdata"
@@ -65,9 +64,7 @@ func (d *AsignacionEspacioFisicoDependenciaV2) ToV1(out *AsignacionEspacioFisico
 		d.DependenciaId.ToV1(&dep)
 		(*out).DependenciaId = &dep
 	}
-	logs.Debug("convertido:")
-	formatdata.JsonPrint(out)
-	fmt.Println()
+
 	return
 }
 
