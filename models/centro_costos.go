@@ -11,14 +11,14 @@ import (
 )
 
 type CentroCostos struct {
-	Id                int            `orm:"column(id);pk"`
-	DependenciaId     *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
-	SedeId            *EspacioFisico `orm:"column(sede_id);rel(fk)"`
-	Codigo            string         `orm:"column(codigo)"`
-	Nombre            string         `orm:"column(nombre)"`
 	Activo            bool           `orm:"column(activo)"`
+	Id                int            `orm:"column(id);pk"`
+	Codigo            string         `orm:"column(codigo)"`
+	DependenciaId     *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
 	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	Nombre            string         `orm:"column(nombre)"`
+	SedeId            *EspacioFisico `orm:"column(sede_id);rel(fk);null"`
 }
 
 func (t *CentroCostos) TableName() string {
@@ -39,13 +39,10 @@ func AddCentroCostos(m *CentroCostos) (id int64, err error) {
 
 // GetCentroCostosById retrieves CentroCostos by Id. Returns error if
 // Id doesn't exist
-func GetCentroCostosById(id int) (v *CentroCostos, err error) {
+func GetCentroCostosById(id int) (v CentroCostos, err error) {
 	o := orm.NewOrm()
-	v = &CentroCostos{Id: id}
-	if err = o.Read(v); err == nil {
-		return v, nil
-	}
-	return nil, err
+	err = o.QueryTable(new(CentroCostos)).RelatedSel().Filter("Id", id).One(&v)
+	return
 }
 
 // GetAllCentroCostos retrieves all CentroCostos matches certain condition. Returns empty list if

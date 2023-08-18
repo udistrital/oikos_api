@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS oikos.centro_costos (
     id SERIAL NOT NULL,
     dependencia_id INTEGER NOT NULL,
-    sede_id INTEGER NOT NULL,
+    sede_id INTEGER,
     codigo VARCHAR(12) NOT NULL,
     nombre TEXT NOT NULL,
     activo BOOLEAN NOT NULL,
