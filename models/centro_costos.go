@@ -14,7 +14,7 @@ type CentroCostos struct {
 	Activo            bool           `orm:"column(activo)"`
 	Id                int            `orm:"column(id);pk"`
 	Codigo            string         `orm:"column(codigo)"`
-	DependenciaId     *Dependencia   `orm:"column(dependencia_id);rel(fk)"`
+	DependenciaId     *Dependencia   `orm:"column(dependencia_id);rel(fk);null"`
 	FechaCreacion     time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
 	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 	Nombre            string         `orm:"column(nombre)"`
