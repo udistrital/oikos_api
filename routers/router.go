@@ -175,6 +175,11 @@ func init() {
 				&controllers.AsignacionEspacioFisicoDependenciaV2Controller{},
 			),
 		),
+		beego.NSNamespace("/cambio_dependencia",
+			beego.NSInclude(
+				&controllers.CambioDependenciaController{},
+			),
+		),
 	)
 
 	beego.AddNamespace(ns)
