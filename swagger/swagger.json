@@ -13,7 +13,7 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "basePath": "/v2",
+    "basePath": "/v1",
     "paths": {
         "/asignacion_espacio_fisico_dependencia/": {
             "get": {
@@ -208,7 +208,7 @@
                     "cambio_dependencia"
                 ],
                 "description": "get Cambio_dependencia",
-                "operationId": "Cambio_dependenciaController.Get All",
+                "operationId": "CambioDependenciaV2Controller.Get All",
                 "parameters": [
                     {
                         "in": "query",
@@ -264,7 +264,7 @@
                     "cambio_dependencia"
                 ],
                 "description": "create Cambio_dependencia",
-                "operationId": "Cambio_dependenciaController.Post",
+                "operationId": "CambioDependenciaV2Controller.Post",
                 "parameters": [
                     {
                         "in": "body",
@@ -292,7 +292,7 @@
                     "cambio_dependencia"
                 ],
                 "description": "get Cambio_dependencia by id",
-                "operationId": "Cambio_dependenciaController.Get One",
+                "operationId": "CambioDependenciaV2Controller.Get One",
                 "parameters": [
                     {
                         "in": "path",
@@ -319,7 +319,7 @@
                     "cambio_dependencia"
                 ],
                 "description": "update the Cambio_dependencia",
-                "operationId": "Cambio_dependenciaController.Put",
+                "operationId": "CambioDependenciaV2Controller.Put",
                 "parameters": [
                     {
                         "in": "path",
@@ -355,7 +355,7 @@
                     "cambio_dependencia"
                 ],
                 "description": "delete the Cambio_dependencia",
-                "operationId": "Cambio_dependenciaController.Delete",
+                "operationId": "CambioDependenciaV2Controller.Delete",
                 "parameters": [
                     {
                         "in": "path",
@@ -558,179 +558,6 @@
                     },
                     "404": {
                         "description": "not found resource"
-                    }
-                }
-            }
-        },
-        "/centro_costos/": {
-            "get": {
-                "tags": [
-                    "centro_costos"
-                ],
-                "description": "get CentroCostos",
-                "operationId": "CentroCostosController.Get All",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "query",
-                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "fields",
-                        "description": "Fields returned. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "sortby",
-                        "description": "Sorted-by fields. e.g. col1,col2 ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "order",
-                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "limit",
-                        "description": "Limit the size of result set. Must be an integer",
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "offset",
-                        "description": "Start position of result set. Must be an integer",
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.CentroCostos"
-                        }
-                    },
-                    "403": {
-                        "description": ""
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "centro_costos"
-                ],
-                "description": "create CentroCostos",
-                "operationId": "CentroCostosController.Post",
-                "parameters": [
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for CentroCostos content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CentroCostos"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "{int} models.CentroCostos"
-                    },
-                    "403": {
-                        "description": "body is empty"
-                    }
-                }
-            }
-        },
-        "/centro_costos/{id}": {
-            "get": {
-                "tags": [
-                    "centro_costos"
-                ],
-                "description": "get CentroCostos by id",
-                "operationId": "CentroCostosController.Get One",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The key for staticblock",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.CentroCostos"
-                        }
-                    },
-                    "403": {
-                        "description": ":id is empty"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "centro_costos"
-                ],
-                "description": "update the CentroCostos",
-                "operationId": "CentroCostosController.Put",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to update",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "body",
-                        "name": "body",
-                        "description": "body for CentroCostos content",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.CentroCostos"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "schema": {
-                            "$ref": "#/definitions/models.CentroCostos"
-                        }
-                    },
-                    "403": {
-                        "description": ":id is not int"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "centro_costos"
-                ],
-                "description": "delete the CentroCostos",
-                "operationId": "CentroCostosController.Delete",
-                "parameters": [
-                    {
-                        "in": "path",
-                        "name": "id",
-                        "description": "The id you want to delete",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} delete success!"
-                    },
-                    "403": {
-                        "description": "id is empty"
                     }
                 }
             }
@@ -2966,14 +2793,6 @@
         }
     },
     "definitions": {
-        "107499.\u003cnil\u003e.Tree": {
-            "title": "Tree",
-            "type": "object"
-        },
-        "34574.\u003cnil\u003e.TreeDependencia": {
-            "title": "TreeDependencia",
-            "type": "object"
-        },
         "models.AsignacionEspacioFisicoDependencia": {
             "title": "AsignacionEspacioFisicoDependencia",
             "type": "object",
@@ -3090,39 +2909,6 @@
                 },
                 "Nombre": {
                     "type": "string"
-                }
-            }
-        },
-        "models.CentroCostos": {
-            "title": "CentroCostos",
-            "type": "object",
-            "properties": {
-                "Activo": {
-                    "type": "boolean"
-                },
-                "Codigo": {
-                    "type": "string"
-                },
-                "DependenciaId": {
-                    "$ref": "#/definitions/models.Dependencia"
-                },
-                "FechaCreacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "FechaModificacion": {
-                    "type": "string",
-                    "format": "datetime"
-                },
-                "Id": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "Nombre": {
-                    "type": "string"
-                },
-                "SedeId": {
-                    "$ref": "#/definitions/models.EspacioFisico"
                 }
             }
         },
@@ -3698,7 +3484,10 @@
                     "type": "string"
                 },
                 "Opciones": {
-                    "$ref": "#/definitions/107499.\u003cnil\u003e.Tree"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.Tree"
+                    }
                 }
             }
         },
@@ -3714,7 +3503,10 @@
                     "type": "string"
                 },
                 "Opciones": {
-                    "$ref": "#/definitions/34574.\u003cnil\u003e.TreeDependencia"
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.TreeDependencia"
+                    }
                 }
             }
         }
@@ -3767,10 +3559,6 @@
         {
             "name": "espacio_fisico_campo",
             "description": "EspacioFisicoCampoController oprations for EspacioFisicoCampo\n"
-        },
-        {
-            "name": "centro_costos",
-            "description": "CentroCostosController operations for CentroCostos\n"
         },
         {
             "name": "proyecto_curricular",
