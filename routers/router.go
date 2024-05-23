@@ -12,8 +12,6 @@ import (
 	v1 "github.com/udistrital/oikos_api/controllers/v1"
 
 	"github.com/astaxie/beego"
-	//Libreria de middleware
-	//"github.com/udistrital/auditoria"
 )
 
 func init() {
@@ -173,6 +171,11 @@ func init() {
 		beego.NSNamespace("/asignacion_espacio_fisico_dependencia",
 			beego.NSInclude(
 				&controllers.AsignacionEspacioFisicoDependenciaV2Controller{},
+			),
+		),
+		beego.NSNamespace("/cambio_dependencia",
+			beego.NSInclude(
+				&controllers.CambioDependenciaV2Controller{},
 			),
 		),
 	)
