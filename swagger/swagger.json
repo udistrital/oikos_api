@@ -13,7 +13,7 @@
             "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
         }
     },
-    "basePath": "/v1",
+    "basePath": "/v2",
     "paths": {
         "/asignacion_espacio_fisico_dependencia/": {
             "get": {
@@ -198,6 +198,179 @@
                     },
                     "404": {
                         "description": "not found resource"
+                    }
+                }
+            }
+        },
+        "/cambio_dependencia/": {
+            "get": {
+                "tags": [
+                    "cambio_dependencia"
+                ],
+                "description": "get Cambio_dependencia",
+                "operationId": "Cambio_dependenciaController.Get All",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "query",
+                        "description": "Filter. e.g. col1:v1,col2:v2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fields",
+                        "description": "Fields returned. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "sortby",
+                        "description": "Sorted-by fields. e.g. col1,col2 ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "order",
+                        "description": "Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ...",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "Limit the size of result set. Must be an integer",
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "offset",
+                        "description": "Start position of result set. Must be an integer",
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cambio_dependencia"
+                        }
+                    },
+                    "403": {
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "cambio_dependencia"
+                ],
+                "description": "create Cambio_dependencia",
+                "operationId": "Cambio_dependenciaController.Post",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Cambio_dependencia content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Cambio_dependencia"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "{int} models.Cambio_dependencia"
+                    },
+                    "403": {
+                        "description": "body is empty"
+                    }
+                }
+            }
+        },
+        "/cambio_dependencia/{id}": {
+            "get": {
+                "tags": [
+                    "cambio_dependencia"
+                ],
+                "description": "get Cambio_dependencia by id",
+                "operationId": "Cambio_dependenciaController.Get One",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The key for staticblock",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cambio_dependencia"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is empty"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "cambio_dependencia"
+                ],
+                "description": "update the Cambio_dependencia",
+                "operationId": "Cambio_dependenciaController.Put",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to update",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for Cambio_dependencia content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Cambio_dependencia"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/models.Cambio_dependencia"
+                        }
+                    },
+                    "403": {
+                        "description": ":id is not int"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "cambio_dependencia"
+                ],
+                "description": "delete the Cambio_dependencia",
+                "operationId": "Cambio_dependenciaController.Delete",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",
+                        "description": "The id you want to delete",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} delete success!"
+                    },
+                    "403": {
+                        "description": "id is empty"
                     }
                 }
             }
@@ -2620,12 +2793,12 @@
         }
     },
     "definitions": {
-        "21868.\u003cnil\u003e.TreeDependencia": {
-            "title": "TreeDependencia",
+        "107499.\u003cnil\u003e.Tree": {
+            "title": "Tree",
             "type": "object"
         },
-        "75658.\u003cnil\u003e.Tree": {
-            "title": "Tree",
+        "34574.\u003cnil\u003e.TreeDependencia": {
+            "title": "TreeDependencia",
             "type": "object"
         },
         "models.AsignacionEspacioFisicoDependencia": {
@@ -2696,6 +2869,10 @@
                     "format": "int64"
                 }
             }
+        },
+        "models.Cambio_dependencia": {
+            "title": "Cambio_dependencia",
+            "type": "object"
         },
         "models.Campo": {
             "title": "Campo",
@@ -3315,7 +3492,7 @@
                     "type": "string"
                 },
                 "Opciones": {
-                    "$ref": "#/definitions/75658.\u003cnil\u003e.Tree"
+                    "$ref": "#/definitions/107499.\u003cnil\u003e.Tree"
                 }
             }
         },
@@ -3331,7 +3508,7 @@
                     "type": "string"
                 },
                 "Opciones": {
-                    "$ref": "#/definitions/21868.\u003cnil\u003e.TreeDependencia"
+                    "$ref": "#/definitions/34574.\u003cnil\u003e.TreeDependencia"
                 }
             }
         }
@@ -3436,6 +3613,10 @@
         {
             "name": "asignacion_espacio_fisico_dependencia",
             "description": "AsignacionEspacioFisicoDependenciaV2Controller operations for AsignacionEspacioFisicoDependencia\n"
+        },
+        {
+            "name": "cambio_dependencia",
+            "description": " Cambio_dependenciaController operations for Cambio_dependencia\n"
         }
     ]
 }

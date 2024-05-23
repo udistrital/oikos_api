@@ -6,19 +6,19 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
-
 	"github.com/udistrital/oikos_api/models"
+	"github.com/udistrital/utils_oas/time_bogota"
+
+	"github.com/astaxie/beego"
 )
 
-// CambioDepenciaController operations for CambioDependencia
-type CambioDependenciaController struct{
+//  Cambio_dependenciaController operations for Cambio_dependencia
+type Cambio_dependenciaController struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *CambioDependenciaController) URLMapping() {
+func (c *Cambio_dependenciaController) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -28,48 +28,38 @@ func (c *CambioDependenciaController) URLMapping() {
 
 // Post ...
 // @Title Post
-// @Description create CambioDependencia
-// @Param	body		body 	models.CambioDependencia	true		"body for CambioDependencia content"
-// @Success 201 {object} models.CambioDependencia
-// @Failure 400 the request contains incorrect syntax
+// @Description create Cambio_dependencia
+// @Param	body		body 	models.Cambio_dependencia	true		"body for Cambio_dependencia content"
+// @Success 201 {int} models.Cambio_dependencia
+// @Failure 403 body is empty
 // @router / [post]
-func (c *CambioDependenciaController) Post() {
+func (c *Cambio_dependenciaController) Post() {
 	var v models.CambioDependencia
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if _, err := models.AddCambioDependencia(&v); err == nil {
-			c.Ctx.Output.SetStatus(201)
-			c.Data["json"] = v
-		} else {
-			logs.Error(err)
-			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-			c.Data["system"] = err
-			c.Abort("400")
-		}
+	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	v.FechaCreacion = time_bogota.TiempoBogotaFormato()
+	v.FechaModificacion = time_bogota.TiempoBogotaFormato()
+	if _, err := models.AddCambioDependencia(&v); err == nil {
+		c.Ctx.Output.SetStatus(201)
+		c.Data["json"] = v
 	} else {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("400")
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
 
 // GetOne ...
 // @Title Get One
-// @Description get CambioDependencia by id
-// @Param	id		path 	int	true		"The key for staticblock"
-// @Success 200 {object} models.CambioDependencia
-// @Failure 404 not found resource
+// @Description get Cambio_dependencia by id
+// @Param	id		path 	string	true		"The key for staticblock"
+// @Success 200 {object} models.Cambio_dependencia
+// @Failure 403 :id is empty
 // @router /:id [get]
-func (c *CambioDependenciaController) GetOne() {
+func (c *Cambio_dependenciaController) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetCambioDependenciaById(id)
 	if err != nil {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("404")
+		c.Data["json"] = err.Error()
 	} else {
 		c.Data["json"] = v
 	}
@@ -78,17 +68,17 @@ func (c *CambioDependenciaController) GetOne() {
 
 // GetAll ...
 // @Title Get All
-// @Description get CambioDependencia
+// @Description get Cambio_dependencia
 // @Param	query	query	string	false	"Filter. e.g. col1:v1,col2:v2 ..."
 // @Param	fields	query	string	false	"Fields returned. e.g. col1,col2 ..."
 // @Param	sortby	query	string	false	"Sorted-by fields. e.g. col1,col2 ..."
 // @Param	order	query	string	false	"Order corresponding to each sortby field, if single value, apply to all sortby fields. e.g. desc,asc ..."
-// @Param	limit	query	int	false	"Limit the size of result set. Must be an integer"
-// @Param	offset	query	int	false	"Start position of result set. Must be an integer"
-// @Success 200 {object} []models.CambioDependencia
-// @Failure 404 not found resource
+// @Param	limit	query	string	false	"Limit the size of result set. Must be an integer"
+// @Param	offset	query	string	false	"Start position of result set. Must be an integer"
+// @Success 200 {object} models.Cambio_dependencia
+// @Failure 403
 // @router / [get]
-func (c *CambioDependenciaController) GetAll() {
+func (c *Cambio_dependenciaController) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -132,14 +122,8 @@ func (c *CambioDependenciaController) GetAll() {
 
 	l, err := models.GetAllCambioDependencia(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("404")
+		c.Data["json"] = err.Error()
 	} else {
-		if l == nil {
-			l = []interface{}{}
-		}
 		c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -147,51 +131,41 @@ func (c *CambioDependenciaController) GetAll() {
 
 // Put ...
 // @Title Put
-// @Description update the CambioDependencia
-// @Param	id		path 	int	true		"The id you want to update"
-// @Param	body		body 	models.CambioDependencia	true		"body for CambioDependencia content"
-// @Success 200 {object} models.CambioDependencia
-// @Failure 400 the request contains incorrect syntax
+// @Description update the Cambio_dependencia
+// @Param	id		path 	string	true		"The id you want to update"
+// @Param	body		body 	models.Cambio_dependencia	true		"body for Cambio_dependencia content"
+// @Success 200 {object} models.Cambio_dependencia
+// @Failure 403 :id is not int
 // @router /:id [put]
-func (c *CambioDependenciaController) Put() {
+func (c *Cambio_dependenciaController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v := models.CambioDependencia{Id: id}
-	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if err := models.UpdateCambioDependenciaById(&v); err == nil {
-			c.Data["json"] = v
-		} else {
-			logs.Error(err)
-			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-			c.Data["system"] = err
-			c.Abort("400")
-		}
+	v.FechaCreacion = time_bogota.TiempoCorreccionFormato(v.FechaCreacion)
+	v.FechaModificacion = time_bogota.TiempoBogotaFormato()
+	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
+	if err := models.UpdateCambioDependenciaById(&v); err == nil {
+		c.Data["json"] = "OK"
 	} else {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("400")
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }
 
 // Delete ...
 // @Title Delete
-// @Description delete the CambioDependencia
-// @Param	id		path 	int	true		"The id you want to delete"
-// @Success 200 {object} models.Deleted
-// @Failure 404 not found resource
+// @Description delete the Cambio_dependencia
+// @Param	id		path 	string	true		"The id you want to delete"
+// @Success 200 {string} delete success!
+// @Failure 403 id is empty
 // @router /:id [delete]
-func (c *CambioDependenciaController) Delete() {
+func (c *Cambio_dependenciaController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteCambioDependencia(id); err == nil {
-		c.Data["json"] = map[string]interface{}{"Id": id}
+		c.Data["json"] = "OK"
 	} else {
-		logs.Error(err)
-		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
-		c.Data["system"] = err
-		c.Abort("404")
+		c.Data["json"] = err.Error()
 	}
 	c.ServeJSON()
 }

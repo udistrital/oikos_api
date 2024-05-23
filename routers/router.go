@@ -94,6 +94,7 @@ func init() {
 				&v1.EspacioFisicoCampoController{},
 			),
 		),
+
 	)
 
 	ns2 := beego.NewNamespace("/v2",
@@ -177,7 +178,7 @@ func init() {
 		),
 		beego.NSNamespace("/cambio_dependencia",
 			beego.NSInclude(
-				&controllers.CambioDependenciaController{},
+				&controllers.Cambio_dependenciaController{},
 			),
 		),
 	)

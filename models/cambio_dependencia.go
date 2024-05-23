@@ -5,18 +5,17 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"time"
 
 	"github.com/astaxie/beego/orm"
 )
 
 type CambioDependencia struct {
 	Id                      int            `orm:"column(id);pk;auto"`
-	DependenciaNuevaId      *Dependencia   `orm:"column(id_dependencia_nueva);rel(fk)"`
-	DependenciaAntiguaId    *Dependencia   `orm:"column(id_dependencia_antigua);rel(fk)"`
-	Activo                  bool           `orm:"column(activo)"`
-	FechaCreacion           time.Time      `orm:"column(fecha_creacion);type(timestamp without time zone)"`
-	FechaModificacion       time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
+	DependenciaNuevaId      *DependenciaV2   `orm:"column(id_dependencia_nueva);rel(fk)"`
+	DependenciaAntiguaId    *DependenciaV2   `orm:"column(id_dependencia_antigua);rel(fk)"`
+	Activo                  bool           `orm:"column(activo);null"`
+	FechaCreacion           string      `orm:"column(fecha_creacion);type(timestamp without time zone);null"`
+	FechaModificacion       string      `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
 	Resolucion              string         `orm:"column(resolucion);"`
 }
 
