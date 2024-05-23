@@ -178,7 +178,7 @@ func init() {
 		),
 		beego.NSNamespace("/cambio_dependencia",
 			beego.NSInclude(
-				&controllers.Cambio_dependenciaController{},
+				&controllers.CambioDependenciaV2Controller{},
 			),
 		),
 	)

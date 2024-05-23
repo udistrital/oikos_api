@@ -52,7 +52,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"],
         beego.ControllerComments{
             Method: "Post",
             Router: "/",
@@ -61,7 +61,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"],
         beego.ControllerComments{
             Method: "GetAll",
             Router: "/",
@@ -70,7 +70,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"],
         beego.ControllerComments{
             Method: "GetOne",
             Router: "/:id",
@@ -79,7 +79,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"],
         beego.ControllerComments{
             Method: "Put",
             Router: "/:id",
@@ -88,7 +88,7 @@ func init() {
             Filters: nil,
             Params: nil})
 
-    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:Cambio_dependenciaController"],
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:CambioDependenciaV2Controller"],
         beego.ControllerComments{
             Method: "Delete",
             Router: "/:id",

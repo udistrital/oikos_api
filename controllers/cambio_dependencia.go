@@ -10,15 +10,16 @@ import (
 	"github.com/udistrital/utils_oas/time_bogota"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 )
 
 //  Cambio_dependenciaController operations for Cambio_dependencia
-type Cambio_dependenciaController struct {
+type CambioDependenciaV2Controller struct {
 	beego.Controller
 }
 
 // URLMapping ...
-func (c *Cambio_dependenciaController) URLMapping() {
+func (c *CambioDependenciaV2Controller) URLMapping() {
 	c.Mapping("Post", c.Post)
 	c.Mapping("GetOne", c.GetOne)
 	c.Mapping("GetAll", c.GetAll)
@@ -33,16 +34,25 @@ func (c *Cambio_dependenciaController) URLMapping() {
 // @Success 201 {int} models.Cambio_dependencia
 // @Failure 403 body is empty
 // @router / [post]
-func (c *Cambio_dependenciaController) Post() {
+func (c *CambioDependenciaV2Controller) Post() {
 	var v models.CambioDependencia
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	v.FechaCreacion = time_bogota.TiempoBogotaFormato()
-	v.FechaModificacion = time_bogota.TiempoBogotaFormato()
-	if _, err := models.AddCambioDependencia(&v); err == nil {
-		c.Ctx.Output.SetStatus(201)
-		c.Data["json"] = v
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		v.FechaCreacion = time_bogota.TiempoBogotaFormato()
+		v.FechaModificacion = time_bogota.TiempoBogotaFormato()
+		if _, err := models.AddCambioDependencia(&v); err == nil {
+			c.Ctx.Output.SetStatus(201)
+			c.Data["json"] = v
+		} else {
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
+		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -54,12 +64,15 @@ func (c *Cambio_dependenciaController) Post() {
 // @Success 200 {object} models.Cambio_dependencia
 // @Failure 403 :id is empty
 // @router /:id [get]
-func (c *Cambio_dependenciaController) GetOne() {
+func (c *CambioDependenciaV2Controller) GetOne() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v, err := models.GetCambioDependenciaById(id)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
 		c.Data["json"] = v
 	}
@@ -78,7 +91,7 @@ func (c *Cambio_dependenciaController) GetOne() {
 // @Success 200 {object} models.Cambio_dependencia
 // @Failure 403
 // @router / [get]
-func (c *Cambio_dependenciaController) GetAll() {
+func (c *CambioDependenciaV2Controller) GetAll() {
 	var fields []string
 	var sortby []string
 	var order []string
@@ -122,8 +135,14 @@ func (c *Cambio_dependenciaController) GetAll() {
 
 	l, err := models.GetAllCambioDependencia(query, fields, sortby, order, offset, limit)
 	if err != nil {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	} else {
+		if l == nil {
+			l = []interface{}{}
+		}
 		c.Data["json"] = l
 	}
 	c.ServeJSON()
@@ -137,17 +156,24 @@ func (c *Cambio_dependenciaController) GetAll() {
 // @Success 200 {object} models.Cambio_dependencia
 // @Failure 403 :id is not int
 // @router /:id [put]
-func (c *Cambio_dependenciaController) Put() {
+func (c *CambioDependenciaV2Controller) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	v := models.CambioDependencia{Id: id}
 	v.FechaCreacion = time_bogota.TiempoCorreccionFormato(v.FechaCreacion)
 	v.FechaModificacion = time_bogota.TiempoBogotaFormato()
-	json.Unmarshal(c.Ctx.Input.RequestBody, &v)
-	if err := models.UpdateCambioDependenciaById(&v); err == nil {
-		c.Data["json"] = "OK"
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		if err := models.UpdateCambioDependenciaById(&v); err == nil {
+			c.Data["json"] = v
+		} else {
+			logs.Error(err)
+			c.Data["system"] = err
+			c.Abort("400")
+		}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		c.Data["system"] = err
+		c.Abort("400")
 	}
 	c.ServeJSON()
 }
@@ -159,13 +185,16 @@ func (c *Cambio_dependenciaController) Put() {
 // @Success 200 {string} delete success!
 // @Failure 403 id is empty
 // @router /:id [delete]
-func (c *Cambio_dependenciaController) Delete() {
+func (c *CambioDependenciaV2Controller) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
 	if err := models.DeleteCambioDependencia(id); err == nil {
-		c.Data["json"] = "OK"
+		c.Data["json"] = map[string]interface{}{"Id": id}
 	} else {
-		c.Data["json"] = err.Error()
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("404")
 	}
 	c.ServeJSON()
 }
