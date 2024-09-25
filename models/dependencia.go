@@ -482,14 +482,4 @@ func GetDependenciasHijasById(dependenciaPadre int) (dependencias *DependenciaPa
 	return Cabeza, err
 }
 
-func BuscarDependenciasPorNombre(nombre string) ([]Dependencia, error) {
-    o := orm.NewOrm()
-    var dependencias []Dependencia
-
-    _, err := o.QueryTable("dependencia").Filter("Nombre__icontains", nombre).All(&dependencias)
-    if err != nil {
-        return nil, err
-    }
-    return dependencias, nil
-}
 
