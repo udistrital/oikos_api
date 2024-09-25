@@ -116,9 +116,13 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 	qs := o.QueryTable(new(DependenciaV2)).RelatedSel(5)
 	// query k=v
 	for k, v := range query {
-		// rewrite dot-notation to Object__Attribute
 		k = strings.Replace(k, ".", "__", -1)
-		qs = qs.Filter(k, v)
+    
+		if k == "Nombre" {
+			qs = qs.Filter(k+"__icontains", v)  
+		} else {
+			qs = qs.Filter(k, v)
+		}
 	}
 	// order by:
 	var sortFields []string
@@ -477,3 +481,15 @@ func GetDependenciasHijasById(dependenciaPadre int) (dependencias *DependenciaPa
 
 	return Cabeza, err
 }
+
+func BuscarDependenciasPorNombre(nombre string) ([]Dependencia, error) {
+    o := orm.NewOrm()
+    var dependencias []Dependencia
+
+    _, err := o.QueryTable("dependencia").Filter("Nombre__icontains", nombre).All(&dependencias)
+    if err != nil {
+        return nil, err
+    }
+    return dependencias, nil
+}
+
