@@ -165,7 +165,7 @@ func UpdateCampoById(m *CampoV2) (err error) {
 // the record to be deleted doesn't exist
 func DeleteCampo(id int) (err error) {
 	o := orm.NewOrm()
-	v := Campo{Id: id}
+	v := CampoV2{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
