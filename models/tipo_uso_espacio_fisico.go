@@ -260,7 +260,7 @@ func UpdateTipoUsoEspacioFisicoById(m *TipoUsoEspacioFisicoV2) (err error) {
 // the record to be deleted doesn't exist
 func DeleteTipoUsoEspacioFisico(id int) (err error) {
 	o := orm.NewOrm()
-	v := TipoUsoEspacioFisico{Id: id}
+	v := TipoUsoEspacioFisicoV2{Id: id}
 	// ascertain id exists in the database
 	if err = o.Read(&v); err == nil {
 		var num int64
