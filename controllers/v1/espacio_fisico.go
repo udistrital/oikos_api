@@ -200,8 +200,6 @@ func (c *EspacioFisicoController) Put() {
 	v2, _ := models.GetEspacioFisicoById(id)
 	v := models.EspacioFisico{Id: id}
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-
-		// TODO: Revisar lo siguiente ...:
 		v2.Id = id
 		v2.Nombre = v.Nombre
 		v2.CodigoAbreviacion = v.Codigo
@@ -210,8 +208,6 @@ func (c *EspacioFisicoController) Put() {
 		if v.TipoEspacio != nil {
 			v2.TipoEspacioFisicoId.FromV1(*v.TipoEspacio)
 		}
-		// ... debería bastar con:
-		// v2.FromV1(v)
 
 		if err := models.UpdateEspacioFisicoById(v2); err == nil {
 			v2.ToV1(&v)
