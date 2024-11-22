@@ -37,8 +37,6 @@ func (c *TipoDependenciaController) Post() {
 	var v models.TipoDependencia
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		// TODO: Revisar lo siguiente ...:
 		temp := models.TipoDependenciaV2{
 			Id:                v.Id,
 			Nombre:            v.Nombre,

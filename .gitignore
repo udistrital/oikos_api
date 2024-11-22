@@ -19,3 +19,7 @@ main
 swagger/**
 !swagger/swagger.json
 !swagger/swagger.yml
+
+#Archivos excluidos
+go.mod
+go.sum
