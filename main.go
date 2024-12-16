@@ -47,7 +47,9 @@ func main() {
 			"/"+beego.AppConfig.String("PGdb")+
 			"?sslmode=disable&search_path="+beego.AppConfig.String("PGschemas")+"")
 	config()
-	xray.InitXRay()
+	if beego.BConfig.RunMode != "dev" {
+		xray.InitXRay()
+	}
 	auditoria.InitMiddleware()
 	beego.ErrorController(&customerror.CustomErrorController{})
 	apistatus.Init()

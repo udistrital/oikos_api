@@ -435,3 +435,101 @@ func GetEspaciosFisicosPadresById(espacioFisicoHijo int) (espaciosFisicos []Espa
 
 	return listaEspaciosFisicos, err
 }
+
+func BuscarEspaciosFisicos(busqueda *BusquedaEspacioFisico) (espaciosFisicos *[]EspacioFisicoV2, err error) {
+	o := orm.NewOrm()
+
+	// Declarar una lista para almacenar IDs relacionados
+	var idsDependencia orm.ParamsList
+	var idsTipoUso orm.ParamsList
+
+	// Filtro por dependencia
+	if busqueda.DependenciaId != nil {
+		_, err := o.QueryTable(new(AsignacionEspacioFisicoDependenciaV2)).
+			Filter("DependenciaId", *busqueda.DependenciaId).
+			ValuesFlat(&idsDependencia, "EspacioFisicoId__Id")
+		if err != nil {
+			return nil, fmt.Errorf("error obteniendo IDs de dependencia: %w", err)
+		}
+
+		// Validar que haya resultados para dependencia
+		if len(idsDependencia) == 0 {
+			return &[]EspacioFisicoV2{}, nil
+		}
+		fmt.Println("IDs Dependencia:", idsDependencia)
+	}
+
+	// Filtro por tipo de uso
+	if busqueda.TipoUsoId != nil {
+		_, err := o.QueryTable(new(TipoUsoEspacioFisicoV2)).
+			Filter("TipoUsoId", *busqueda.TipoUsoId).
+			ValuesFlat(&idsTipoUso, "EspacioFisicoId__Id")
+		if err != nil {
+			return nil, fmt.Errorf("error obteniendo IDs de tipo de uso: %w", err)
+		}
+
+		// Validar que haya resultados para tipo de uso
+		if len(idsTipoUso) == 0 {
+			return &[]EspacioFisicoV2{}, nil
+		}
+		fmt.Println("IDs Tipo Uso:", idsTipoUso)
+	}
+
+	// Construir la consulta principal
+	qs := o.QueryTable(new(EspacioFisicoV2))
+
+	// Filtro por nombre de espacio físico
+	if busqueda.NombreEspacioFisico != nil {
+		qs = qs.Filter("Nombre__icontains", *busqueda.NombreEspacioFisico)
+	}
+
+	// Filtro por TipoEspacioFisicoId
+	if busqueda.TipoEspacioFisicoId != nil {
+		qs = qs.Filter("TipoEspacioFisicoId", *busqueda.TipoEspacioFisicoId)
+	}
+
+	// Filtro por Activo
+	if busqueda.Estado != nil {
+		qs = qs.Filter("Activo", *busqueda.Estado)
+	}
+
+	// Combinar filtros de IDs (Dependencia y Tipo de Uso)
+	if len(idsDependencia) > 0 && len(idsTipoUso) > 0 {
+		// Intersección de IDs entre dependencia y tipo de uso
+		commonIds := intersectParamsList(idsDependencia, idsTipoUso)
+		if len(commonIds) > 0 {
+			qs = qs.Filter("Id__in", commonIds)
+		} else {
+			return &[]EspacioFisicoV2{}, nil // No hay intersección, retornar vacío
+		}
+	} else if len(idsDependencia) > 0 {
+		qs = qs.Filter("Id__in", idsDependencia)
+	} else if len(idsTipoUso) > 0 {
+		qs = qs.Filter("Id__in", idsTipoUso)
+	}
+
+	// Ejecutar consulta principal
+	var espacios []EspacioFisicoV2
+	_, err = qs.All(&espacios)
+	if err != nil {
+		return nil, fmt.Errorf("error ejecutando la consulta principal: %w", err)
+	}
+
+	return &espacios, nil
+}
+
+// intersectParamsList: Calcula la intersección de dos listas de IDs
+func intersectParamsList(list1, list2 orm.ParamsList) orm.ParamsList {
+	set := make(map[interface{}]bool)
+	for _, id := range list1 {
+		set[id] = true
+	}
+
+	var result orm.ParamsList
+	for _, id := range list2 {
+		if set[id] {
+			result = append(result, id)
+		}
+	}
+	return result
+}
