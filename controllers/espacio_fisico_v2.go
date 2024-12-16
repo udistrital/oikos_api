@@ -24,6 +24,7 @@ func (c *EspacioFisicoV2Controller) URLMapping() {
 	c.Mapping("GetAll", c.GetAll)
 	c.Mapping("Put", c.Put)
 	c.Mapping("Delete", c.Delete)
+	c.Mapping("BusquedaEspaciosFisicos", c.BusquedaEspaciosFisicos)
 }
 
 // Post ...
@@ -268,5 +269,33 @@ func (c *EspacioFisicoV2Controller) GetEspaciosFisicosPadresById() {
 	}
 
 	//Generera el Json con los datos obtenidos
+	c.ServeJSON()
+}
+
+// BusquedaEspaciosFisicos ...
+// @Title BusquedaEspaciosFisicos
+// @Description Realizar una busqueda de espacios fisicos teniendo en cuenta multiples filtros
+// @Param	body		body 	models.BusquedaEspacioFisico	true		"body for BusquedaEspacioFisico content"
+// @Success 200 {object} []models.EspacioFisico
+// @Failure 404 :buscar_espacio_fisico is empty
+// @router /buscar_espacio_fisico [post]
+func (c *EspacioFisicoV2Controller) BusquedaEspaciosFisicos() {
+	var v models.BusquedaEspacioFisico
+	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
+		if espaciosFisicos, err := models.BuscarEspaciosFisicos(&v); err == nil {
+			c.Ctx.Output.SetStatus(200)
+			c.Data["json"] = espaciosFisicos
+		} else {
+			logs.Error(err)
+			//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+			c.Data["system"] = err
+			c.Abort("400")
+		}
+	} else {
+		logs.Error(err)
+		//c.Data["development"] = map[string]interface{}{"Code": "000", "Body": err.Error(), "Type": "error"}
+		c.Data["system"] = err
+		c.Abort("400")
+	}
 	c.ServeJSON()
 }

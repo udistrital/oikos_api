@@ -486,6 +486,15 @@ func init() {
 
     beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"],
         beego.ControllerComments{
+            Method: "BusquedaEspaciosFisicos",
+            Router: "/buscar_espacio_fisico",
+            AllowHTTPMethods: []string{"post"},
+            MethodParams: param.Make(),
+            Filters: nil,
+            Params: nil})
+
+    beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"] = append(beego.GlobalControllerRouter["github.com/udistrital/oikos_api/controllers:EspacioFisicoV2Controller"],
+        beego.ControllerComments{
             Method: "GetEspaciosFisicosHijosById",
             Router: "/get_espacios_fisicos_hijos_by_id/:espacio_fisico",
             AllowHTTPMethods: []string{"get"},

@@ -1458,6 +1458,40 @@
                 }
             }
         },
+        "/espacio_fisico/buscar_espacio_fisico": {
+            "post": {
+                "tags": [
+                    "espacio_fisico"
+                ],
+                "description": "Realizar una busqueda de espacios fisicos teniendo en cuenta multiples filtros",
+                "operationId": "EspacioFisicoV2Controller.BusquedaEspaciosFisicos",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "body for BusquedaEspacioFisico content",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.BusquedaEspacioFisico"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.EspacioFisico"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": ":buscar_espacio_fisico is empty"
+                    }
+                }
+            }
+        },
         "/espacio_fisico/get_espacios_fisicos_hijos_by_id/{espacio_fisico}": {
             "get": {
                 "tags": [
@@ -2857,6 +2891,30 @@
                     "format": "datetime"
                 },
                 "Id": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "models.BusquedaEspacioFisico": {
+            "title": "BusquedaEspacioFisico",
+            "type": "object",
+            "properties": {
+                "DependenciaId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Estado": {
+                    "type": "boolean"
+                },
+                "NombreEspacioFisico": {
+                    "type": "string"
+                },
+                "TipoEspacioFisicoId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "TipoUsoId": {
                     "type": "integer",
                     "format": "int64"
                 }
