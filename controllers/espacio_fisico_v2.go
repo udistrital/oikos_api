@@ -282,7 +282,7 @@ func (c *EspacioFisicoV2Controller) GetEspaciosFisicosPadresById() {
 func (c *EspacioFisicoV2Controller) BusquedaEspaciosFisicos() {
 	var v models.BusquedaEspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
-		if espaciosFisicos, err := models.BuscarEspaciosFisicos(&v); err == nil {
+		if espaciosFisicos, err := models.BuscarEspaciosFisicos(&v, true); err == nil {
 			c.Ctx.Output.SetStatus(200)
 			c.Data["json"] = espaciosFisicos
 		} else {
