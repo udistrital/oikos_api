@@ -451,6 +451,7 @@ func BuscarEspaciosFisicos(busqueda *BusquedaEspacioFisico, incluirTipoUso bool)
 	if busqueda.DependenciaId != nil {
 		_, err := o.QueryTable(new(AsignacionEspacioFisicoDependenciaV2)).
 			Filter("DependenciaId", *busqueda.DependenciaId).
+			Filter("Activo", *busqueda.Estado).
 			ValuesFlat(&idsDependencia, "EspacioFisicoId__Id")
 		if err != nil {
 			return nil, fmt.Errorf("error obteniendo IDs de dependencia: %w", err)
@@ -512,7 +513,6 @@ func BuscarEspaciosFisicos(busqueda *BusquedaEspacioFisico, incluirTipoUso bool)
 			var tiposUso []*TipoUsoEspacioFisicoV2
 			_, err := o.QueryTable(new(TipoUsoEspacioFisicoV2)).RelatedSel().
 				Filter("EspacioFisicoId", espacio.Id).
-				Filter("Activo", true).
 				All(&tiposUso)
 			if err != nil {
 				return nil, fmt.Errorf("error cargando tipos de uso: %w", err)
