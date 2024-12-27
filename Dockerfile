@@ -1,4 +1,4 @@
-FROM python:3
+FROM amazon/aws-cli:latest
 RUN pip install awscli
 WORKDIR /
 COPY entrypoint.sh entrypoint.sh
