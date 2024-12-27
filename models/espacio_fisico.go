@@ -473,7 +473,9 @@ func BuscarEspaciosFisicos(busqueda *BusquedaEspacioFisico, incluirTipoUso bool)
 		}
 	}
 
-	qs := o.QueryTable(new(EspacioFisicoV2)).RelatedSel("TipoEspacioFisicoId")
+	qs := o.QueryTable(new(EspacioFisicoV2)).
+		RelatedSel("TipoEspacioFisicoId").
+		Filter("Activo", *busqueda.Estado)
 
 	if len(idsDependencia) > 0 && len(idsTipoUso) > 0 {
 		commonIds := intersectParamsList(idsDependencia, idsTipoUso)
