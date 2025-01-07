@@ -451,7 +451,6 @@ func BuscarEspaciosFisicos(busqueda *BusquedaEspacioFisico, incluirTipoUso bool)
 	if busqueda.DependenciaId != nil {
 		_, err := o.QueryTable(new(AsignacionEspacioFisicoDependenciaV2)).
 			Filter("DependenciaId", *busqueda.DependenciaId).
-			Filter("Activo", *busqueda.Estado).
 			ValuesFlat(&idsDependencia, "EspacioFisicoId__Id")
 		if err != nil {
 			return nil, fmt.Errorf("error obteniendo IDs de dependencia: %w", err)
@@ -474,8 +473,7 @@ func BuscarEspaciosFisicos(busqueda *BusquedaEspacioFisico, incluirTipoUso bool)
 	}
 
 	qs := o.QueryTable(new(EspacioFisicoV2)).
-		RelatedSel("TipoEspacioFisicoId").
-		Filter("Activo", *busqueda.Estado)
+		RelatedSel("TipoEspacioFisicoId")
 
 	if len(idsDependencia) > 0 && len(idsTipoUso) > 0 {
 		commonIds := intersectParamsList(idsDependencia, idsTipoUso)
@@ -489,6 +487,9 @@ func BuscarEspaciosFisicos(busqueda *BusquedaEspacioFisico, incluirTipoUso bool)
 		qs = qs.Filter("Id__in", idsTipoUso)
 	}
 
+	if busqueda.Estado != nil {
+		qs = qs.Filter("Activo", *busqueda.Estado)
+	}
 	if busqueda.NombreEspacioFisico != nil {
 		qs = qs.Filter("Nombre__icontains", *busqueda.NombreEspacioFisico)
 	}
