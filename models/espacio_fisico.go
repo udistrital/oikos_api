@@ -130,6 +130,11 @@ type EspacioFisicoV2 struct {
 	FechaModificacion   time.Time            `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
+type EspacioFisicoConTipoUso struct {
+	EspacioFisico EspacioFisicoV2
+	TiposUso      []*TipoUsoEspacioFisicoV2
+}
+
 func (t *EspacioFisicoV2) TableName() string {
 	return "espacio_fisico"
 }
@@ -434,4 +439,108 @@ func GetEspaciosFisicosPadresById(espacioFisicoHijo int) (espaciosFisicos []Espa
 	}
 
 	return listaEspaciosFisicos, err
+}
+
+func BuscarEspaciosFisicos(busqueda *BusquedaEspacioFisico, incluirTipoUso bool) (espaciosFisicos *[]EspacioFisicoConTipoUso, err error) {
+	o := orm.NewOrm()
+
+	var idsDependencia orm.ParamsList
+	var idsTipoUso orm.ParamsList
+
+	// Filtro por dependencia
+	if busqueda.DependenciaId != nil {
+		_, err := o.QueryTable(new(AsignacionEspacioFisicoDependenciaV2)).
+			Filter("DependenciaId", *busqueda.DependenciaId).
+			ValuesFlat(&idsDependencia, "EspacioFisicoId__Id")
+		if err != nil {
+			return nil, fmt.Errorf("error obteniendo IDs de dependencia: %w", err)
+		}
+		if len(idsDependencia) == 0 {
+			return &[]EspacioFisicoConTipoUso{}, nil
+		}
+	}
+
+	if busqueda.TipoUsoId != nil {
+		_, err := o.QueryTable(new(TipoUsoEspacioFisicoV2)).
+			Filter("TipoUsoId", *busqueda.TipoUsoId).
+			ValuesFlat(&idsTipoUso, "EspacioFisicoId__Id")
+		if err != nil {
+			return nil, fmt.Errorf("error obteniendo IDs de tipo de uso: %w", err)
+		}
+		if len(idsTipoUso) == 0 {
+			return &[]EspacioFisicoConTipoUso{}, nil
+		}
+	}
+
+	qs := o.QueryTable(new(EspacioFisicoV2)).
+		RelatedSel("TipoEspacioFisicoId")
+
+	if len(idsDependencia) > 0 && len(idsTipoUso) > 0 {
+		commonIds := intersectParamsList(idsDependencia, idsTipoUso)
+		if len(commonIds) == 0 {
+			return &[]EspacioFisicoConTipoUso{}, nil
+		}
+		qs = qs.Filter("Id__in", commonIds)
+	} else if len(idsDependencia) > 0 {
+		qs = qs.Filter("Id__in", idsDependencia)
+	} else if len(idsTipoUso) > 0 {
+		qs = qs.Filter("Id__in", idsTipoUso)
+	}
+
+	if busqueda.Estado != nil {
+		qs = qs.Filter("Activo", *busqueda.Estado)
+	}
+	if busqueda.NombreEspacioFisico != nil {
+		qs = qs.Filter("Nombre__icontains", *busqueda.NombreEspacioFisico)
+	}
+	if busqueda.TipoEspacioFisicoId != nil {
+		qs = qs.Filter("TipoEspacioFisicoId", *busqueda.TipoEspacioFisicoId)
+	}
+
+	// Ejecutar consulta principal
+	var espacios []EspacioFisicoV2
+	_, err = qs.All(&espacios)
+	if err != nil {
+		return nil, fmt.Errorf("error ejecutando la consulta principal: %w", err)
+	}
+
+	// Cargar tipos de uso si es necesario
+	var espaciosConTipoUso []EspacioFisicoConTipoUso
+	for _, espacio := range espacios {
+		espacioAux := EspacioFisicoConTipoUso{
+			EspacioFisico: espacio,
+		}
+
+		// Solo cargar TiposUso si 'incluirTipoUso' es verdadero
+		if incluirTipoUso {
+			var tiposUso []*TipoUsoEspacioFisicoV2
+			_, err := o.QueryTable(new(TipoUsoEspacioFisicoV2)).RelatedSel().
+				Filter("EspacioFisicoId", espacio.Id).
+				All(&tiposUso)
+			if err != nil {
+				return nil, fmt.Errorf("error cargando tipos de uso: %w", err)
+			}
+			espacioAux.TiposUso = tiposUso
+		}
+
+		espaciosConTipoUso = append(espaciosConTipoUso, espacioAux)
+	}
+
+	return &espaciosConTipoUso, nil
+}
+
+// intersectParamsList: Calcula la intersección de dos listas de IDs
+func intersectParamsList(list1, list2 orm.ParamsList) orm.ParamsList {
+	set := make(map[interface{}]bool)
+	for _, id := range list1 {
+		set[id] = true
+	}
+
+	var result orm.ParamsList
+	for _, id := range list2 {
+		if set[id] {
+			result = append(result, id)
+		}
+	}
+	return result
 }

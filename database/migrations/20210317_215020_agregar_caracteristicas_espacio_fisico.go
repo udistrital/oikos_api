@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	"github.com/astaxie/beego/migration"
@@ -24,7 +24,7 @@ func init() {
 // Run the migrations
 func (m *AgregarCaracteristicasEspacioFisico_20210317_215020) Up() {
 	// to make schema update
-	file, err := ioutil.ReadFile("../scripts/20210317_215020_agregar_caracteristicas_espacio_fisico_up.sql")
+	file, err := os.ReadFile("../scripts/20210317_215020_agregar_caracteristicas_espacio_fisico_up.sql")
 
 	if err != nil {
 		// handle error
@@ -43,7 +43,7 @@ func (m *AgregarCaracteristicasEspacioFisico_20210317_215020) Up() {
 // Reverse the migrations
 func (m *AgregarCaracteristicasEspacioFisico_20210317_215020) Down() {
 	// to make schema update
-	file, err := ioutil.ReadFile("../scripts/20210317_215020_agregar_caracteristicas_espacio_fisico_down.sql")
+	file, err := os.ReadFile("../scripts/20210317_215020_agregar_caracteristicas_espacio_fisico_down.sql")
 
 	if err != nil {
 		// handle error

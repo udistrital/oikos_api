@@ -37,8 +37,6 @@ func (c *TipoEspacioFisicoController) Post() {
 	var v models.TipoEspacioFisico
 	if err := json.Unmarshal(c.Ctx.Input.RequestBody, &v); err == nil {
 		//-------------- Temporal: Cambio por transición ------- //
-
-		// TODO: Revisar lo siguiente ...
 		temp := models.TipoEspacioFisicoV2{
 			Id:                v.Id,
 			Nombre:            v.Nombre,
@@ -48,9 +46,6 @@ func (c *TipoEspacioFisicoController) Post() {
 			FechaCreacion:     time.Now(),
 			FechaModificacion: time.Now(),
 		}
-		// ... debería bastar con:
-		// var temp models.TipoEspacioFisicoV2
-		// temp.FromV1(v)
 		//-------------- Temporal: Cambio por transición ------- //
 		if _, err := models.AddTipoEspacioFisico(&temp); err == nil {
 			c.Ctx.Output.SetStatus(201)
