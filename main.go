@@ -1,16 +1,17 @@
 package main
 
 import (
-	"net/url"
-
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/orm"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/lib/pq"
 	_ "github.com/udistrital/oikos_api/routers"
 	apistatus "github.com/udistrital/utils_oas/apiStatusLib"
 	"github.com/udistrital/utils_oas/auditoria"
-	"github.com/udistrital/utils_oas/customerror"
+	"github.com/udistrital/utils_oas/customerrorv2"
+	"github.com/udistrital/utils_oas/database"
+	"github.com/udistrital/utils_oas/security"
 	"github.com/udistrital/utils_oas/xray"
 )
 
@@ -22,36 +23,47 @@ func dev() {
 	}
 }
 
-func config() {
-	dev()
+func main() {
+	conn, err := database.BuildPostgresConnectionString()
+	if err != nil {
+		logs.Error("error consultando la cadena de conexión: %v", err)
+		return
+	}
+
+	err = orm.RegisterDataBase("default", "postgres", conn)
+	if err != nil {
+		logs.Error("error al conectarse a la base de datos: %v", err)
+		return
+	}
+
+	allowedOrigins := []string{"*.udistrital.edu.co"}
+	if beego.BConfig.RunMode == beego.DEV {
+		allowedOrigins = []string{"*"}
+		orm.Debug = true
+		beego.BConfig.WebConfig.DirectoryIndex = true
+		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
+	}
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
-		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"PUT", "PATCH", "GET", "POST", "OPTIONS", "DELETE"},
-		AllowHeaders: []string{"Origin", "x-requested-with",
-			"content-type",
-			"accept",
-			"origin",
-			"authorization",
-			"x-csrftoken"},
+		AllowOrigins: allowedOrigins,
+		AllowMethods: []string{"DELETE", "GET", "OPTIONS", "PATCH", "POST", "PUT"},
+		AllowHeaders: []string{
+			"Accept",
+			"Authorization",
+			"Content-Type",
+			"User-Agent",
+			"X-Amzn-Trace-Id"},
 		ExposeHeaders:    []string{"Content-Length"},
 		AllowCredentials: true,
 	}))
-}
 
-func main() {
-	orm.RegisterDataBase("default", "postgres",
-		"postgres://"+beego.AppConfig.String("PGuser")+
-			":"+url.QueryEscape(beego.AppConfig.String("PGpass"))+
-			"@"+beego.AppConfig.String("PGhost")+
-			":"+beego.AppConfig.String("PGport")+
-			"/"+beego.AppConfig.String("PGdb")+
-			"?sslmode=disable&search_path="+beego.AppConfig.String("PGschemas")+"")
-	config()
-	if beego.BConfig.RunMode != "dev" {
-		xray.InitXRay()
+	err = xray.InitXRay()
+	if err != nil {
+		logs.Error("error configurando AWS XRay: %v", err)
 	}
-	auditoria.InitMiddleware()
-	beego.ErrorController(&customerror.CustomErrorController{})
 	apistatus.Init()
+	auditoria.InitMiddleware()
+	beego.ErrorController(&customerrorv2.CustomErrorController{})
+	security.SetSecurityHeaders()
 	beego.Run()
 }
