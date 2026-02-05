@@ -13,7 +13,7 @@ import (
 	"github.com/astaxie/beego/logs"
 )
 
-//  Cambio_dependenciaController operations for Cambio_dependencia
+// Cambio_dependenciaController operations for Cambio_dependencia
 type CambioDependenciaV2Controller struct {
 	beego.Controller
 }
