@@ -10,20 +10,20 @@ import (
 )
 
 type CambioDependencia struct {
-	Id                      int            `orm:"column(id);pk;auto"`
-	DependenciaNuevaId      *DependenciaV2   `orm:"column(id_dependencia_nueva);rel(fk)"`
-	DependenciaAntiguaId    *DependenciaV2   `orm:"column(id_dependencia_antigua);rel(fk)"`
-	Activo                  bool           `orm:"column(activo);null"`
-	FechaCreacion           string      `orm:"column(fecha_creacion);type(timestamp without time zone);null"`
-	FechaModificacion       string      `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
-	Resolucion              string         `orm:"column(resolucion);"`
+	Id                   int            `orm:"column(id);pk;auto"`
+	DependenciaNuevaId   *DependenciaV2 `orm:"column(id_dependencia_nueva);rel(fk)"`
+	DependenciaAntiguaId *DependenciaV2 `orm:"column(id_dependencia_antigua);rel(fk)"`
+	Activo               bool           `orm:"column(activo);null"`
+	FechaCreacion        string         `orm:"column(fecha_creacion);type(timestamp without time zone);null"`
+	FechaModificacion    string         `orm:"column(fecha_modificacion);type(timestamp without time zone);null"`
+	Resolucion           string         `orm:"column(resolucion);"`
 }
 
-func (t *CambioDependencia) TableName() string{
+func (t *CambioDependencia) TableName() string {
 	return "cambio_dependencia"
 }
 
-func init(){
+func init() {
 	orm.RegisterModel(new(CambioDependencia))
 }
 
