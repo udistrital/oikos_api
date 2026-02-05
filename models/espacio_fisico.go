@@ -274,7 +274,7 @@ func DeleteEspacioFisico(id int) (err error) {
 	return
 }
 
-//Función que construye los menús
+// Función que construye los menús
 func EspacioFisicosHuerfanos(tipo_espacio int) (espacios []EspacioFisico) {
 	o := orm.NewOrm()
 	//Conversión de entero a string
@@ -319,7 +319,7 @@ func buscarEF(ef int) (padre EspacioFisicoPadreHijo) {
 	return x
 }
 
-//Funcion recursiva que busca los espacios fisicos hijos a partir de un id del espacio físico padre
+// Funcion recursiva que busca los espacios fisicos hijos a partir de un id del espacio físico padre
 func getEspacioFisicoHijos(Padre *EspacioFisicoPadreHijo, padre int) (ef []EspacioFisicoPadreHijo) {
 
 	for _, element := range elementMapEF {

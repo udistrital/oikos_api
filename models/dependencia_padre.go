@@ -60,7 +60,7 @@ type DependenciaPadreV2 struct {
 	FechaModificacion time.Time      `orm:"column(fecha_modificacion);type(timestamp without time zone)"`
 }
 
-//Estructura para construir el arbol de dependencia
+// Estructura para construir el arbol de dependencia
 type TreeDependencia struct {
 	Id       int
 	Nombre   string
@@ -266,7 +266,7 @@ func DeleteDependenciaPadre(id int) (err error) {
 	return
 }
 
-//Función que busca las dependencias de tipo facultad
+// Función que busca las dependencias de tipo facultad
 func Facultades() (facultad []Tree) {
 
 	//Declaración objeto ORM
@@ -292,7 +292,7 @@ func Facultades() (facultad []Tree) {
 	return facultades
 }
 
-//Función que busca las dependencias de tipo facultad
+// Función que busca las dependencias de tipo facultad
 func ProyectosCurricularesPorFacultad(Facultad *Tree) (proyectos []Tree) {
 
 	//Declaración objeto ORM
@@ -320,7 +320,7 @@ func ProyectosCurricularesPorFacultad(Facultad *Tree) (proyectos []Tree) {
 	return proyectos_curriculares
 }
 
-//Función que busca las dependencias que no tengan asignadas padre
+// Función que busca las dependencias que no tengan asignadas padre
 func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
 	o := orm.NewOrm()
 	//Arreglo
@@ -344,7 +344,7 @@ func ConstruirDependenciasPadre() (dependencias []TreeDependencia) {
 	return dependenciaPadres
 }
 
-//Función que busca los hijos de los padres encontrados en la función anterior
+// Función que busca los hijos de los padres encontrados en la función anterior
 func ConstruirDependenciasHijas(Padre *TreeDependencia) (dependencias []TreeDependencia) {
 	o := orm.NewOrm()
 	//Conversión de entero a string
