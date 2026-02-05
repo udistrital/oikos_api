@@ -297,7 +297,7 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
 			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-			WHERE d.id = ? AND dtd.tipo_dependencia_id = 14`,
+			WHERE d.id = ? AND dtd.tipo_dependencia_id = 14 and dh.activo = true`,
 			id_facultad).
 			QueryRows(&proyectosCurriculares)
 
@@ -313,7 +313,7 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
 			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-			WHERE d.id = ? AND dtd.tipo_dependencia_id = 15`,
+			WHERE d.id = ? AND dtd.tipo_dependencia_id = 15 and dh.activo = true`,
 			id_facultad).
 			QueryRows(&proyectosCurriculares)
 
@@ -328,7 +328,7 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
 			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-			WHERE d.id = ? AND dtd.tipo_dependencia_id IN (1,14,15)`,
+			WHERE d.id = ? AND dtd.tipo_dependencia_id IN (1,14,15) and dh.activo = true`,
 			id_facultad).
 			QueryRows(&proyectosCurriculares)
 
