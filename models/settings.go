@@ -10,7 +10,7 @@ var (
 )
 
 func init() {
-	Esquema = beego.AppConfig.String("PGschemas")
+	Esquema = beego.AppConfig.String("PGschema")
 	if Esquema == "" {
 		logs.Critical("ERROR: Esquema no definido")
 	}
