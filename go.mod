@@ -1,6 +1,6 @@
 module github.com/udistrital/oikos_api
 
-go 1.22.0
+go 1.24.5
 
 require (
 	github.com/astaxie/beego v1.12.3
