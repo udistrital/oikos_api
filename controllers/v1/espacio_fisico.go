@@ -246,7 +246,7 @@ func (c *EspacioFisicoController) Delete() {
 // @Success 200 {object} []models.EspacioFisico
 // @Failure 403 id is empty
 // @router /EspaciosHuerfanos/:id [get]
-//Función para cargar los espacios físicos huerfanos
+// Función para cargar los espacios físicos huerfanos
 func (c *EspacioFisicoController) EspaciosHuerfanos() {
 	tipo := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(tipo)

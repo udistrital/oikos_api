@@ -97,6 +97,7 @@ func GetAllProyectosByFacultadId(idFacultad int) (facultad []DependenciaPadreHij
 		From(Esquema + ".dependencia d").
 		InnerJoin(Esquema + ".dependencia_tipo_dependencia dp").On(" d.id = dp.dependencia_id").
 		Where("dp.tipo_dependencia_id = 2").
+		And("d.activo = true").
 		And("d.id = ?")
 
 	sql := qb.String()
@@ -116,6 +117,7 @@ func GetAllProyectosByFacultadId(idFacultad int) (facultad []DependenciaPadreHij
 			LeftJoin(Esquema + ".dependencia_padre as dep").On("de.id = dep.hija_id").
 			InnerJoin(Esquema + ".dependencia_tipo_dependencia dtd").On("dep.hija_id = dtd.dependencia_id").
 			Where("dtd.tipo_dependencia_id IN (1,14,15)").
+			And("de.activo = true").
 			OrderBy("de.id")
 
 		sql := qb.String()

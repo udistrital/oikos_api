@@ -67,7 +67,7 @@ type DependenciaV2 struct {
 	DependenciaTipoDependencia []*DependenciaTipoDependenciaV2 `orm:"reverse(many)"`
 }
 
-//Estructura para traer el ID y el nombre de cada proyecto curriculares
+// Estructura para traer el ID y el nombre de cada proyecto curriculares
 type ProyectosCurriculares struct {
 	Id     int
 	Nombre string
@@ -117,9 +117,9 @@ func GetAllDependencia(query map[string]string, fields []string, sortby []string
 	// query k=v
 	for k, v := range query {
 		k = strings.Replace(k, ".", "__", -1)
-    
+
 		if k == "Nombre" {
-			qs = qs.Filter(k+"__icontains", v)  
+			qs = qs.Filter(k+"__icontains", v)
 		} else {
 			qs = qs.Filter(k, v)
 		}
@@ -278,7 +278,7 @@ func DeleteDependencia(id int) (err error) {
 	return
 }
 
-//Se realiza sobrecarga de la función ProyectosPorFacultad que recibe como parámetros el id de la facultad y el nivel académico
+// Se realiza sobrecarga de la función ProyectosPorFacultad que recibe como parámetros el id de la facultad y el nivel académico
 func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []ProyectosCurriculares) {
 
 	//Conversión de entero a string
@@ -297,7 +297,7 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
 			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-			WHERE d.id = ? AND dtd.tipo_dependencia_id = 14`,
+			WHERE d.id = ? AND dtd.tipo_dependencia_id = 14 and dh.activo = true`,
 			id_facultad).
 			QueryRows(&proyectosCurriculares)
 
@@ -313,7 +313,7 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
 			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-			WHERE d.id = ? AND dtd.tipo_dependencia_id = 15`,
+			WHERE d.id = ? AND dtd.tipo_dependencia_id = 15 and dh.activo = true`,
 			id_facultad).
 			QueryRows(&proyectosCurriculares)
 
@@ -328,7 +328,7 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 			FROM `+Esquema+`.dependencia d INNER JOIN `+Esquema+`.dependencia_padre dp ON d.id = dp.padre_id
 			INNER JOIN `+Esquema+`.dependencia dh ON dh.id = dp.hija_id
 			INNER JOIN `+Esquema+`.dependencia_tipo_dependencia dtd ON dh.id = dtd.dependencia_id
-			WHERE d.id = ? AND dtd.tipo_dependencia_id IN (1,14,15)`,
+			WHERE d.id = ? AND dtd.tipo_dependencia_id IN (1,14,15) and dh.activo = true`,
 			id_facultad).
 			QueryRows(&proyectosCurriculares)
 
@@ -342,7 +342,7 @@ func ProyectosPorFacultad(facultad int, nivel_academico string) (dependencia []P
 	return proyectosCurriculares
 }
 
-//Funcion recursiva que busca las dependencias hijas a partir de un id de la dependencia padre
+// Funcion recursiva que busca las dependencias hijas a partir de un id de la dependencia padre
 func getDependenciasHijas(Padre *DependenciaPadreHijo, padre int) (dep []DependenciaPadreHijo) {
 
 	for _, element := range elementMap {
@@ -364,7 +364,7 @@ func getDependenciasHijas(Padre *DependenciaPadreHijo, padre int) (dep []Depende
 
 }
 
-//Funcion recursiva que busca las dependencias padre a partir de un id de la dependencia hija (hoja)
+// Funcion recursiva que busca las dependencias padre a partir de un id de la dependencia hija (hoja)
 func getDependenciasPadres(Hija DependenciaPadreHijo) (dep DependenciaPadreHijo) {
 
 	var x DependenciaPadreHijo
@@ -481,5 +481,3 @@ func GetDependenciasHijasById(dependenciaPadre int) (dependencias *DependenciaPa
 
 	return Cabeza, err
 }
-
-

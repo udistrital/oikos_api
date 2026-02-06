@@ -1,25 +1,11 @@
-# Binarios y Temporales
-*.tmp
-*.exe
-*.zip
-*.log
-*~
-oikos_api
+lastupdate.tmp
+.vscode/
+titan_api_crud
 main
-
-# Variables de entorno
-*.env
-!*template*.env
-
-# IDEs y otros
-.vscode
 .scannerwork/
-
-# Swagger
 swagger/**
 !swagger/swagger.json
 !swagger/swagger.yml
-
-#Archivos excluidos
-go.mod
-go.sum
+*.env
+!*template*.env
+oikos_api
